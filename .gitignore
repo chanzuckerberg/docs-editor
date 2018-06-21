@@ -1,0 +1,8 @@
+build
+build/*
+build/*/*
+bin
+bin/*
+bin/*/*
+deploy_to_s3.sh
+node_modules
