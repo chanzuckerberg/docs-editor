@@ -24,7 +24,7 @@ var isDev = env.NODE_ENV === "development";
 
 var options = {
   entry: {
-    index: path.join(__dirname, "src", "js", "index.js"),
+    index: path.join(__dirname, "demo", "index.js"),
   },
   output: {
     path: path.join(__dirname, "build"),
@@ -91,7 +91,7 @@ var options = {
       "process.env.NODE_ENV": JSON.stringify(env.NODE_ENV)
     }),
     new HtmlWebpackPlugin({
-      template: path.join(__dirname, "src", "html", "index.html"),
+      template: path.join(__dirname, "demo", "index.html"),
       filename: "index.html",
       chunks: ["index"],
     }),
