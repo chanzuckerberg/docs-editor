@@ -1,13 +1,15 @@
 var webpack = require("webpack"),
     CleanWebpackPlugin = require("clean-webpack-plugin"),
     CopyWebpackPlugin = require("copy-webpack-plugin"),
+    FlowWebpackPlugin = require('flow-webpack-plugin'),
     HtmlWebpackInlineSourcePlugin = require('html-webpack-inline-source-plugin'),
     HtmlWebpackPlugin = require("html-webpack-plugin"),
-    UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+    UglifyJsPlugin = require('uglifyjs-webpack-plugin'),
     WriteFilePlugin = require("write-file-webpack-plugin");
     env = require("./utils/env"),
     fileSystem = require("fs"),
     path = require("path");
+
 
 // load the secrets
 var alias = {};
@@ -84,6 +86,7 @@ var options = {
     alias: alias
   },
   plugins: [
+    new FlowWebpackPlugin(),
     // clean the build folder
     new CleanWebpackPlugin(["build"]),
     // expose and write the allowed env vars on the compiled bundle

@@ -1,6 +1,6 @@
 // flow
 
-import App from './app';
+import App from '../src/demo/app';
 import React from 'react';
 import ReactDOM from 'react-dom';
 

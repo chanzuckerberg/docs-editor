@@ -1,0 +1,13 @@
+[include]
+.*/src/.*
+.*/demo/.*
+
+[ignore]
+.*/build/.*
+.*/bin/.*
+.*/node_modules/.*
+.*/node_modules/.*/node_modules/
+
+[libs]
+
+[options]

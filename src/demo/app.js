@@ -1,12 +1,13 @@
-// flow
+// @flow
 
 import React from 'react';
+import hello from './hello';
 
-class App extends React.PureComponent {
+class App extends React.PureComponent<any, any, any> {
   render(): React.Element<any> {
     return (
       <div>
-        HELLO
+        {hello('flow works')}
       </div>
     );
   }

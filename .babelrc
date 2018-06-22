@@ -1,5 +1,8 @@
 {
+  "presets": ["flow"],
   "plugins": [
+    "flow-react-proptypes",
+    "transform-react-remove-prop-types",
     "transform-flow-strip-types",
     "transform-object-rest-spread",
     "transform-es2015-parameters",
