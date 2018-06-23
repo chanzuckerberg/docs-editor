@@ -1,0 +1,714 @@
+/* DocsEditor */
+.docs-editor {
+  position: relative;
+}
+
+.docs-editor .public-DraftEditor-content {
+  line-height: 160%;
+}
+
+/* This blocks the interaction of the editor */
+/* TODO: Don't block the interaction. Just make the editor immutable */
+
+.docs-editor-disabled::after {
+  background: #fff;
+  bottom: 0;
+  content: '';
+  left: 0;
+  opacity: 0.5;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 1;
+}
+
+.docs-editor-disabled .docs-editor-toolbar {
+  opacity: 0.5;
+}
+
+.docs-editor-frameset {
+  position: relative;
+  z-index: 0;
+}
+
+.docs-editor-with-fixed-layout .docs-editor-frameset {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.docs-editor-with-fixed-layout .docs-editor-frame-head {
+  position: relative;
+  z-index: 1;
+}
+
+.docs-editor-with-fixed-layout .docs-editor-frame-body {
+  flex: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.docs-editor-with-fixed-layout .docs-editor-frame-body-scroll {
+  bottom: 0;
+  left: 0;
+  overflow: auto;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.docs-editor-content-overflow-clamped {
+  $mask-image: linear-gradient(to top, rgba(255,255,255,0) 0, rgba(255,255,255,1) 2.5em);
+  -webkit-mask-image: $mask-image;
+  mask-image: $mask-image;
+  overflow-x: visible;
+  overflow-y: hidden;
+}
+
+.docs-editor-frame-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* DocsEditorContentOverflowControl */
+.docs-editor-content-overflow-control:link,
+.docs-editor-content-overflow-control:visited,
+.docs-editor-content-overflow-control:hover,
+.docs-editor-content-overflow-control:active {
+  text-decoration: none;
+}
+
+.docs-editor-content-overflow-control > .icon {
+  display: inline-block;
+  font-size: 20px;
+  height: 12px;
+  line-height: 8px;
+  margin: 0 2px;
+  transform: rotate(90deg);
+  vertical-align: middle;
+  width: 12px;
+}
+
+/* DocsBaseEditor */
+
+.docs-base-editor h1 {
+  font-size: 3em;
+  font-weight: bold;
+}
+
+.docs-base-editor h2 {
+  font-size: 2em;
+  font-weight: bold;
+}
+
+.docs-base-editor h3 {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.docs-base-editor h4 {
+  color: #8B8B8B;
+  font-size: 1em;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.docs-editor .dropdown-menu .material-icons {
+  color: #505E6E;
+  display: inline-block;
+  font-size: 24px;
+  height: 32px;
+  line-height: 20px;
+  margin: 0 13px 0 0;
+  padding: 3px;
+  text-align: center;
+  vertical-align: middle;
+  width: 32px;
+}
+
+.docs-expandable-main {
+  padding: 4px 0;
+}
+
+.docs-expandable-toggle {
+  color: #6e7dc3;
+  cursor: pointer;
+  display: inline-block;
+  text-decoration: none;
+  user-select: none;
+}
+
+.docs-expandable-toggle-icon {
+  cursor: pointer;
+  margin: 0 8px;
+}
+
+.docs-expandable-body {
+  border-bottom: solid 1px transparent;
+  box-sizing: border-box;
+  height: 0;
+  margin:0 0 15px 0;
+  opacity: 0;
+  overflow: hidden;
+  padding: 8px 0 0 0;
+  transition: opacity 250ms ease-out;
+}
+
+.docs-expandable-expanded > .docs-expandable-body {
+  background: #fff;
+  border-bottom: dotted 1px #dedede;
+  display: block;
+  height: auto;
+  margin-bottom: 7px;
+  opacity: 1;
+  overflow: visible;
+  padding-bottom: 8px;
+}
+
+.docs-expandable-expanded > .docs-expandable-body > .docs-editor {
+  margin: 0;
+}
+
+/* DocsEditorToolbarButton */
+.docs-editor-toolbar {
+  user-select: none;
+}
+
+.docs-editor-toolbar-body {
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 5px;
+  padding: 0;
+  position: relative;
+  user-select: none;
+}
+
+.docs-buttons-group {
+  display: inline-block;
+  margin-bottom: 8px;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.docs-buttons-group + .docs-buttons-group {
+  margin-left: 8px;
+}
+
+.docs-button-active .material-icons {
+  color: #000;
+}
+
+.docs-button {
+  user-select: none;
+}
+
+.docs-button-text,
+.docs-button .material-icons {
+  box-sizing: border-box;
+  display: inline-block;
+  font-size: 16px;
+  height: 25px;
+  line-height: 20px;
+  padding: 0;
+  text-align: center;
+  width: 18px;
+}
+
+.docs-button-text {
+  font-size: 12px;
+  line-height: 28px;
+}
+
+/* DocsEditor */
+.docs-decorator-container {
+  display: inline-block;
+}
+
+.docs-decorator-container-display-block {
+  display: block;
+}
+
+.docs-decorator-container-align-left {
+  float: left;
+  margin-right: 16px;
+}
+
+.docs-decorator-container-align-right {
+  float: right;
+  margin-left: 16px;
+}
+
+
+/* DocsImage */
+span[data-docs-decorator-type="DOCS_IMAGE"] {
+  display: inline-block;
+}
+
+
+.docs-decorator-container[data-docs-decorator-type="DOCS_IMAGE"],
+.docs-decorator-container-align-center[data-docs-decorator-type="DOCS_IMAGE"] {
+  clear: both;
+  display: flex;
+  float: none;
+  justify-content: center;
+  margin: 16px auto;
+}
+
+.docs-decorator-container-align-left[data-docs-decorator-type="DOCS_IMAGE"] {
+  display: inline-block;
+  float: left;
+  margin-right: 16px;
+}
+
+.docs-decorator-container-align-right[data-docs-decorator-type="DOCS_IMAGE"] {
+  display: inline-block;
+  float: right;
+  margin-left: 16px;
+}
+
+.docs-image {
+  border: 1px solid transparent;
+  box-sizing: border-box;
+  display: inline-block;
+  float: none;
+  font-size: 0;
+  line-height: 0;
+}
+
+.docs-image-with-frame {
+  background: #fff;
+  border: 1px solid #f0f0f0;
+  border-radius: 3px;
+  padding: 8px;
+}
+
+.docs-image-editing {
+  border: 1px solid rgba(81, 203, 238, 1);
+  box-shadow: 0 0 3px rgba(81, 203, 238, 1);
+}
+
+.docs-image-body {
+  display: inline-block;
+  margin: auto;
+  position: relative;
+}
+
+.docs-image-align-left {
+  float: left;
+  margin-right: 16px;
+}
+
+.docs-image-align-right {
+  float: right;
+  margin-left: 16px;
+}
+
+.docs-image > .docs-safe-image {
+  position: relative;
+  z-index: 1;
+}
+
+.docs-image-resize-handle {
+  bottom: 0;
+  cursor: se-resize;
+  height: 30px;
+  left: 0;
+  position: absolute;
+  right: 0;
+  z-index: 2;
+}
+
+.docs-image-resize-handle:before {
+  border: solid 10px #fff;
+  border-color: transparent #fff #fff transparent;
+  bottom: 2px;
+  content: '';
+  height:0;
+  position: absolute;
+  right: 2px;
+  width: 0;
+  z-index: 2;
+}
+
+.docs-image-resize-handle:after {
+  border: solid 7px #ccc;
+  border-color: transparent #ccc #ccc transparent;
+  bottom: 4px;
+  content: '';
+  position: absolute;
+  right: 4px;
+  z-index: 3;
+}
+
+.docs-safe-image {
+  box-sizing: border-box;
+  display: inline-block;
+  max-width: 100%;
+  position: relative;
+  z-index: 0;
+}
+
+.docs-safe-image-pending,
+.docs-safe-image-empty,
+.docs-safe-image-error {
+  border: solid 1px #ff0000;
+  min-height: 40px;
+  min-width: 40px;
+}
+
+.docs-safe-image-pending,
+.docs-safe-image-empty {
+  border-color: #f0f0f0;
+}
+
+.docs-safe-image-empty::after,
+.docs-safe-image-error::after {
+  align-items: center;
+  bottom: 0;
+  color: #ff0000;
+  content: "\274C";
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+  justify-content: center;
+  left: 0;
+  line-height: 1em;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.docs-safe-image-empty::after {
+  content: "";
+}
+
+.docs-image-editor-preview > .docs-safe-image {
+  /* Image isn't visible by user. It's only used to load image. */
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+}
+
+.docs-image-editor-preview  {
+  align-items: center;
+  background-color: #fff;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  height: 100px;
+  justify-content: center;
+  margin: 8px;
+  overflow: hidden;
+  padding: 20px;
+  position: relative;
+}
+
+.docs-image-editor-preview > .alert {
+  align-items: center;
+  margin: 0;
+}
+
+.docs-image-editor-upload-control {
+  border-left: solid 1px #f0f0f0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0 6px;
+  padding-left: 8px;
+}
+
+.docs-image-upload-control {
+  color: #6e7dc3;
+  display: inline-block;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 20px;
+  outline: none;
+  overflow: hidden;
+  position: relative;
+  user-select: none;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.docs-image-upload-control:hover,
+.docs-image-upload-control:focus {
+  text-decoration: underline;
+}
+
+.docs-image-upload-control-input {
+  cursor: pointer;
+  font-size: 300px;
+  height: 300px;
+  left: 0;
+  opacity: 0;
+  outline: none;
+  position: absolute;
+  top: 0;
+  width: 300px;
+}
+
+.docs-image-editor-buttons {
+  border-top: solid 1px #f0f0f0;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+  padding-top: 20px;
+}
+
+.docs-text-input-editor,
+.docs-image-editor-inputs {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  padding: 8px;
+}
+
+.docs-image-editor .form-group,
+.docs-text-input-editor .form-group {
+  display: flex;
+  margin: 0 8px 0 0;
+}
+
+.docs-math-editor button.btn,
+.docs-image-editor button.btn,
+.docs-text-input-editor button.btn {
+  margin: 0 4px;
+}
+
+.docs-image-editor input.form-control,
+.docs-text-input-editor input.form-control {
+  width: 400px;
+}
+
+/* DocsTable */
+.docs-table-main {
+  clear: both;
+  margin: 8px auto;
+  padding: 0;
+  position: relative;
+  width: 100%;
+}
+
+.docs-table {
+  background: #222;
+  border: none;
+  border-collapse: separate;
+  /*
+   * This 1.5 px is needed to ensure that the border is thick enough to be
+   * visible at hi-res screen (e.g. Macbook Pro)
+   */
+  border-spacing: 1.5px;
+  display: table;
+  position: relative;
+  table-layout: fixed;
+  white-space: normal;
+  width: 100%;
+  z-index: 1;
+}
+
+.docs-table-main-no-borders > .docs-table {
+  background: #fff;
+}
+
+.docs-table-main-active {
+  background: #f0f0f0;
+  border-radius: 5px;
+}
+
+.docs-table-main-no-borders.docs-table-main-active > .docs-table {
+  background: #f0f0f0;
+  border-collapse: separate;
+}
+
+.docs-table-toolbar {
+  background: #f0f0f0;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  left: 0;
+  opacity: 1;
+  padding: 8px;
+  position: absolute;
+  top: -42px;
+  transition: opacity 120ms ease;
+  transition-delay: 300ms;
+}
+
+.docs-table-toolbar-disabled {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.docs-table-body {
+  display: table-body;
+}
+
+.docs-table-row {
+  display: table-row;
+}
+
+.docs-table-cell {
+  background: #fff;
+  border-width: 0;
+  box-sizing: border-box;
+  display: table-cell;
+  position: relative;
+  vertical-align: top;
+  z-index: 1;
+}
+
+.docs-table-cell-with-bg-style,
+.docs-table-row-header .docs-table-cell {
+  background: #efefef;
+}
+
+.docs-table-cell-highlighted {
+  box-shadow: 0 0 0 1px #222, 0 2px 2px rgba(27,39,51,0.3);
+  position: relative;
+  z-index: 2;
+}
+
+// Meh, this is ugly.
+.docs-table-cell > .docs-base-editor > .DraftEditor-root > .DraftEditor-editorContainer > .public-DraftEditor-content {
+  min-height: 2em;
+  padding: 8px;
+}
+
+// Meh, this is ugly.
+.docs-table-cell-with-padding-large > .docs-base-editor > .DraftEditor-root > .DraftEditor-editorContainer > .public-DraftEditor-content {
+  padding: 32px;
+}
+
+.docs-table-cell-resize-handle {
+  bottom: 0;
+  cursor: col-resize;
+  position: absolute;
+  top: 0;
+  width: 5px;
+  z-index: 3;
+}
+
+.docs-table-cell-resize-handle-left {
+  left: 0;
+}
+
+.docs-table-cell-resize-handle-right {
+  right: 0;
+}
+
+/* DocsMath */
+.docs-math {
+  border: 1px solid transparent;
+  display: inline-block;
+  padding: 0 4px;
+}
+
+.docs-math-editing {
+  border: 1px solid rgba(81, 203, 238, 1);
+  box-shadow: 0 0 3px rgba(81, 203, 238, 1);
+}
+
+.docs-math-editor {
+  display: block;
+  width: 600px;
+}
+
+.docs-math-editor-border {
+  background: #fff;
+  border: 1px solid transparent;
+  border-bottom: 1px solid #ddd;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,.39), 0 -1px 1px #fff, 0 1px 0 #fff;
+  box-sizing: border-box;
+  display: block;
+  margin-bottom: 16px;
+  padding: 3px 3px 0 3px;
+  width: 600px;
+}
+
+.docs-math-editor-scroll {
+  max-height: 300px;
+  overflow: auto;
+  width: 100%;
+}
+
+.docs-math-editor-iframe {
+  border: none;
+  display: block;
+  height: 10em;
+  margin: 0 0 16px 0;
+  transition-duration: 260ms;
+  transition-property: height, opacity;
+  transition-timing-function: ease-in;
+  width: 100%;
+}
+
+.docs-math-editor-body {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
+.docs-math-editor-toggle {
+  flex: 1;
+}
+
+.docs-math-editor-guide-table-container {
+  border: solid 1px #f0f0f0;
+  max-height: 300px;
+  margin-bottom: 16px;
+  overflow-x: auto;
+  padding: 16px;
+}
+
+.docs-math-editor-guide-table-container-show {
+  display: block;
+}
+
+.docs-math-editor-guide-table {
+  background: #ddd;
+  border-collapse: separate;
+  border-spacing: 1.5px;
+  margin-top: 16px;
+  table-layout: fixed;
+  width: 100%;
+}
+
+.docs-math-editor-guide-th {
+  background: #f0f0f0;
+  border: none;
+  font-weight: bold;
+  padding: 8px;
+  vertical-align: top;
+}
+
+thead .docs-math-editor-guide-th {
+  background: #aaa;
+}
+
+thead .docs-math-editor-guide-th:first-child {
+  width: 30%;
+}
+
+.docs-math-editor-guide-td {
+  background: #fff;
+  border: none;
+  padding: 8px;
+  vertical-align: top;
+}
+
+.docs-annotation {
+  background: #FDF8E8;
+  border-radius: 5px;
+  color: #E2B330;
+}
+
+@keyframes popover_fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
