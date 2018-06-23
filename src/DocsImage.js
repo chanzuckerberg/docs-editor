@@ -11,12 +11,12 @@ import ResizeObserver from './ResizeObserver';
 import cx from 'classnames';
 import docsWithContext from './docsWithContext';
 import nullthrows from 'nullthrows';
-import showModalDialog from 'v2/core/util/showModalDialog';
+import showModalDialog from './showModalDialog';
 import {asElement, uniqueID} from './DocsHelpers';
 import {setSize} from './DocsImageModifiers';
 
 import type {ImageEntityData, DOMImage} from './Types';
-import type {ModalHandle} from 'v2/core/util/showModalDialog';
+import type {ModalHandle} from './showModalDialog';
 import type {ResizeObserverEntry} from './ResizeObserver';
 
 type Props = {

@@ -1,6 +1,6 @@
 // @flow
 
-import Input from 'v2/core/components/input';
+import Input from './DocsInput';
 import React from 'react';
 import Timer from './Timer';
 import {Button} from 'react-bootstrap';

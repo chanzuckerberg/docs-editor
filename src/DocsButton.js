@@ -1,6 +1,6 @@
 // @flow
 
-import MaterialIcon from 'v2/core/components/materialIcon';
+import DocsIcon from './DocsIcon';
 import React from 'react';
 import _ from 'underscore';
 import cx from 'classnames';
@@ -33,7 +33,7 @@ class DocsButton extends React.PureComponent {
       [iconName]: true,
     });
     const child = icon ?
-      <MaterialIcon icon={icon} /> :
+      <DocsIcon icon={icon} /> :
       <span className="docs-button-text">{label}</span>;
     return (
       <Button

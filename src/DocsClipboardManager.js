@@ -1,9 +1,8 @@
 // @flow
 
-// $FlowFixMe: 'fbjs/lib/DataTransfer. Required module not found'.
 import DataTransfer from 'fbjs/lib/DataTransfer';
 import Timer from './Timer';
-import captureDocumentEvents from 'v2/core/util/captureDocumentEvents';
+import captureDocumentEvents from './captureDocumentEvents';
 import nullthrows from 'nullthrows';
 
 class DocsClipboardManager {

@@ -1,6 +1,6 @@
 // @flow
 
-import MaterialIcon from 'v2/core/components/materialIcon';
+import DocsIcon from './DocsIcon';
 import React from 'react';
 import cx from 'classnames';
 import {MenuItem} from 'react-bootstrap';
@@ -33,7 +33,7 @@ class DocsMenuItem extends React.PureComponent {
     }
 
     const iconChild = icon ?
-      <MaterialIcon className="docs-menuitem-icon" icon={icon} /> :
+      <DocsIcon className="docs-menuitem-icon" icon={icon} /> :
       null;
     const labelChild = label ?
       <span className="docs-menuitem-text">{label}</span> :

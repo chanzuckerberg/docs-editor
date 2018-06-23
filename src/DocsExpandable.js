@@ -4,13 +4,13 @@ import DocsBaseEditor from './DocsBaseEditor';
 import DocsDataAttributes from './DocsDataAttributes';
 import DocsEventTypes from './DocsEventTypes';
 import DocsTextInputEditor from './DocsTextInputEditor';
-import MaterialIcon from 'v2/core/components/materialIcon';
+import DocsIcon from './DocsIcon';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Timer from './Timer';
 import cx from 'classnames';
 import docsConvertFromRawContentState from './docsConvertFromRawContentState';
-import showModalDialog from 'v2/core/util/showModalDialog';
+import showModalDialog from './showModalDialog';
 import docsWithContext from './docsWithContext';
 import {convertToRaw, ContentBlock, EditorState, Entity} from './DraftJS';
 import {uniqueID} from './DocsHelpers';
@@ -18,7 +18,7 @@ import {updateEntityData} from './DocsModifiers';
 import {updateLabel} from './DocsExpandableModifiers';
 
 import type {BaseEditor} from './Types';
-import type {ModalHandle} from 'v2/core/util/showModalDialog';
+import type {ModalHandle} from './showModalDialog';
 
 type Props = {
   block: ContentBlock,
@@ -118,7 +118,7 @@ class DocsExpandable extends React.PureComponent {
 
     const placeholder = canEdit ? 'type something' : '';
     const editLabel = canEdit ?
-      <MaterialIcon
+      <DocsIcon
         className="docs-expandable-toggle-icon"
         data-docs-tool="true"
         icon="create"

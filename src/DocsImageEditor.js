@@ -6,7 +6,7 @@ import DocsDropdownButton from './DocsDropdownButton';
 import DocsImageUploadControl from './DocsImageUploadControl';
 import DocsMenuItem from './DocsMenuItem';
 import DocsSafeImage from './DocsSafeImage';
-import Input from 'v2/core/components/input';
+import Input from './DocsInput';
 import React from 'react';
 import docsWithContext from './docsWithContext';
 

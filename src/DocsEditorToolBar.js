@@ -8,10 +8,10 @@ import DocsMathEditor from './DocsMathEditor';
 import DocsTextInputEditor from './DocsTextInputEditor';
 import React from 'react';
 import Timer from './Timer';
-import captureDocumentEvents from 'v2/core/util/captureDocumentEvents';
+import captureDocumentEvents from './captureDocumentEvents';
 import docsWithContext from './docsWithContext';
-import httpAutoPrefixer from 'v2/core/util/httpAutoPrefixer';
-import showModalDialog from 'v2/core/util/showModalDialog';
+import httpAutoPrefixer from './httpAutoPrefixer';
+import showModalDialog from './showModalDialog';
 import {ButtonGroup} from 'react-bootstrap';
 import {EditorState} from './DraftJS';
 import {getCurrentSelectionEntity} from './DocsHelpers';
@@ -20,7 +20,7 @@ import {updateLink, updateEntityData} from './DocsModifiers';
 
 import type {BaseEditor} from './Types';
 import type {Spec} from './DocsEditorToolBarButton';
-import type {ModalHandle} from 'v2/core/util/showModalDialog';
+import type {ModalHandle} from './showModalDialog';
 
 type Props = {
   getEditor: () => ?BaseEditor,

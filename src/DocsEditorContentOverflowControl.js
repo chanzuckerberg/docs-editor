@@ -1,7 +1,5 @@
 // @flow
 
-import Link from 'v2/core/components/link';
-
 import React from 'react';
 
 class DocsEditorContentOverflowControl extends React.PureComponent {
@@ -15,13 +13,13 @@ class DocsEditorContentOverflowControl extends React.PureComponent {
     const icon = contentOverflowHidden ? '\u00BB' : '\u00AB';
     const text = contentOverflowHidden ? 'Read more' : 'Read less';
     return (
-      <Link
+      <a
         className="docs-editor-content-overflow-control"
         href="#"
         onClick={this._onClick}>
         <span className="icon">{icon}</span>
         {text}
-      </Link>
+      </a>
     );
   }
 

@@ -7,7 +7,7 @@ import Timer from './Timer';
 import invariant from 'invariant';
 import nullthrows from 'nullthrows';
 import {ContentBlock, EditorState, Entity} from './DraftJS';
-import captureDocumentEvents from 'v2/core/util/captureDocumentEvents';
+import captureDocumentEvents from './captureDocumentEvents';
 
 type Props = {
   block: ContentBlock,

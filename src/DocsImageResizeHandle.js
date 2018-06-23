@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Timer from './Timer';
-import captureDocumentEvents from 'v2/core/util/captureDocumentEvents';
+import captureDocumentEvents from './captureDocumentEvents';
 import cx from 'classnames';
 import docsWithContext from './docsWithContext';
 

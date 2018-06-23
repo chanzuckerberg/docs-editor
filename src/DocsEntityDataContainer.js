@@ -4,7 +4,7 @@ import DocsDataAttributes from './DocsDataAttributes';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Timer from './Timer';
-import captureDocumentEvents from 'v2/core/util/captureDocumentEvents';
+import captureDocumentEvents from './captureDocumentEvents';
 import invariant from 'invariant';
 import nullthrows from 'nullthrows';
 import {ContentBlock, EditorState, Entity} from './DraftJS';

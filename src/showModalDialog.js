@@ -3,8 +3,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {Popover} from 'react-bootstrap';
-import captureDocumentEvents from 'v2/core/util/captureDocumentEvents';
-import {uniqueID} from 'v2/docs/DocsHelpers';
+import captureDocumentEvents from './captureDocumentEvents';
+import {uniqueID} from './DocsHelpers';
 import nullthrows from 'nullthrows';
 
 export type ModalHandle = {
