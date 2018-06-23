@@ -1,0 +1,28 @@
+body, html {
+  margin: 0;
+  border: 0;
+}
+
+#app {
+  box-sizing: border-box;
+  height: 100vh;
+  display: flex;
+  flex-direction: row;
+}
+
+#app > .main-column,
+#app > .side-column {
+  box-sizing: border-box;
+  flex: 1;
+  overflow: auto;
+  padding: 10px;
+}
+
+#app > .side-column {
+  background: #000;
+  color: #fefefe;
+  font-family: monospace;
+  font-size: 11px;
+  overflow: auto;
+  white-space: pre;
+}
