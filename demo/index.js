@@ -1,13 +1,14 @@
-// flow
+// @flow
 
-import App from '../src/demo/app';
+import App from './app';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import nullthrows from 'nullthrows';
 
 function main(): void {
   const el = document.createElement('div');
   el.id = 'demo-app';
-  document.body.appendChild(el);
+  nullthrows(document.body).appendChild(el);
   ReactDOM.render(<App />, el);
 }
 

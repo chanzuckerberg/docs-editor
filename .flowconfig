@@ -5,8 +5,13 @@
 [ignore]
 .*/build/.*
 .*/bin/.*
-.*/node_modules/.*
-.*/node_modules/.*/node_modules/
+.*/node_modules/flow-webpack-plugin/.*
+.*/node_modules/katex/.*
+.*/node_modules/match-at/.*
+.*/node_modules/postcss-modules-scope/.*
+.*/node_modules/postcss-modules-extract-imports/.*
+.*/node_modules/postcss-modules-values/.*
+.*/node_modules/postcss-modules-local-by-default/.*
 
 [libs]
 
