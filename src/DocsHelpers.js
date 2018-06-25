@@ -230,7 +230,7 @@ function renderLatexAsHTML(latex: ?string): string {
   }
   latexEl.innerHTML = '';
   try {
-    // katex.render(latex, latexEl);
+    katex.render(latex, latexEl);
   } catch (ex) {
     latexEl.innerHTML = '';
     latexEl.appendChild(document.createTextNode(latex));

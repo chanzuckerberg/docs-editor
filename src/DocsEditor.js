@@ -7,7 +7,7 @@ import DocsEditorContentOverflowControl from './DocsEditorContentOverflowControl
 import DocsEditorFocusManager from './DocsEditorFocusManager';
 import DocsEditorToolBar from './DocsEditorToolBar';
 import DocsEventTypes from './DocsEventTypes';
-import DocsKatexResourcesLoader from './DocsKatexResourcesLoader';
+import DocsResourcesLoader from './DocsResourcesLoader';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ResizeObserver from './ResizeObserver';
@@ -16,6 +16,8 @@ import cx from 'classnames';
 import docsWithContext from './docsWithContext';
 import invariant from 'invariant';
 import {asElement, uniqueID} from './DocsHelpers';
+
+import './DocsEditor.css';
 
 import type {BaseEditor, EditorProps} from './Types';
 import type {ResizeObserverEntry} from './ResizeObserver';
@@ -29,7 +31,7 @@ type ContentOverflowInfo = {
 };
 
 DocsConfig.init();
-DocsKatexResourcesLoader.getInstance().load();
+DocsResourcesLoader.init();
 
 const {FOCUS_TRANSITION_DURATION_MS} = DocsEditorFocusManager;
 

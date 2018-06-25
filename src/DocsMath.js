@@ -2,7 +2,7 @@
 
 import DocsDataAttributes from './DocsDataAttributes';
 import DocsEventTypes from './DocsEventTypes';
-import DocsKatexResourcesLoader from './DocsKatexResourcesLoader';
+import DocsResourcesLoader from './DocsResourcesLoader';
 import DocsMathEditor from './DocsMathEditor';
 import React from 'react';
 import cx from 'classnames';
@@ -31,8 +31,7 @@ function showMathEditorModalDialog(
   }, callback);
 }
 
-const katexResourcesLoader = DocsKatexResourcesLoader.getInstance();
-katexResourcesLoader.load();
+DocsResourcesLoader.init();
 
 class DocsMath extends React.PureComponent {
 
@@ -43,16 +42,16 @@ class DocsMath extends React.PureComponent {
 
   state = {
     editing: false,
-    ready: katexResourcesLoader.isReady(),
+    ready: DocsResourcesLoader.isReady(),
   };
 
   componentWillMount(): void {
-    katexResourcesLoader.on(DocsEventTypes.LOAD, this._onKatexLoad);
+    DocsResourcesLoader.on(DocsEventTypes.LOAD, this._onKatexLoad);
   }
 
   componentWillUnmount(): void {
     this._mathEditorModal && this._mathEditorModal.dispose();
-    katexResourcesLoader.off(DocsEventTypes.LOAD, this._onKatexLoad);
+    DocsResourcesLoader.off(DocsEventTypes.LOAD, this._onKatexLoad);
   }
 
   render(): React.Element<any> {

@@ -49,49 +49,38 @@ function loadResource(element: Element): Promise<any> {
 }
 
 function loadResources(id: string): Promise<any> {
-  const script = createElement('script', {
-    id: id + 'script',
-    crossorigin: 'anonymous',
-    integrity: 'sha384-GR8SEkOO1rBN/jnOcQDFcFmwXAevSLx7/Io9Ps1rkxWp983ZIuUGfxivlF/5f5eJ',
-    src: '//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0-alpha1/katex.min.js',
-  });
-  const style = createElement('link', {
-    id: id + 'style',
-    crossorigin: 'anonymous',
-    href: '//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.9.0-alpha1/katex.min.css',
-    integrity: 'sha384-8QOKbPtTFvh/lMY0qPVbXj9hDh+v8US0pD//FcoYFst2lCIf0BmT58+Heqj0IGyx',
-    rel: 'stylesheet',
-  });
-  return Promise.all([
-    loadResource(script),
-    loadResource(style),
-  ]);
+
+  const styles = [
+    createElement('link', {
+      id: id + '-katex-style',
+      crossorigin: 'anonymous',
+      href: '//cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css',
+      integrity: 'sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH',
+      rel: 'stylesheet',
+    }),
+    createElement('link', {
+      id: id + '-materialicons-style',
+      crossorigin: 'anonymous',
+      href: '//fonts.googleapis.com/icon?family=Material+Icons',
+      rel: 'stylesheet',
+    }),
+  ];
+
+  return Promise.all(styles.map(loadResource));
 }
 
-
-let _instance = null;
-
-function getInstance(): DocsKatexResourcesLoader {
-  if (!_instance) {
-    _instance = new DocsKatexResourcesLoader;
-  }
-  return _instance;
-}
-
-class DocsKatexResourcesLoader {
-
-  static getInstance = getInstance;
-
+class DocsResourcesLoader {
+  _callbacks = [];
   _id = uniqueID();
+  _initialized = false;
   _loaded = false;
   _loading = false;
-  _callbacks = [];
 
   isReady(): boolean {
     return this._loaded;
   }
 
-  load(): void {
+  init(): void {
     if (this._loaded || this._loading) {
       return;
     }
@@ -120,4 +109,5 @@ class DocsKatexResourcesLoader {
   };
 }
 
-module.exports = DocsKatexResourcesLoader;
+module.exports = new DocsResourcesLoader();
+module.exports = new DocsResourcesLoader();
