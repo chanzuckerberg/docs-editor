@@ -56,7 +56,6 @@
     "html-webpack-inline-source-plugin": "0.0.10",
     "invariant": "^2.2.4",
     "katex": "^0.10.0-beta",
-    "resize-observer-polyfill": "1.5.0",
     "nullthrows": "^1.0.1",
     "prop-types": "^15.6.2",
     "prop-types-extra": "^1.1.0",
@@ -64,6 +63,7 @@
     "react-bootstrap": "0.31.5",
     "react-dom": "15.5.4",
     "regenerator": "^0.12.3",
+    "resize-observer-polyfill": "1.5.0",
     "uglifyjs-webpack-plugin": "^1.2.5"
   }
 }

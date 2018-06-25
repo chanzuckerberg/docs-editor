@@ -10,7 +10,6 @@ var webpack = require("webpack"),
     fileSystem = require("fs"),
     path = require("path");
 
-
 // load the secrets
 var alias = {};
 

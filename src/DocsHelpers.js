@@ -1,9 +1,10 @@
 // @flow
 
 import ReactDOM from 'react-dom';
-import invariant from 'invariant';
-import {AtomicBlockUtils, ContentBlock, ContentState, EditorState, Entity} from './DraftJS';
 import _ from 'underscore';
+import invariant from 'invariant';
+import katex from 'katex';
+import {AtomicBlockUtils, ContentBlock, ContentState, EditorState, Entity} from './DraftJS';
 
 import type {DOMRect, DOMElement} from './Types';
 
@@ -224,19 +225,14 @@ function lookupElementByAttribute(
 
 const latexEl: any = document.createElement('div');
 function renderLatexAsHTML(latex: ?string): string {
-  const {katex} = window;
   if (!latex) {
     return '';
   }
   latexEl.innerHTML = '';
-  if (katex) {
-    try {
-      katex.render(latex, latexEl);
-    } catch (ex) {
-      latexEl.innerHTML = '';
-      latexEl.appendChild(document.createTextNode(latex));
-    }
-  } else {
+  try {
+    // katex.render(latex, latexEl);
+  } catch (ex) {
+    latexEl.innerHTML = '';
     latexEl.appendChild(document.createTextNode(latex));
   }
   const html = latexEl.innerHTML;
