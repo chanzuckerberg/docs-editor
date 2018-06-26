@@ -44,6 +44,7 @@
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
     "bootstrap-css": "^3.3.7",
+    "bootswatch": "^3.3.4",
     "classnames": "2.2.3",
     "css-loader": "^0.25.0",
     "draft-convert": "2.0.1",

@@ -51,6 +51,9 @@ import '../node_modules/bootstrap-css/lib/wells.css';
 // `npm install draft-js@0.10.0`
 import '../node_modules/draft-js/dist/Draft.css';
 
+// `npm install bootswatch@3.3.4`
+import "../node_modules/bootswatch/cerulean/bootstrap.min.css";
+
 import './DemoApp.css';
 
 const LOCAL_STORAGE_KEY = 'education-doc-editor-demo';

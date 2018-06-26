@@ -5,6 +5,8 @@ import React from 'react';
 import cx from 'classnames';
 import {MenuItem} from 'react-bootstrap';
 
+import './DocsMenuItem.css';
+
 type onClick = (x: any) => void;
 
 type Props = {
