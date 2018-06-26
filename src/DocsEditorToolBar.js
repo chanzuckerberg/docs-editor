@@ -10,7 +10,6 @@ import React from 'react';
 import Timer from './Timer';
 import captureDocumentEvents from './captureDocumentEvents';
 import docsWithContext from './docsWithContext';
-import httpAutoPrefixer from './httpAutoPrefixer';
 import showModalDialog from './showModalDialog';
 import {ButtonGroup} from 'react-bootstrap';
 import {EditorState} from 'draft-js';
@@ -98,7 +97,7 @@ function updateEditorLink(editor: BaseEditor, url: ?string): void {
   if (url === undefined) {
     return;
   }
-  url = url ? httpAutoPrefixer(url) : null;
+  url = url || null;
   const {editorState, onChange} = editor.props;
   const newEditorState = updateLink(editorState, url);
   if (newEditorState && newEditorState !== editorState) {

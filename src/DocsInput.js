@@ -6,6 +6,7 @@ import {FormControl} from 'react-bootstrap';
 
 type Props = {
   value?: any,
+  onChange?: (e: SyntheticInputEvent) => void,
 };
 
 class DocsButton extends React.PureComponent {
@@ -25,8 +26,9 @@ class DocsButton extends React.PureComponent {
     );
   }
 
-  _onChange = (e: any) => {
-
+  _onChange = (e: SyntheticInputEvent) => {
+    const {onChange} = this.props;
+    onChange && onChange(e);
   };
 
 }

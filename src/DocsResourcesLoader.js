@@ -1,6 +1,5 @@
 // @flow
 
-import httpAutoPrefixer from './httpAutoPrefixer';
 import {asElement, tryWarn} from './DocsHelpers';
 import {uniqueID} from './DocsHelpers';
 
