@@ -1,9 +1,9 @@
 // @flow
 
 import React from 'react';
+import uniqueID from '../src/lib/uniqueID';
 import {ButtonGroup, Button} from 'react-bootstrap';
 import {Editor, DEFAULT_CONTEXT, DEFAULT_EDITOR_STATE, convertToRaw, convertFromRaw} from '../src/index';
-
 
 // Because React-Bootstrap doesn't depend on a very precise version of
 // Bootstrap, we don't ship with any included css. However, some stylesheet is
@@ -70,17 +70,23 @@ function getInitialState(): Object {
     editorState = DEFAULT_EDITOR_STATE;
   }
   return {
-    json,
-    editorState,
+    debugKey: uniqueID(),
     docsContext,
+    editorState,
+    initialEditorState: editorState,
+    json,
   };
+}
+
+function noop(): void {
+
 }
 
 class DemoApp extends React.PureComponent<any, any, any> {
   state = getInitialState();
 
   render(): React.Element<any> {
-    const {docsContext, editorState, json} = this.state;
+    const {docsContext, editorState, json, debugKey} = this.state;
     return (
       <div id="app">
         <div className="main-column">
@@ -95,11 +101,22 @@ class DemoApp extends React.PureComponent<any, any, any> {
         <div className="side-column">
           <div>
             <ButtonGroup>
-              <Button onClick={this._save}>Save</Button>
+              <Button onClick={this._save} bsStyle="primary">Save</Button>
+            </ButtonGroup>
+            <ButtonGroup>
+              <Button onClick={this._dump}>Dump</Button>
               <Button onClick={this._clear}>Clear</Button>
             </ButtonGroup>
+            <ButtonGroup>
+              <Button onClick={this._import}>Import</Button>
+              <Button onClick={this._reset}>Reset</Button>
+            </ButtonGroup>
           </div>
-          <pre>{json}</pre>
+          <textarea
+            defaultValue={json}
+            id={debugKey}
+            key={debugKey}
+          />
         </div>
       </div>
     );
@@ -109,16 +126,48 @@ class DemoApp extends React.PureComponent<any, any, any> {
     this.setState({editorState});
   };
 
-  _save = (): void => {
+  _import = (): void => {
+    const {debugKey} = this.state;
+    const el:any = document.getElementById(debugKey);
+    if (el) {
+      try {
+        const json = el.value.trim();
+        const raw = JSON.parse(json);
+        const editorState = convertFromRaw(raw);
+        this.setState({editorState});
+      } catch (ex) {
+        el.value = ex.message;
+      }
+    }
+  };
+
+  _reset = (): void => {
+    const {initialEditorState} = this.state;
+    this.setState({
+      editorState: initialEditorState,
+    });
+  }
+
+  _dump = (callback?: ?Function): void => {
     const {editorState} = this.state;
     const raw = convertToRaw(editorState.getCurrentContent());
     const json = JSON.stringify(raw, null, 2);
-    window.localStorage.setItem(LOCAL_STORAGE_KEY, json);
-    this.setState({json});
+    const fn = typeof callback === 'function' ? callback : noop;
+    this.setState({
+      json,
+      debugKey: uniqueID(),
+    }, fn);
+  };
+
+  _save = (): void => {
+    this._dump(() => {
+      const {json} = this.state;
+      window.localStorage.setItem(LOCAL_STORAGE_KEY, json);
+    });
   };
 
   _clear = (): void => {
-    this.setState({json: ''});
+    this.setState({json: '', debugKey: uniqueID()});
     window.localStorage.clear();
   };
 }

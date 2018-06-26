@@ -29,11 +29,27 @@ body, html {
 #app > .side-column {
   background: #000;
   color: #fefefe;
+  display: flex;
+  flex-direction: column;
 }
 
-#app > .side-column pre {
+#app > .side-column .btn {
+  font-size: 13px;
+  line-height: 100%;
+}
+
+#app > .side-column .btn-group {
+  margin-right: 8px;
+}
+
+#app > .side-column > textarea {
+  box-sizing: border-box;
+  color: #222;
+  display: block;
+  flex: 1;
   font-family: monospace;
   font-size: 11px;
+  margin-top: 12px;
   overflow: auto;
   white-space: pre;
 }
