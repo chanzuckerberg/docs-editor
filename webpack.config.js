@@ -96,7 +96,9 @@ var options = {
       template: path.join(__dirname, "demo", "index.html"),
       filename: "index.html",
       chunks: ["index"],
+      inlineSource: isDev ? '$^' : '.(js|css)$'
     }),
+    new HtmlWebpackInlineSourcePlugin(),
     new WriteFilePlugin()
   ]
 };

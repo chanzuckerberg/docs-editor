@@ -1,5 +1,6 @@
 // @flow
 
+import httpAutoPrefixer from './httpAutoPrefixer';
 import {asElement, tryWarn} from './DocsHelpers';
 import {uniqueID} from './DocsHelpers';
 
@@ -54,14 +55,14 @@ function loadResources(id: string): Promise<any> {
     createElement('link', {
       id: id + '-katex-style',
       crossorigin: 'anonymous',
-      href: '//cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css',
+      href: 'https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css',
       integrity: 'sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH',
       rel: 'stylesheet',
     }),
     createElement('link', {
       id: id + '-materialicons-style',
       crossorigin: 'anonymous',
-      href: '//fonts.googleapis.com/icon?family=Material+Icons',
+      href: 'https://fonts.googleapis.com/icon?family=Material+Icons',
       rel: 'stylesheet',
     }),
   ];
