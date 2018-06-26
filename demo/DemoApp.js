@@ -96,7 +96,7 @@ class DemoApp extends React.PureComponent<any, any, any> {
               <Button onClick={this._clear}>Clear</Button>
             </ButtonGroup>
           </div>
-          {json}
+          <pre>{json}</pre>
         </div>
       </div>
     );

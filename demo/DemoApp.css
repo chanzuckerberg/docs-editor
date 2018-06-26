@@ -29,6 +29,9 @@ body, html {
 #app > .side-column {
   background: #000;
   color: #fefefe;
+}
+
+#app > .side-column pre {
   font-family: monospace;
   font-size: 11px;
   overflow: auto;
