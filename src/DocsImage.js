@@ -152,8 +152,15 @@ class DocsImage extends React.Component {
       // we'd constraint the width to avoid broken layout.
       const el = nullthrows(element);
       const maxWidth = DocsImageResizeHandle.getMaxResizeWidth(el);
-      if (width > maxWidth) {
-        const aspectRatio = width / height;
+      const aspectRatio = width / height;
+      if (entityData.width && entityData.height) {
+        if (entityData.width > maxWidth) {
+          // Update the exising saved size.
+          const newWidth = maxWidth;
+          const newHeight = maxWidth / aspectRatio;
+          this._onImageResizeEnd(newWidth, newHeight);
+        }
+      } else if (width > maxWidth) {
         const newWidth = maxWidth;
         const newHeight = maxWidth / aspectRatio;
         this._onImageResizeEnd(newWidth, newHeight);
