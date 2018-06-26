@@ -93,6 +93,7 @@ class DemoApp extends React.PureComponent<any, any, any> {
           <div>
             <ButtonGroup>
               <Button onClick={this._save}>Save</Button>
+              <Button onClick={this._clear}>Clear</Button>
             </ButtonGroup>
           </div>
           {json}
@@ -111,6 +112,11 @@ class DemoApp extends React.PureComponent<any, any, any> {
     const json = JSON.stringify(raw, null, 2);
     window.localStorage.setItem(LOCAL_STORAGE_KEY, json);
     this.setState({json});
+  };
+
+  _clear = (): void => {
+    this.setState({json: ''});
+    window.localStorage.clear();
   };
 }
 
