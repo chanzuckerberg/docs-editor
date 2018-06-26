@@ -5,7 +5,7 @@ import DocsEditor from './DocsEditor';
 import React from 'react';
 import docsConvertFromRawContentState from './docsConvertFromRawContentState';
 import noop from './noop';
-import {EditorState} from 'draft-js';
+import {convertToRaw, EditorState} from 'draft-js';
 
 const DEFAULT_CONTEXT = new DocsContext({});
 const DEFAULT_EDITOR_STATE = docsConvertFromRawContentState({});
@@ -50,4 +50,6 @@ module.exports = {
   DEFAULT_CONTEXT,
   DEFAULT_EDITOR_STATE,
   Editor,
+  convertToRaw,
+  convertFromRaw: docsConvertFromRawContentState,
 };

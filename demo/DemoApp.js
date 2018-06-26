@@ -1,7 +1,9 @@
 // @flow
 
 import React from 'react';
-import {Editor, DEFAULT_CONTEXT, DEFAULT_EDITOR_STATE} from '../src/index';
+import {ButtonGroup, Button} from 'react-bootstrap';
+import {Editor, DEFAULT_CONTEXT, DEFAULT_EDITOR_STATE, convertToRaw, convertFromRaw} from '../src/index';
+
 
 // Because React-Bootstrap doesn't depend on a very precise version of
 // Bootstrap, we don't ship with any included css. However, some stylesheet is
@@ -51,14 +53,31 @@ import '../node_modules/draft-js/dist/Draft.css';
 
 import './DemoApp.css';
 
-class DemoApp extends React.PureComponent<any, any, any> {
-  state = {
-    docsContext: DEFAULT_CONTEXT.merge({canEdit: true}),
-    editorState: DEFAULT_EDITOR_STATE,
+const LOCAL_STORAGE_KEY = 'education-doc-editor-demo';
+
+function getInitialState(): Object {
+  const docsContext = DEFAULT_CONTEXT.merge({canEdit: true});
+  let editorState;
+  let json = '';
+  try {
+    json = window.localStorage.getItem(LOCAL_STORAGE_KEY);
+    const raw = JSON.parse(json);
+    editorState = convertFromRaw(raw);
+  } catch (ex) {
+    editorState = DEFAULT_EDITOR_STATE;
+  }
+  return {
+    json,
+    editorState,
+    docsContext,
   };
+}
+
+class DemoApp extends React.PureComponent<any, any, any> {
+  state = getInitialState();
 
   render(): React.Element<any> {
-    const {docsContext, editorState} = this.state;
+    const {docsContext, editorState, json} = this.state;
     return (
       <div id="app">
         <div className="main-column">
@@ -71,7 +90,12 @@ class DemoApp extends React.PureComponent<any, any, any> {
           />
         </div>
         <div className="side-column">
-          {/*JSON.stringify(editorState.getCurrentContent().toJS(), null, 2)*/}
+          <div>
+            <ButtonGroup>
+              <Button onClick={this._save}>Save</Button>
+            </ButtonGroup>
+          </div>
+          {json}
         </div>
       </div>
     );
@@ -79,6 +103,14 @@ class DemoApp extends React.PureComponent<any, any, any> {
 
   _onChange = (editorState: Object): void => {
     this.setState({editorState});
+  };
+
+  _save = (): void => {
+    const {editorState} = this.state;
+    const raw = convertToRaw(editorState.getCurrentContent());
+    const json = JSON.stringify(raw, null, 2);
+    window.localStorage.setItem(LOCAL_STORAGE_KEY, json);
+    this.setState({json});
   };
 }
 
