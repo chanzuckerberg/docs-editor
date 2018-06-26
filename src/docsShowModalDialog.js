@@ -2,7 +2,7 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import captureDocumentEvents from './captureDocumentEvents';
+import captureDocumentEvents from './lib/captureDocumentEvents';
 import {Popover} from 'react-bootstrap';
 import {uniqueID} from './DocsHelpers';
 

@@ -11,7 +11,7 @@ import DocsResourcesLoader from './DocsResourcesLoader';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ResizeObserver from './ResizeObserver';
-import Timer from './Timer';
+import Timer from './lib/Timer';
 import cx from 'classnames';
 import docsWithContext from './docsWithContext';
 import invariant from 'invariant';

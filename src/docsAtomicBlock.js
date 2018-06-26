@@ -3,11 +3,11 @@
 import DocsDataAttributes from './DocsDataAttributes';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Timer from './Timer';
+import Timer from './lib/Timer';
 import invariant from 'invariant';
 import nullthrows from 'nullthrows';
 import {ContentBlock, EditorState, Entity} from 'draft-js';
-import captureDocumentEvents from './captureDocumentEvents';
+import captureDocumentEvents from './lib/captureDocumentEvents';
 
 type Props = {
   block: ContentBlock,

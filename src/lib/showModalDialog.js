@@ -2,10 +2,10 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {Popover} from 'react-bootstrap';
 import captureDocumentEvents from './captureDocumentEvents';
-import {uniqueID} from './DocsHelpers';
 import nullthrows from 'nullthrows';
+import uniqueID from './uniqueID';
+import {Popover} from 'react-bootstrap';
 
 import './showModalDialog.css';
 

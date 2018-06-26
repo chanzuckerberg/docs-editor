@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import _ from 'underscore';
 import invariant from 'invariant';
 import katex from 'katex';
+import uniqueID from './lib/uniqueID';
 import {AtomicBlockUtils, ContentBlock, ContentState, EditorState, Entity} from 'draft-js';
 
 import type {DOMRect, DOMElement} from './Types';
@@ -257,18 +258,6 @@ function getSafeBodyFromHTML(html: string): ?Element {
     root = doc.getElementsByTagName('body')[0];
   }
   return root;
-}
-
-function randomStr(range: number): string {
-  return Math.round(range * Math.random()).toString(36);
-}
-
-// This prefix should ensure that id is unique across multiple
-// web pages and sessions.
-const ID_PREFIX = 'id-' + randomStr(9999) + '-' + Date.now().toString(36) + '-';
-
-function uniqueID(): string {
-  return _.uniqueId(ID_PREFIX);
 }
 
 function asElement(node: any): DOMElement {

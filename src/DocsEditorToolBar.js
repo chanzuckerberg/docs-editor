@@ -7,10 +7,10 @@ import DocsImageEditor from './DocsImageEditor';
 import DocsMathEditor from './DocsMathEditor';
 import DocsTextInputEditor from './DocsTextInputEditor';
 import React from 'react';
-import Timer from './Timer';
-import captureDocumentEvents from './captureDocumentEvents';
+import Timer from './lib/Timer';
+import captureDocumentEvents from './lib/captureDocumentEvents';
 import docsWithContext from './docsWithContext';
-import showModalDialog from './showModalDialog';
+import showModalDialog from './lib/showModalDialog';
 import {ButtonGroup} from 'react-bootstrap';
 import {EditorState} from 'draft-js';
 import {getCurrentSelectionEntity} from './DocsHelpers';
@@ -19,7 +19,7 @@ import {updateLink, updateEntityData} from './DocsModifiers';
 
 import type {BaseEditor} from './Types';
 import type {Spec} from './DocsEditorToolBarButton';
-import type {ModalHandle} from './showModalDialog';
+import type {ModalHandle} from './lib/showModalDialog';
 
 type Props = {
   getEditor: () => ?BaseEditor,

@@ -4,7 +4,7 @@ import DocsClipboardManager from './DocsClipboardManager';
 import DocsEditorBlockRenderer from './DocsEditorBlockRenderer';
 import DocsEditorFocusManager from './DocsEditorFocusManager';
 import React from 'react';
-import Timer from './Timer';
+import Timer from './lib/Timer';
 import _ from 'underscore';
 import cx from 'classnames';
 import docsWithContext from './docsWithContext';
