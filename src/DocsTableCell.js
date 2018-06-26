@@ -9,7 +9,7 @@ import cx from 'classnames';
 import docsConvertFromRawContentState from './docsConvertFromRawContentState';
 import docsWithContext from './docsWithContext';
 import {LOCAL_CHANGE_ID} from './DocsTableModifiers';
-import {convertToRaw, EditorState} from './DraftJS';
+import {convertToRaw, EditorState} from 'draft-js';
 import {uniqueID} from './DocsHelpers';
 
 type Props = {

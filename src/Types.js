@@ -1,6 +1,6 @@
 // @flow
 
-import {EditorState} from './DraftJS';
+import {EditorState} from 'draft-js';
 
 // TODO(Fix this.)
 export type DOMElement = any;

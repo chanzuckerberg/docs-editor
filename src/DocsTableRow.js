@@ -6,7 +6,7 @@ import DocsTableModifiers from './DocsTableModifiers';
 import React from 'react';
 import cx from 'classnames';
 import docsWithContext from './docsWithContext';
-import {EditorState} from './DraftJS';
+import {EditorState} from 'draft-js';
 import {getEntityDataID} from './DocsTableModifiers';
 import {updateEntityData} from './DocsModifiers';
 

@@ -6,7 +6,7 @@ import DocsDecorator from './DocsDecorator';
 import DocsDecoratorTypes from './DocsDecoratorTypes';
 import docsConvertFromHTML from './docsConvertFromHTML';
 import {List, Map as ImmutableMap, OrderedMap, Repeat} from 'immutable';
-import {genKey, CharacterMetadata, ContentBlock, Modifier, EditorState, SelectionState, RichUtils} from './DraftJS';
+import {genKey, CharacterMetadata, ContentBlock, Modifier, EditorState, SelectionState, RichUtils} from 'draft-js';
 import {tryInsertAtomicBlock, getCurrentSelectionEntity} from './DocsHelpers';
 
 const ZERO_WIDTH_CHAR = '\u200B';

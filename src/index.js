@@ -5,7 +5,7 @@ import DocsEditor from './DocsEditor';
 import React from 'react';
 import docsConvertFromRawContentState from './docsConvertFromRawContentState';
 import noop from './noop';
-import {EditorState} from './DraftJS';
+import {EditorState} from 'draft-js';
 
 const DEFAULT_CONTEXT = new DocsContext({});
 const DEFAULT_EDITOR_STATE = docsConvertFromRawContentState({});

@@ -7,6 +7,8 @@ import captureDocumentEvents from './captureDocumentEvents';
 import {uniqueID} from './DocsHelpers';
 import nullthrows from 'nullthrows';
 
+import './showModalDialog.css';
+
 export type ModalHandle = {
   dispose: () => void,
   update: (viewProps: Object) => void,

@@ -8,7 +8,7 @@ import Timer from './Timer';
 import _ from 'underscore';
 import cx from 'classnames';
 import docsWithContext from './docsWithContext';
-import {getDefaultKeyBinding, ContentBlock, Editor, EditorState, RichUtils} from './DraftJS';
+import {getDefaultKeyBinding, ContentBlock, Editor, EditorState, RichUtils} from 'draft-js';
 import {pasteHTML, ensureAtomicBlocksAreSelectable} from './DocsModifiers';
 import {tryFocus, tryBlur, tryWarn, uniqueID, splitTextIntoTextBlocks} from './DocsHelpers';
 

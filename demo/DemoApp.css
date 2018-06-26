@@ -5,17 +5,25 @@ body, html {
 
 #app {
   box-sizing: border-box;
-  height: 100vh;
   display: flex;
   flex-direction: row;
+  height: 100vh;
+  min-width: 1000px;
 }
 
 #app > .main-column,
 #app > .side-column {
   box-sizing: border-box;
-  flex: 1;
   overflow: auto;
   padding: 10px;
+}
+
+#app > .main-column {
+  width: 900px;
+}
+
+#app > .side-column {
+  flex: 1;
 }
 
 #app > .side-column {

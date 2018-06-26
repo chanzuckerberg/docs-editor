@@ -9,7 +9,7 @@ import captureDocumentEvents from './captureDocumentEvents';
 import cx from 'classnames';
 import invariant from 'invariant';
 import nullthrows from 'nullthrows';
-import {ContentState, Entity} from './DraftJS';
+import {ContentState, Entity} from 'draft-js';
 import {createDOMCustomEvent} from './DocsHelpers';
 import {uniqueID, asElement, lookupElementByAttribute} from './DocsHelpers';
 

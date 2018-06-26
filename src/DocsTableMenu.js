@@ -3,7 +3,7 @@
 import DocsDropdownButton from './DocsDropdownButton';
 import DocsMenuItem from './DocsMenuItem';
 import React from 'react';
-import {EditorState} from './DraftJS';
+import {EditorState} from 'draft-js';
 import {updateEntityData} from './DocsModifiers';
 
 import type {BaseEditor} from './Types';

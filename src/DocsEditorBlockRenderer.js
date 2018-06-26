@@ -1,7 +1,7 @@
 // @flow
 
 import DocsBlockTypeToComponent from './DocsBlockTypeToComponent';
-import {ContentBlock, EditorState, DefaultDraftBlockRenderMap} from './DraftJS';
+import {ContentBlock, EditorState, DefaultDraftBlockRenderMap} from 'draft-js';
 import {Map as ImmutableMap} from 'immutable';
 import {tryGetEntityAtContentState} from './DocsHelpers';
 

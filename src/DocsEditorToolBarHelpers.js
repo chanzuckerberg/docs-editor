@@ -1,7 +1,7 @@
 // @flow
 
 import DocsActionTypes from './DocsActionTypes';
-import {EditorState, RichUtils} from './DraftJS';
+import {EditorState, RichUtils} from 'draft-js';
 import {insertImage, insertTable, insertMath, toggleAnnotation, insertExpandable} from './DocsModifiers';
 
 import type {Spec} from './DocsEditorToolBarButton';

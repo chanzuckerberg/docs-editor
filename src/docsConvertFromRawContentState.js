@@ -1,6 +1,6 @@
 // @flow
 import DocsDecorator from './DocsDecorator';
-import {convertFromRaw, EditorState} from './DraftJS';
+import {convertFromRaw, EditorState} from 'draft-js';
 
 type ObjectLike = any;
 

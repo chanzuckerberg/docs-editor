@@ -8,7 +8,7 @@ import cx from 'classnames';
 import docsWithContext from './docsWithContext';
 import type {BaseEditor} from './Types';
 import {ButtonGroup} from 'react-bootstrap';
-import {EditorState} from './DraftJS';
+import {EditorState} from 'draft-js';
 
 type Props = {
   editorState: EditorState,

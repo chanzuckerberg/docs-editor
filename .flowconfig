@@ -5,7 +5,7 @@
 [ignore]
 .*/build/.*
 .*/bin/.*
-.*/node_modules/draft-js/.*
+.*/node_modules/draft-js/lib/.*
 .*/node_modules/flow-webpack-plugin/.*
 .*/node_modules/katex/.*
 .*/node_modules/match-at/.*
@@ -15,5 +15,6 @@
 .*/node_modules/postcss-modules-values/.*
 
 [libs]
+./flow-typed/.*
 
 [options]

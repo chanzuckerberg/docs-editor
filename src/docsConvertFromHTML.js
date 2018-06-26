@@ -7,7 +7,7 @@ import DocsDecoratorTypes from './DocsDecoratorTypes';
 import invariant from 'invariant';
 import {asElement, getSafeBodyFromHTML, uniqueID} from './DocsHelpers';
 import {convertFromHTML} from 'draft-convert';
-import {convertToRaw, ContentState, Modifier, EditorState, Entity} from './DraftJS';
+import {convertToRaw, ContentState, Modifier, EditorState, Entity} from 'draft-js';
 import {getEntityDataID} from './DocsTableModifiers';
 import {toggleHeaderBackground} from './DocsTableModifiers';
 

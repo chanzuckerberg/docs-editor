@@ -1,0 +1,64 @@
+.global-modal-dialog-root {
+  background: rgba(0, 0, 0, 0.2);
+  bottom: -100px;
+  bottom: 0;
+  left:0;
+  position: fixed;
+  right: 0;
+  top: -100px;
+  top: 0;
+  z-index: 1040;
+}
+
+.global-modal-dialog-root[aria-hidden="true"] {
+  pointer-events: none;
+}
+
+.global-modal-dialog.popover {
+  animation: popover_fadein 250ms;
+  left: 50%;
+  max-height: 95vh;;
+  max-width: 95vw;
+  min-width: 450px;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1050;
+}
+
+.global-modal-dialog.popover .popover-content {
+  max-height: 95vh;
+  /**
+   * Bootstrap defaults to uneven padding around popover content, which looks
+   * bad. Change it to be consistent all around.
+   */
+  padding: 14px;
+}
+
+.global-modal-dialog.popover {
+  padding: 0px;
+}
+
+.global-modal-dialog.popover .popover-title {
+  font-weight: bold;
+  user-select: none;
+}
+
+.global-modal-dialog.popover .arrow {
+  display: none;
+}
+
+.no-scroll-body {
+  left: 0;
+  position: fixed;
+  right: 0;
+}
+
+@keyframes popover_fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

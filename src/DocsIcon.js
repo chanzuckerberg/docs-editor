@@ -3,6 +3,8 @@
 import React from 'react';
 import cx from 'classnames';
 
+import './DocsIcon.css';
+
 type Props = {
   className?: string,
   icon: string,
@@ -14,7 +16,7 @@ class DocsIcon extends React.PureComponent {
 
   render(): React.Element<any> {
     const {className, icon} = this.props;
-    const allClassNames = cx('material-icons', className);
+    const allClassNames = cx('docs-icon', className);
     return (
       <i className={allClassNames}>
         {icon}

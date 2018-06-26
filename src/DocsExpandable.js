@@ -12,7 +12,7 @@ import cx from 'classnames';
 import docsConvertFromRawContentState from './docsConvertFromRawContentState';
 import showModalDialog from './showModalDialog';
 import docsWithContext from './docsWithContext';
-import {convertToRaw, ContentBlock, EditorState, Entity} from './DraftJS';
+import {convertToRaw, ContentBlock, EditorState, Entity} from 'draft-js';
 import {uniqueID} from './DocsHelpers';
 import {updateEntityData} from './DocsModifiers';
 import {updateLabel} from './DocsExpandableModifiers';

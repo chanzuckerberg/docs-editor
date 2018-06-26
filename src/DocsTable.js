@@ -9,7 +9,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import cx from 'classnames';
 import docsWithContext from './docsWithContext';
-import {ContentBlock, EditorState, Entity} from './DraftJS';
+import {ContentBlock, EditorState, Entity} from 'draft-js';
 
 import type {BaseEditor} from './Types';
 
