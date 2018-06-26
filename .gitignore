@@ -6,4 +6,6 @@ bin/*
 bin/*/*
 deploy_to_s3.sh
 node_modules
+node_modules/*
+node_modules/*/*
 deploy_to_s3.sh
