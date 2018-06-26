@@ -128,7 +128,7 @@ class DocsImage extends React.Component {
   _onContainerResize = (info: ResizeObserverEntry): void => {
     const {width, height, url} = this.props.entityData;
     const element = document.getElementById(this._imageID);
-    if (element, width, height, url) {
+    if (element && width && height && url) {
       const image: DOMImage = {
         width: Number(width),
         height: Number(height),
