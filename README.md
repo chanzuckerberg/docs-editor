@@ -2,7 +2,7 @@
 Rich Text Editor for education purpose.
 
 ## DEMO
-http://cdn.summitlearning.org/assets/index_education_doc_editor_0_0_1_3.html
+http://cdn.summitlearning.org/assets/index_education_doc_editor_0_0_1_4.html
 
 ## Getting start
 
