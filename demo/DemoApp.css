@@ -51,5 +51,6 @@ body, html {
   font-size: 11px;
   margin-top: 12px;
   overflow: auto;
+  resize: none;
   white-space: pre;
 }
