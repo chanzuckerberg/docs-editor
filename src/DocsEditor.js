@@ -125,9 +125,9 @@ class DocsEditor extends React.PureComponent {
 
     return (
       <div
+        {...attrs}
         key={this.state.key}
         style={style}
-        {...attrs}
         className={mainClassName}
         ref={this._onElementRef}>
         <div className="docs-editor-frameset">
@@ -147,6 +147,7 @@ class DocsEditor extends React.PureComponent {
               style={contentOverflowInfo.style}>
               <DocsBaseEditor
                 editorState={editorState}
+                id={editorId}
                 onChange={onChange}
                 placeholder={placeholderText}
                 ref={this._onEditorRef}
