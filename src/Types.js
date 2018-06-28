@@ -58,6 +58,11 @@ export type LinkEtityData = {
   url: string,
 };
 
+export type AnnotationEtityData = {
+  token: ?string,
+  color: string,
+};
+
 export type TableEntityData = {
   colWidths?: ?Array<number>,
   colsCount: number,
