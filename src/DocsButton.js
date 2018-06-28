@@ -6,6 +6,8 @@ import _ from 'underscore';
 import cx from 'classnames';
 import {Button} from 'react-bootstrap';
 
+import './DocsButton.css';
+
 type Props = {
   active?: ?boolean,
   disabled?: boolean,

@@ -183,7 +183,7 @@ class Modal extends React.PureComponent {
 function getRootElement(id: string): HTMLElement {
   const root: any = document.body || document.documentElement;
   const element = document.getElementById(id) || document.createElement('div');
-  element.className = ROOT_CLASS_NAME;
+  element.className = ROOT_CLASS_NAME + ' docs-font-default';
   element.id = id;
   // Populates the default ARIA attributes here.
   // http://accessibility.athena-ict.com/aria/examples/dialog.shtml

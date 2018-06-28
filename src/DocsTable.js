@@ -11,6 +11,8 @@ import cx from 'classnames';
 import docsWithContext from './docsWithContext';
 import {ContentBlock, EditorState, Entity} from 'draft-js';
 
+import './DocsTable.css';
+
 import type {BaseEditor} from './Types';
 
 type Props = {

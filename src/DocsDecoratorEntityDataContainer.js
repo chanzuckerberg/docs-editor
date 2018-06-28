@@ -13,6 +13,8 @@ import {ContentState, Entity} from 'draft-js';
 import {createDOMCustomEvent} from './DocsHelpers';
 import {uniqueID, asElement, lookupElementByAttribute} from './DocsHelpers';
 
+import './DocsDecoratorEntityDataContainer.css';
+
 type Props = {
   contentState: ContentState,
   entityKey: string,

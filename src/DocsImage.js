@@ -15,6 +15,8 @@ import showModalDialog from './lib/showModalDialog';
 import {asElement, uniqueID} from './DocsHelpers';
 import {setSize} from './DocsImageModifiers';
 
+import './DocsImage.css';
+
 import type {ImageEntityData, DOMImage} from './Types';
 import type {ModalHandle} from './lib/showModalDialog';
 import type {ResizeObserverEntry} from './ResizeObserver';

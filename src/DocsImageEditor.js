@@ -13,6 +13,8 @@ import docsWithContext from './docsWithContext';
 import {Alert, Button} from 'react-bootstrap';
 import {setURL} from './DocsImageModifiers';
 
+import './DocsImageEditor.css';
+
 import type {ImageEntityData, DOMImage} from './Types';
 
 type Props = {

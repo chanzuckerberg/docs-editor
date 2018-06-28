@@ -17,6 +17,8 @@ import {uniqueID} from './DocsHelpers';
 import {updateEntityData} from './DocsModifiers';
 import {updateLabel} from './DocsExpandableModifiers';
 
+import './DocsExpandable.css';
+
 import type {BaseEditor} from './Types';
 import type {ModalHandle} from './lib/showModalDialog';
 

@@ -2,6 +2,8 @@
 
 import React from 'react';
 
+import './DocsAnnotation';
+
 type Props = {
   url: ?string,
   contentState?: any,

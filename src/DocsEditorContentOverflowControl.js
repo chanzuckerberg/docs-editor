@@ -1,6 +1,7 @@
 // @flow
 
 import React from 'react';
+import './DocsEditorContentOverflowControl.css'
 
 class DocsEditorContentOverflowControl extends React.PureComponent {
   props: {

@@ -12,6 +12,8 @@ import {renderLatexAsHTML} from './DocsHelpers';
 import {setMathValue} from './MathModifiers';
 import {uniqueID} from './DocsHelpers';
 
+import './DocsMath.css';
+
 import type {MathEntityData} from './Types';
 import type {ModalHandle} from './lib/showModalDialog';
 

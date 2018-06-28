@@ -7,6 +7,8 @@ import cx from 'classnames';
 import docsWithContext from './docsWithContext';
 import nullthrows from 'nullthrows';
 
+import './DocsSafeImage.css';
+
 import type {DOMImage} from './Types';
 
 type Props = {

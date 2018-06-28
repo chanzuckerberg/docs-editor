@@ -17,6 +17,8 @@ import {getCurrentSelectionEntity} from './DocsHelpers';
 import {getEditCapability, maybeUpdateAnnotation, maybeInsertBlock, maybeFormatInlineText, maybeUpdateHistory, maybeFormatBlockText, ANNOTATION_SPECS, INSERT_SPECS, INLINE_SPECS, BLOCK_SPECS, HISTORY_SPECS} from './DocsEditorToolBarHelpers';
 import {updateLink, updateEntityData} from './DocsModifiers';
 
+import './DocsEditorToolBar.css';
+
 import type {BaseEditor} from './Types';
 import type {Spec} from './DocsEditorToolBarButton';
 import type {ModalHandle} from './lib/showModalDialog';

@@ -118,6 +118,7 @@ class DocsEditor extends React.PureComponent {
 
     const mainClassName = cx(className, {
       'docs-editor': true,
+      'docs-font-default': true,
       'docs-editor-with-fixed-layout': useFixedLayout,
       'docs-editor-disabled': disabled,
     });

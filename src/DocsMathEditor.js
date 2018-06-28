@@ -5,6 +5,8 @@ import React from 'react';
 import {Button} from 'react-bootstrap';
 import {uniqueID} from './DocsHelpers';
 
+import './DocsMathEditor.css';
+
 import type {MathEntityData} from './Types';
 
 type Props = {

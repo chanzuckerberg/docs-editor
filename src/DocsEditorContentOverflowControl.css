@@ -1,0 +1,17 @@
+.docs-editor-content-overflow-control:link,
+.docs-editor-content-overflow-control:visited,
+.docs-editor-content-overflow-control:hover,
+.docs-editor-content-overflow-control:active {
+  text-decoration: none;
+}
+
+.docs-editor-content-overflow-control > .icon {
+  display: inline-block;
+  font-size: 20px;
+  height: 12px;
+  line-height: 8px;
+  margin: 0 2px;
+  transform: rotate(90deg);
+  vertical-align: middle;
+  width: 12px;
+}

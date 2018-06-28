@@ -12,6 +12,8 @@ import {getDefaultKeyBinding, ContentBlock, Editor, EditorState, RichUtils} from
 import {pasteHTML, ensureAtomicBlocksAreSelectable} from './DocsModifiers';
 import {tryFocus, tryBlur, tryWarn, uniqueID, splitTextIntoTextBlocks} from './DocsHelpers';
 
+import './DocsBaseEditor.css';
+
 import type {EditorProps} from './Types';
 
 type Props = EditorProps;
@@ -106,6 +108,7 @@ class DocsBaseEditor extends React.PureComponent {
     const readOnly = !this.state.focused || !this.context.docsContext.canEdit;
     const className = cx({
       'docs-base-editor': true,
+      'docs-font-default': true,
       'docs-base-editor-readonly': readOnly,
     });
 
