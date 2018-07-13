@@ -2,14 +2,7 @@ bin
 bin/*
 bin/*/*
 deploy_to_s3.sh
-build/fonts
-build/fonts/*
-build/icons
-build/icons/*
-build/demo.bundle.js
-build/demo.html
+build
 node_modules
-node_modules/*
-node_modules/*/*
 deploy_to_s3.sh
-``
+transcompiled

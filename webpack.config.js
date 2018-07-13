@@ -105,9 +105,9 @@ var options = {
 };
 
 if (env.NODE_ENV === "development") {
-  options.devtool = "cheap-module-eval-source-map";
+  // options.devtool = "cheap-module-eval-source-map";
 } else {
-  options.plugins.push(new UglifyJsPlugin());
+  // options.plugins.push(new UglifyJsPlugin());
 }
 
 module.exports = options;

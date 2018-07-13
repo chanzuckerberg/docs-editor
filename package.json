@@ -3,9 +3,9 @@
   "version": "0.0.1",
   "subversion": "4",
   "description": "rich text editor for education purpose",
-  "main": "build/index.bundle.js",
+  "main": "transcompiled/index.js",
   "scripts": {
-    "build": "node utils/build.js",
+    "build": "./utils/build.sh",
     "flow": "flow",
     "start": "node utils/webserver.js"
   },
