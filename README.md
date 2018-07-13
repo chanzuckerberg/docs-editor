@@ -1,4 +1,4 @@
-# education-doc-editor
+# docs-editor
 Rich Text Editor for education purpose.
 
 ## DEMO
