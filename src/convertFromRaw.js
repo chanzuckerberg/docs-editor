@@ -4,7 +4,7 @@ import {convertFromRaw, EditorState} from 'draft-js';
 
 type ObjectLike = any;
 
-function docsConvertFromRawContentState(
+function convertFromRawWithDocsDecorator(
   rawContentState: ObjectLike,
 ): EditorState {
   const decorator = DocsDecorator.get();
@@ -19,4 +19,4 @@ function docsConvertFromRawContentState(
   return EditorState.createEmpty(decorator);
 }
 
-module.exports = docsConvertFromRawContentState;
+module.exports = convertFromRawWithDocsDecorator;

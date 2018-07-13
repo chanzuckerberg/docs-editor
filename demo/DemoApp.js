@@ -3,7 +3,7 @@
 import React from 'react';
 import uniqueID from '../lib/uniqueID';
 import {ButtonGroup, Button} from 'react-bootstrap';
-import {DocsEditor, DEFAULT_CONTEXT, DEFAULT_EDITOR_STATE, convertToRaw, convertFromRaw} from '../src/index';
+import {DocsEditor, DocsContext, convertToRaw, convertFromRaw} from '../src/index';
 
 // Because React-Bootstrap doesn't depend on a very precise version of
 // Bootstrap, we don't ship with any included css. However, some stylesheet is
@@ -56,6 +56,8 @@ import "../node_modules/bootswatch/cerulean/bootstrap.min.css";
 
 import './DemoApp.css';
 
+const DEFAULT_CONTEXT = new DocsContext({});
+const DEFAULT_EDITOR_STATE = convertFromRaw({});
 const LOCAL_STORAGE_KEY = 'education-doc-editor-demo';
 
 function getInitialState(): Object {

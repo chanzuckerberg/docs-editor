@@ -2,6 +2,7 @@
 
 import DocsBaseEditor from './DocsBaseEditor';
 import DocsConfig from './DocsConfig';
+import DocsContext from './DocsContext';
 import DocsDataAttributes from './DocsDataAttributes';
 import DocsEditorContentOverflowControl from './DocsEditorContentOverflowControl';
 import DocsEditorFocusManager from './DocsEditorFocusManager';
@@ -13,16 +14,32 @@ import ReactDOM from 'react-dom';
 import ResizeObserver from './ResizeObserver';
 import Timer from '../lib/Timer';
 import cx from 'classnames';
+import convertFromRaw from './convertFromRaw';
 import docsWithContext from './docsWithContext';
 import invariant from 'invariant';
-import {asElement, uniqueID} from './DocsHelpers';
+import noop from './noop';
+import uniqueID from '../lib/uniqueID';
+import {asElement} from './DocsHelpers';
+import {EditorState} from 'draft-js';
 
 import './DocsEditor.css';
 
 import type {BaseEditor, EditorProps} from './Types';
 import type {ResizeObserverEntry} from './ResizeObserver';
 
-type Props = EditorProps;
+type Props = {
+  className?: ?string,
+  disabled?: ?boolean,
+  docsContext?: ?Object,
+  editorState?: ?EditorState,
+  height?: ?(string | number),
+  id?: ?string,
+  maxContentHeight?: ?number,
+  onBlur?: () => void,
+  onChange?: (e: EditorState) => void,
+  placeholder?: ?string,
+  width?: ?(string | number),
+};
 
 type ContentOverflowInfo = {
   className?: ?string,
@@ -33,18 +50,14 @@ type ContentOverflowInfo = {
 DocsConfig.init();
 DocsResourcesLoader.init();
 
+const DEFAULT_CONTEXT = new DocsContext({});
+const DEFAULT_EDITOR_STATE = convertFromRaw({});
+
 const {FOCUS_TRANSITION_DURATION_MS} = DocsEditorFocusManager;
 
 class DocsEditor extends React.PureComponent {
 
-  props: Props & {
-    className?: ?string,
-    disabled?: ?boolean,
-    height?: ?(string | number),
-    maxContentHeight?: ?number,
-    onBlur: () => void,
-    width?: ?(string | number),
-  };
+  props: Props;
 
   _activeEditor = null;
   _blurTimer = new Timer();
@@ -85,14 +98,20 @@ class DocsEditor extends React.PureComponent {
     const {
       className,
       disabled,
-      docsContext,
-      editorState,
       height,
       id,
       onChange,
       placeholder,
       width,
     } = this.props;
+
+    let {
+      editorState,
+      docsContext,
+    } = this.props;
+
+    editorState = editorState || DEFAULT_EDITOR_STATE;
+    docsContext = docsContext || DEFAULT_CONTEXT;
 
     // TODO: Needs a safter way to handle this.
     invariant(docsContext, 'prop `docsContext` is required');

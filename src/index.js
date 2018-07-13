@@ -1,60 +1,30 @@
 // @flow
 
+import DocsActionTypes from './DocsActionTypes';
 import DocsContext from './DocsContext';
 import DocsEditor from './DocsEditor';
+import DocsImageUploadControl from './DocsImageUploadControl';
 import React from 'react';
-import docsConvertFromRawContentState from './docsConvertFromRawContentState';
+import convertFromRaw from './convertFromRaw';
+import docsWithContext from './docsWithContext';
+
+import {convertToRaw, EditorState} from 'draft-js';
 import {isEditorStateEmpty} from './DocsHelpers';
 
-import noop from './noop';
-import {convertToRaw, EditorState} from 'draft-js';
+import type {ImageEntityData, DOMImage, EditorRuntime} from './Types';
 
-
-const DEFAULT_CONTEXT = new DocsContext({});
-const DEFAULT_EDITOR_STATE = docsConvertFromRawContentState({});
-
-class Editor extends React.PureComponent {
-  props: {
-    className?: ?string,
-    disabled?: ?boolean,
-    docsContext: ?Object,
-    editorState: EditorState,
-    height?: ?(string | number),
-    id?: ?string,
-    maxContentHeight?: ?number,
-    onBlur?: () => void,
-    onChange?: (e: EditorState) => void,
-    placeholder?: ?string,
-    width?: ?(string | number),
-  };
-
-  render(): React.Element<any> {
-    let {
-      docsContext,
-      editorState,
-      onBlur,
-      onChange,
-      ...restProps,
-    } = this.props;
-
-    return (
-      <DocsEditor
-        {...restProps}
-        docsContext={docsContext || DEFAULT_CONTEXT}
-        editorState={editorState || DEFAULT_EDITOR_STATE}
-        onBlur={onBlur || noop}
-        onChange={onChange || noop}
-      />
-    );
-  }
-}
+export type DocsDOMImage = DOMImage;
+export type DocsEditorRuntime = EditorRuntime;
+export type DocsImageEntityData = ImageEntityData;
 
 module.exports = {
-  DEFAULT_CONTEXT,
-  DEFAULT_EDITOR_STATE,
-  DocsEditor: Editor,
+  DocsActionTypes,
+  DocsContext,
+  DocsEditor,
+  DocsImageUploadControl,
   EditorState,
-  convertFromRaw: docsConvertFromRawContentState,
+  convertFromRaw,
   convertToRaw,
+  docsWithContext,
   isEditorStateEmpty,
 };

@@ -9,7 +9,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Timer from '../lib/Timer';
 import cx from 'classnames';
-import docsConvertFromRawContentState from './docsConvertFromRawContentState';
+import convertFromRaw from './convertFromRaw';
 import showModalDialog from '../lib/showModalDialog';
 import docsWithContext from './docsWithContext';
 import {convertToRaw, ContentBlock, EditorState, Entity} from 'draft-js';
@@ -49,7 +49,7 @@ function getLocalEditorState(props: Props): EditorState {
   const {blockProps} = props;
   const {entity} = blockProps;
   const {body} = entity.getData();
-  return docsConvertFromRawContentState(body);
+  return convertFromRaw(body);
 }
 
 function isExpanded(props: Props): boolean {

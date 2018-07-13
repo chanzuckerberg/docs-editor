@@ -6,7 +6,7 @@ import DocsTableCellResizeHandle from './DocsTableCellResizeHandle';
 import React from 'react';
 import Timer from '../lib/Timer';
 import cx from 'classnames';
-import docsConvertFromRawContentState from './docsConvertFromRawContentState';
+import convertFromRaw from './convertFromRaw';
 import docsWithContext from './docsWithContext';
 import {LOCAL_CHANGE_ID} from './DocsTableModifiers';
 import {convertToRaw, EditorState} from 'draft-js';
@@ -28,7 +28,7 @@ type Props = {
 
 function getLocalEditorState(props: Props): EditorState {
   const {rawContentState} = props;
-  return docsConvertFromRawContentState(rawContentState);
+  return convertFromRaw(rawContentState);
 }
 
 class DocsTableCell extends React.PureComponent {
