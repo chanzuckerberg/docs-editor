@@ -1,8 +1,8 @@
 // @flow
 
 import React from 'react';
-import Timer from './lib/Timer';
-import captureDocumentEvents from './lib/captureDocumentEvents';
+import Timer from '../lib/Timer';
+import captureDocumentEvents from '../lib/captureDocumentEvents';
 import cx from 'classnames';
 import docsWithContext from './docsWithContext';
 

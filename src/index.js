@@ -49,7 +49,7 @@ class Editor extends React.PureComponent {
 module.exports = {
   DEFAULT_CONTEXT,
   DEFAULT_EDITOR_STATE,
-  Editor,
+  DocsEditor: Editor,
   convertToRaw,
   convertFromRaw: docsConvertFromRawContentState,
 };

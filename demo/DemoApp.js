@@ -1,9 +1,9 @@
 // @flow
 
 import React from 'react';
-import uniqueID from '../src/lib/uniqueID';
+import uniqueID from '../lib/uniqueID';
 import {ButtonGroup, Button} from 'react-bootstrap';
-import {Editor, DEFAULT_CONTEXT, DEFAULT_EDITOR_STATE, convertToRaw, convertFromRaw} from '../src/index';
+import {DocsEditor, DEFAULT_CONTEXT, DEFAULT_EDITOR_STATE, convertToRaw, convertFromRaw} from '../src/index';
 
 // Because React-Bootstrap doesn't depend on a very precise version of
 // Bootstrap, we don't ship with any included css. However, some stylesheet is
@@ -90,7 +90,7 @@ class DemoApp extends React.PureComponent<any, any, any> {
     return (
       <div id="app">
         <div className="main-column">
-          <Editor
+          <DocsEditor
             docsContext={docsContext}
             editorState={editorState}
             height="100%"

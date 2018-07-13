@@ -4,7 +4,7 @@ import DocsBaseEditor from './DocsBaseEditor';
 import DocsDataAttributes from './DocsDataAttributes';
 import DocsTableCellResizeHandle from './DocsTableCellResizeHandle';
 import React from 'react';
-import Timer from './lib/Timer';
+import Timer from '../lib/Timer';
 import cx from 'classnames';
 import docsConvertFromRawContentState from './docsConvertFromRawContentState';
 import docsWithContext from './docsWithContext';
