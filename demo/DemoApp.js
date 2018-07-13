@@ -3,7 +3,7 @@
 import React from 'react';
 import uniqueID from '../lib/uniqueID';
 import {ButtonGroup, Button} from 'react-bootstrap';
-import {DocsEditor, DocsContext, convertToRaw, convertFromRaw} from '../src/index';
+import {DocsEditor, DocsContext, convertToRaw, convertFromRaw} from '../index';
 
 // Because React-Bootstrap doesn't depend on a very precise version of
 // Bootstrap, we don't ship with any included css. However, some stylesheet is
