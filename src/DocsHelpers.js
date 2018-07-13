@@ -4,7 +4,7 @@ import ReactDOM from 'react-dom';
 import _ from 'underscore';
 import invariant from 'invariant';
 import katex from 'katex';
-import uniqueID from '../lib/uniqueID';
+import uniqueID from './uniqueID';
 import {AtomicBlockUtils, ContentBlock, ContentState, EditorState, Entity} from 'draft-js';
 
 import type {DOMRect, DOMElement} from './Types';

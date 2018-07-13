@@ -2,7 +2,7 @@
 
 import DocsDataAttributes from './DocsDataAttributes';
 import React from 'react';
-import captureDocumentEvents from '../lib/captureDocumentEvents';
+import captureDocumentEvents from './captureDocumentEvents';
 import cx from 'classnames';
 import {lookupElementByAttribute} from './DocsHelpers';
 

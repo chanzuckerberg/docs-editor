@@ -2,7 +2,7 @@
 
 import Input from './DocsInput';
 import React from 'react';
-import Timer from '../lib/Timer';
+import Timer from './Timer';
 import {Button} from 'react-bootstrap';
 import {tryFocus, uniqueID} from './DocsHelpers';
 

@@ -12,13 +12,13 @@ import DocsResourcesLoader from './DocsResourcesLoader';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ResizeObserver from './ResizeObserver';
-import Timer from '../lib/Timer';
+import Timer from './Timer';
 import cx from 'classnames';
 import convertFromRaw from './convertFromRaw';
 import docsWithContext from './docsWithContext';
 import invariant from 'invariant';
 import noop from './noop';
-import uniqueID from '../lib/uniqueID';
+import uniqueID from './uniqueID';
 import {asElement} from './DocsHelpers';
 import {EditorState} from 'draft-js';
 

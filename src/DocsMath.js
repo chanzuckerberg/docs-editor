@@ -7,7 +7,7 @@ import DocsMathEditor from './DocsMathEditor';
 import React from 'react';
 import cx from 'classnames';
 import docsWithContext from './docsWithContext';
-import showModalDialog from '../lib/showModalDialog';
+import showModalDialog from './showModalDialog';
 import {renderLatexAsHTML} from './DocsHelpers';
 import {setMathValue} from './MathModifiers';
 import {uniqueID} from './DocsHelpers';
@@ -15,7 +15,7 @@ import {uniqueID} from './DocsHelpers';
 import './DocsMath.css';
 
 import type {MathEntityData} from './Types';
-import type {ModalHandle} from '../lib/showModalDialog';
+import type {ModalHandle} from './showModalDialog';
 
 type Props = {
   entityData: MathEntityData,

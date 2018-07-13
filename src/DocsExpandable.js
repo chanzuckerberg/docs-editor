@@ -7,10 +7,10 @@ import DocsTextInputEditor from './DocsTextInputEditor';
 import DocsIcon from './DocsIcon';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Timer from '../lib/Timer';
+import Timer from './Timer';
 import cx from 'classnames';
 import convertFromRaw from './convertFromRaw';
-import showModalDialog from '../lib/showModalDialog';
+import showModalDialog from './showModalDialog';
 import docsWithContext from './docsWithContext';
 import {convertToRaw, ContentBlock, EditorState, Entity} from 'draft-js';
 import {uniqueID} from './DocsHelpers';
@@ -20,7 +20,7 @@ import {updateLabel} from './DocsExpandableModifiers';
 import './DocsExpandable.css';
 
 import type {BaseEditor} from './Types';
-import type {ModalHandle} from '../lib/showModalDialog';
+import type {ModalHandle} from './showModalDialog';
 
 type Props = {
   block: ContentBlock,

@@ -3,8 +3,8 @@
 import DocsDataAttributes from './DocsDataAttributes';
 import DocsEventTypes from './DocsEventTypes';
 import ReactDOM from 'react-dom';
-import Timer from '../lib/Timer';
-import captureDocumentEvents from '../lib/captureDocumentEvents';
+import Timer from './Timer';
+import captureDocumentEvents from './captureDocumentEvents';
 import invariant from 'invariant';
 import nullthrows from 'nullthrows';
 import type {BaseEditor} from './Types';

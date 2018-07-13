@@ -5,7 +5,7 @@ import DocsBlockTypes from './DocsBlockTypes';
 import DocsDecorator from './DocsDecorator';
 import DocsDecoratorTypes from './DocsDecoratorTypes';
 import docsConvertFromHTML from './docsConvertFromHTML';
-import uniqueID from '../lib/uniqueID';
+import uniqueID from './uniqueID';
 import {List, Map as ImmutableMap, OrderedMap, Repeat} from 'immutable';
 import {genKey, CharacterMetadata, ContentBlock, Modifier, EditorState, SelectionState, RichUtils} from 'draft-js';
 import {tryInsertAtomicBlock, getCurrentSelectionEntity} from './DocsHelpers';

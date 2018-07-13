@@ -25,7 +25,8 @@ var isDev = env.NODE_ENV === "development";
 
 var options = {
   entry: {
-    index: path.join(__dirname, "demo", "index.js"),
+    demo: path.join(__dirname, "demo", "index.js"),
+    index: path.join(__dirname, "src", "index.js"),
   },
   output: {
     path: path.join(__dirname, "build"),
@@ -94,8 +95,8 @@ var options = {
     }),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, "demo", "index.html"),
-      filename: "index.html",
-      chunks: ["index"],
+      filename: "demo.html",
+      chunks: ["demo"],
       inlineSource: isDev ? '$^' : '.(js|css)$'
     }),
     new HtmlWebpackInlineSourcePlugin(),

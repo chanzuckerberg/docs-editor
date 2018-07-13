@@ -1,8 +1,8 @@
 // @flow
 
 import DataTransfer from 'fbjs/lib/DataTransfer';
-import Timer from '../lib/Timer';
-import captureDocumentEvents from '../lib/captureDocumentEvents';
+import Timer from './Timer';
+import captureDocumentEvents from './captureDocumentEvents';
 import nullthrows from 'nullthrows';
 
 class DocsClipboardManager {

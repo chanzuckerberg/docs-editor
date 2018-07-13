@@ -3,10 +3,11 @@
   "version": "0.0.1",
   "subversion": "4",
   "description": "rich text editor for education purpose",
+  "main": "build/index.bundle.js",
   "scripts": {
     "build": "node utils/build.js",
-    "start": "node utils/webserver.js",
-    "flow": "flow"
+    "flow": "flow",
+    "start": "node utils/webserver.js"
   },
   "devDependencies": {
     "clean-webpack-plugin": "0.1.17",
