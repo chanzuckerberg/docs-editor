@@ -6,6 +6,7 @@
   "main": "transcompiled/index.js",
   "scripts": {
     "build": "./utils/build.sh",
+    "build_deploy": "node utils/build_deploy.js",
     "flow": "flow",
     "start": "node utils/webserver.js"
   },

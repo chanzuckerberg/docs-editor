@@ -25,11 +25,10 @@ var isDev = env.NODE_ENV === "development";
 
 var options = {
   entry: {
-    demo: path.join(__dirname, "demo", "index.js"),
-    index: path.join(__dirname, "src", "index.js"),
+    examples: path.join(__dirname, "examples_src", "examples.js"),
   },
   output: {
-    path: path.join(__dirname, "build"),
+    path: path.join(__dirname, "examples"),
     filename: "[name].bundle.js"
   },
   module: {
@@ -87,16 +86,16 @@ var options = {
   },
   plugins: [
     new FlowWebpackPlugin(),
-    // clean the build folder
-    new CleanWebpackPlugin(["build"]),
+    // clean the examples folder
+    new CleanWebpackPlugin(["examples"]),
     // expose and write the allowed env vars on the compiled bundle
     new webpack.DefinePlugin({
       "process.env.NODE_ENV": JSON.stringify(env.NODE_ENV)
     }),
     new HtmlWebpackPlugin({
-      template: path.join(__dirname, "demo", "index.html"),
-      filename: "demo.html",
-      chunks: ["demo"],
+      template: path.join(__dirname, "examples_src", "examples.html"),
+      filename: "examples.html",
+      chunks: ["examples"],
       inlineSource: isDev ? '$^' : '.(js|css)$'
     }),
     new HtmlWebpackInlineSourcePlugin(),
@@ -105,9 +104,9 @@ var options = {
 };
 
 if (env.NODE_ENV === "development") {
-  // options.devtool = "cheap-module-eval-source-map";
+  options.devtool = "cheap-module-eval-source-map";
 } else {
-  // options.plugins.push(new UglifyJsPlugin());
+  options.plugins.push(new UglifyJsPlugin());
 }
 
 module.exports = options;

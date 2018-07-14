@@ -1,8 +1,4 @@
-bin
-bin/*
-bin/*/*
+demo
+deploy
 deploy_to_s3.sh
-build
 node_modules
-deploy_to_s3.sh
-transcompiled

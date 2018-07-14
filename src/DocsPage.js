@@ -27,8 +27,8 @@ class DocsPage extends React.PureComponent {
     };
     const {editorState} = this.state;
     return (
-      <div className="docs-demo-page"  {...attrs}>
-        <div className="docs-demo-editor">
+      <div className="docs-examples-page"  {...attrs}>
+        <div className="docs-examples-editor">
           <DocsEditor
             docsContext={this.props.docsContext}
             editorState={editorState}

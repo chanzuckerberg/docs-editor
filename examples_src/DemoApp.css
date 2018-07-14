@@ -1,0 +1,56 @@
+body, html {
+  margin: 0;
+  border: 0;
+}
+
+#app {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  min-width: 1000px;
+}
+
+#app > .main-column,
+#app > .side-column {
+  box-sizing: border-box;
+  overflow: auto;
+  padding: 10px;
+}
+
+#app > .main-column {
+  width: 900px;
+}
+
+#app > .side-column {
+  flex: 1;
+}
+
+#app > .side-column {
+  background: #000;
+  color: #fefefe;
+  display: flex;
+  flex-direction: column;
+}
+
+#app > .side-column .btn {
+  font-size: 13px;
+  line-height: 100%;
+}
+
+#app > .side-column .btn-group {
+  margin-right: 8px;
+}
+
+#app > .side-column > textarea {
+  box-sizing: border-box;
+  color: #222;
+  display: block;
+  flex: 1;
+  font-family: monospace;
+  font-size: 11px;
+  margin-top: 12px;
+  overflow: auto;
+  resize: none;
+  white-space: pre;
+}

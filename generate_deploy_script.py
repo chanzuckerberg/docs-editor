@@ -43,22 +43,22 @@ def build_html_app(html_path, namespace):
   # We don't wanna host the fonts. Use CDN instead.
   # See https://github.com/Khan/KaTeX
   html_text= re.sub(r'fonts\/KaTeX_', 'https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/fonts/KaTeX_', html_text)
-  html_path = 'bin/' + output_html_file_name
+  html_path = 'deploy/' + output_html_file_name
   write_text(html_path, html_text)
 
 def main():
   os.system('clear')
   print '-' * 80
   os.system('killall -9 node')
-  os.system('NODE_ENV=production npm run build')
-  os.system('rm -fr bin')
-  os.system('mkdir bin')
+  os.system('NODE_ENV=production npm run build_deploy')
+  os.system('rm -fr deploy')
+  os.system('mkdir deploy')
   package_json_text = read_text('./package.json')
   package_json = json.loads(package_json_text)
   namespace = str(package_json['name'] + '-' + package_json['version'] + '-' + package_json['subversion'])
   namespace = re.sub(r'[-\.]+', '_', namespace)
 
-  for html_path in glob.glob('build/*.html'):
+  for html_path in glob.glob('examples/*.html'):
     build_html_app(html_path, namespace)
 
   print '#' * 80
@@ -71,7 +71,7 @@ def main():
     '',
   ]
 
-  for deploy_path in  glob.glob('bin/*.*'):
+  for deploy_path in  glob.glob('deploy/*.*'):
     file_name = deploy_path.split('/').pop()
 
     cmd = '# http://cdn.summitlearning.org/assets/' + file_name + '\n'

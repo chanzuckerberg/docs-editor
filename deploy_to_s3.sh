@@ -1,7 +1,7 @@
-# namespace: education_doc_editor_0_0_1_3
+# namespace: education_doc_editor_0_0_1_4
 # version: 0.0.1
 # name: education-doc-editor
-# subversion: 3
+# subversion: 4
 
-# http://cdn.summitlearning.org/assets/index_education_doc_editor_0_0_1_3.html
-aws s3 cp bin/index_education_doc_editor_0_0_1_3.html s3://opt-static-resources/assets/index_education_doc_editor_0_0_1_3.html --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers;
+# http://cdn.summitlearning.org/assets/examples_education_doc_editor_0_0_1_4.html
+aws s3 cp deploy/examples_education_doc_editor_0_0_1_4.html s3://opt-static-resources/assets/examples_education_doc_editor_0_0_1_4.html --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers;
