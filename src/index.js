@@ -1,34 +1,17 @@
 // @flow
 
-import DocsActionTypes from './DocsActionTypes';
-import DocsContext from './DocsContext';
-import DocsEditor from './DocsEditor';
-import DocsImageUploadControl from './DocsImageUploadControl';
-import React from 'react';
-import Timer from './Timer';
-import captureDocumentEvents from './captureDocumentEvents';
-import convertFromRaw from './convertFromRaw';
-import docsWithContext from './docsWithContext';
-import showModalDialog from './showModalDialog';
-import uniqueID from './uniqueID';
+export {default as DocsActionTypes} from './DocsActionTypes';
+export {default as DocsContext} from './DocsContext';
+export {default as DocsEditor} from './DocsEditor';
+export {default as DocsImageUploadControl} from './DocsImageUploadControl';
+export {default as captureDocumentEvents} from './captureDocumentEvents';
+export {default as convertFromRaw} from './convertFromRaw';
+export {default as docsWithContext} from './docsWithContext';
+export {default as showModalDialog} from './showModalDialog';
+export {default as uniqueID} from './uniqueID';
 
-import {convertToRaw, EditorState} from 'draft-js';
-import {isEditorStateEmpty} from './DocsHelpers';
+export {convertToRaw, EditorState} from 'draft-js';
+export {isEditorStateEmpty} from './DocsHelpers';
 
-import type {ImageEntityData, DOMImage, EditorRuntime} from './Types';
-
-export type DocsDOMImage = DOMImage;
-export type DocsEditorRuntime = EditorRuntime;
-export type DocsImageEntityData = ImageEntityData;
-
-module.exports = {
-  DocsActionTypes,
-  DocsContext,
-  DocsEditor,
-  DocsImageUploadControl,
-  EditorState,
-  convertFromRaw,
-  convertToRaw,
-  docsWithContext,
-  isEditorStateEmpty,
-};
+// Flow types.
+export type {ImageEntityData, DOMImage, EditorRuntime} from './Types';
