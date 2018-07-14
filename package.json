@@ -3,7 +3,7 @@
   "version": "0.0.2",
   "subversion": "4",
   "description": "rich text editor for education purpose",
-  "main": "transcompiled/index.js",
+  "main": "lib/index.js",
   "scripts": {
     "build": "./utils/build.sh",
     "build_deploy": "node utils/build_deploy.js",
