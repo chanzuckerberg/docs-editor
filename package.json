@@ -1,6 +1,6 @@
 {
   "name": "education-doc-editor",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "subversion": "4",
   "description": "rich text editor for education purpose",
   "main": "transcompiled/index.js",
