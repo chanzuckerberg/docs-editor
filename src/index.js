@@ -27,12 +27,8 @@ module.exports = {
   DocsEditor,
   DocsImageUploadControl,
   EditorState,
-  Timer,
-  captureDocumentEvents,
   convertFromRaw,
   convertToRaw,
   docsWithContext,
   isEditorStateEmpty,
-  showModalDialog,
-  uniqueID,
 };

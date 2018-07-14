@@ -94,7 +94,7 @@ var options = {
     }),
     new HtmlWebpackPlugin({
       template: path.join(__dirname, "examples_src", "examples.html"),
-      filename: "examples.html",
+      filename: "index.html",
       chunks: ["examples"],
       inlineSource: isDev ? '$^' : '.(js|css)$'
     }),

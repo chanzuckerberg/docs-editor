@@ -1,8 +1,9 @@
 // @flow
 
 import React from 'react';
+import uniqueID from '../src/uniqueID';
 import {ButtonGroup, Button} from 'react-bootstrap';
-import {DocsEditor, DocsContext, convertToRaw, convertFromRaw, uniqueID} from '../src/index';
+import {DocsEditor, DocsContext, convertToRaw, convertFromRaw} from '../src/index';
 
 // Because React-Bootstrap doesn't depend on a very precise version of
 // Bootstrap, we don't ship with any included css. However, some stylesheet is
