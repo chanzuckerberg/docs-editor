@@ -1,14 +1,19 @@
 // @flow
 
+import nullthrows from 'nullthrows';
+import uniqueID from './uniqueID';
 import {asElement, tryWarn} from './DocsHelpers';
-import {uniqueID} from './DocsHelpers';
 
 function createElement(tag: string, attrs: Object): Element {
-  const el = document.createElement(tag);
+  const el:any = document.createElement(tag);
   Object.keys(attrs).forEach(key => {
-    el.setAttribute(key, attrs[key]);
+    if (key === 'className') {
+      el[key] = attrs[key];
+    } else {
+      el.setAttribute(key, attrs[key]);
+    }
   });
-  return el;
+  return asElement(el);
 }
 
 function cleanElementHandlers(element: Element): void {
@@ -48,6 +53,20 @@ function loadResource(element: Element): Promise<any> {
   });
 }
 
+function isUsingMaterialIcon() {
+  const el:any = createElement('font', {className: 'material-icons"'});
+  el.style.cssText = 'position:absolute;top:0;left:0;';
+  if (document.body) {
+    nullthrows(document.body).appendChild(el);
+  } else {
+    const root = nullthrows(document.documentElement);
+    root.insertBefore(el, root.firstChild);
+  }
+  const result = /material/ig.test(window.getComputedStyle(el).fontFamily);
+  nullthrows(el.parentNode).removeChild(el);
+  return result;
+}
+
 function loadResources(id: string): Promise<any> {
 
   const styles = [
@@ -58,13 +77,17 @@ function loadResources(id: string): Promise<any> {
       integrity: 'sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH',
       rel: 'stylesheet',
     }),
-    createElement('link', {
-      id: id + '-materialicons-style',
-      crossorigin: 'anonymous',
-      href: 'https://fonts.googleapis.com/icon?family=Material+Icons',
-      rel: 'stylesheet',
-    }),
   ];
+  if (!isUsingMaterialIcon()) {
+    styles.push(
+      createElement('link', {
+        id: id + '-materialicons-style',
+        crossorigin: 'anonymous',
+        href: 'https://fonts.googleapis.com/icon?family=Material+Icons',
+        rel: 'stylesheet',
+      }),
+    )
+  }
 
   return Promise.all(styles.map(loadResource));
 }
