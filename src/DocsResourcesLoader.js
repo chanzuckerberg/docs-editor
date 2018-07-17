@@ -54,7 +54,7 @@ function loadResource(element: Element): Promise<any> {
 }
 
 function isUsingMaterialIcon() {
-  const el:any = createElement('font', {className: 'material-icons"'});
+  const el:any = createElement('font', {className: 'material-icons'});
   el.style.cssText = 'position:absolute;top:0;left:0;';
   if (document.body) {
     nullthrows(document.body).appendChild(el);
