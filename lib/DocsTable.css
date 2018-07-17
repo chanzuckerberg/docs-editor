@@ -84,13 +84,13 @@
   z-index: 2;
 }
 
-// Meh, this is ugly.
+/* Meh, this is ugly. */
 .docs-table-cell > .docs-base-editor > .DraftEditor-root > .DraftEditor-editorContainer > .public-DraftEditor-content {
   min-height: 2em;
   padding: 8px;
 }
 
-// Meh, this is ugly.
+/* Meh, this is ugly. */
 .docs-table-cell-with-padding-large > .docs-base-editor > .DraftEditor-root > .DraftEditor-editorContainer > .public-DraftEditor-content {
   padding: 32px;
 }
