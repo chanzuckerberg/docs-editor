@@ -1,4 +1,5 @@
 demo
+examples
 deploy
 deploy_to_s3.sh
 node_modules
