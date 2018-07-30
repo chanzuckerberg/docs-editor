@@ -32,6 +32,7 @@ type Props = {
   disabled?: ?boolean,
   docsContext?: ?Object,
   editorState?: ?EditorState,
+  header?: ?React.Element<any>,
   height?: ?(string | number),
   id?: ?string,
   maxContentHeight?: ?number,
@@ -98,6 +99,7 @@ class DocsEditor extends React.PureComponent {
     const {
       className,
       disabled,
+      header,
       height,
       id,
       onChange,
@@ -151,6 +153,7 @@ class DocsEditor extends React.PureComponent {
         ref={this._onElementRef}>
         <div className="docs-editor-frameset">
           <div className="docs-editor-frame-head">
+            {header}
             <DocsEditorToolBar
               {...this.props}
               {...this.state}
