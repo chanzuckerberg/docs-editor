@@ -1,7 +1,7 @@
 {
   "name": "education-doc-editor",
-  "version": "0.0.2",
-  "subversion": "4",
+  "version": "0.0.3",
+  "subversion": "5",
   "description": "rich text editor for education purpose",
   "main": "lib/index.js",
   "scripts": {
@@ -36,7 +36,6 @@
     "clean-webpack-plugin": "0.1.17",
     "copy-webpack-plugin": "4.2.0",
     "css-loader": "0.25.0",
-    "css-loader": "0.25.0",
     "es6-promise": "3.1.2",
     "es6-shim": "0.35.0",
     "es6-symbol": "3.1.1",
@@ -58,6 +57,7 @@
   },
   "dependencies": {
     "babel-plugin-flow-react-proptypes": "2.2.1",
+    "babel-preset-es2015": "6.16.0",
     "babel-runtime": "6.26.0",
     "classnames": "2.2.3",
     "draft-convert": "2.0.1",
