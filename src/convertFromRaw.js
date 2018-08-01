@@ -6,14 +6,21 @@ type ObjectLike = any;
 
 function convertFromRawWithDocsDecorator(
   rawContentState: ObjectLike,
+  editorState?: ?EditorState,
 ): EditorState {
   const decorator = DocsDecorator.get();
   if (rawContentState !== null && typeof rawContentState === 'object') {
+    let contentState;
     try {
-      const contentState = convertFromRaw(rawContentState);
-      return EditorState.createWithContent(contentState, decorator);
+      contentState = convertFromRaw(rawContentState);
     } catch (ex) {
       // pass
+    }
+
+    if (contentState) {
+      return editorState ?
+        EditorState.push(editorState, contentState) :
+        EditorState.createWithContent(contentState, decorator);
     }
   }
   return EditorState.createEmpty(decorator);

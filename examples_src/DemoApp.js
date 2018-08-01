@@ -128,14 +128,13 @@ class DemoApp extends React.PureComponent<any, any, any> {
   };
 
   _import = (): void => {
-    const {debugKey} = this.state;
+    const {debugKey, editorState} = this.state;
     const el:any = document.getElementById(debugKey);
     if (el) {
       try {
         const json = el.value.trim();
         const raw = JSON.parse(json);
-        const editorState = convertFromRaw(raw);
-        this.setState({editorState});
+        this.setState({editorState: convertFromRaw(raw, editorState)});
       } catch (ex) {
         el.value = ex.message;
       }
