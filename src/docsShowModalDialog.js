@@ -4,7 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import captureDocumentEvents from './captureDocumentEvents';
 import {Popover} from 'react-bootstrap';
-import {uniqueID} from './DocsHelpers';
+import uniqueID from './uniqueID';
 
 type Props = {
   View: Function,

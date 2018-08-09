@@ -5,13 +5,15 @@ import DocsEventTypes from './DocsEventTypes';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Timer from './Timer';
+import asElement from './asElement';
 import captureDocumentEvents from './captureDocumentEvents';
+import createDOMCustomEvent from './createDOMCustomEvent';
 import cx from 'classnames';
 import invariant from 'invariant';
+import lookupElementByAttribute from './lookupElementByAttribute';
 import nullthrows from 'nullthrows';
+import uniqueID from './uniqueID';
 import {ContentState, Entity} from 'draft-js';
-import {createDOMCustomEvent} from './DocsHelpers';
-import {uniqueID, asElement, lookupElementByAttribute} from './DocsHelpers';
 
 import './DocsDecoratorEntityDataContainer.css';
 

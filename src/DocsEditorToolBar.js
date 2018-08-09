@@ -13,7 +13,7 @@ import docsWithContext from './docsWithContext';
 import showModalDialog from './showModalDialog';
 import {ButtonGroup} from 'react-bootstrap';
 import {EditorState} from 'draft-js';
-import {getCurrentSelectionEntity} from './DocsHelpers';
+import getCurrentSelectionEntity from './getCurrentSelectionEntity';
 import {getEditCapability, maybeUpdateAnnotation, maybeInsertBlock, maybeFormatInlineText, maybeUpdateHistory, maybeFormatBlockText, ANNOTATION_SPECS, INSERT_SPECS, INLINE_SPECS, BLOCK_SPECS, HISTORY_SPECS} from './DocsEditorToolBarHelpers';
 import {updateLink, updateEntityData} from './DocsModifiers';
 

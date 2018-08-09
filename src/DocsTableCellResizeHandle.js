@@ -4,7 +4,7 @@ import DocsDataAttributes from './DocsDataAttributes';
 import React from 'react';
 import captureDocumentEvents from './captureDocumentEvents';
 import cx from 'classnames';
-import {lookupElementByAttribute} from './DocsHelpers';
+import lookupElementByAttribute from './lookupElementByAttribute';
 
 type Props = {
   onColumnResizeEnd: (w: Array<number>) => void,

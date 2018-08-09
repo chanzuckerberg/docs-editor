@@ -10,7 +10,7 @@ import convertFromRaw from './convertFromRaw';
 import docsWithContext from './docsWithContext';
 import {LOCAL_CHANGE_ID} from './DocsTableModifiers';
 import {convertToRaw, EditorState} from 'draft-js';
-import {uniqueID} from './DocsHelpers';
+import uniqueID from './uniqueID';
 
 type Props = {
   bgStyle: ?string,

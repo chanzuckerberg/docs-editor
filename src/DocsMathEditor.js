@@ -3,7 +3,7 @@
 import DocsMathEditorGuide  from './DocsMathEditorGuide';
 import React from 'react';
 import {Button} from 'react-bootstrap';
-import {uniqueID} from './DocsHelpers';
+import uniqueID from './uniqueID';
 
 import './DocsMathEditor.css';
 

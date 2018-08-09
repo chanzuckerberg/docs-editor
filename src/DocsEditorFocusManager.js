@@ -5,11 +5,15 @@ import DocsEventTypes from './DocsEventTypes';
 import ReactDOM from 'react-dom';
 import Timer from './Timer';
 import captureDocumentEvents from './captureDocumentEvents';
+import createDOMCustomEvent from './createDOMCustomEvent';
 import invariant from 'invariant';
 import nullthrows from 'nullthrows';
-import type {BaseEditor} from './Types';
-import {createDOMCustomEvent, tryFocus, tryBlur, tryFindDOMNode} from './DocsHelpers';
+import tryBlur from './tryBlur';
+import tryFindDOMNode from './tryFindDOMNode';
+import tryFocus from './tryFocus';
 import {updateEntityData} from './DocsModifiers';
+
+import type {BaseEditor} from './Types';
 
 // How long do we wait until starting transitioning focus from one editor to
 // another.

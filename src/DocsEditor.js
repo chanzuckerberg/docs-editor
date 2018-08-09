@@ -13,13 +13,13 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ResizeObserver from './ResizeObserver';
 import Timer from './Timer';
-import cx from 'classnames';
+import asElement from './asElement';
 import convertFromRaw from './convertFromRaw';
+import cx from 'classnames';
 import docsWithContext from './docsWithContext';
 import invariant from 'invariant';
 import noop from './noop';
 import uniqueID from './uniqueID';
-import {asElement} from './DocsHelpers';
 import {EditorState} from 'draft-js';
 
 import './DocsEditor.css';

@@ -10,7 +10,12 @@ import cx from 'classnames';
 import docsWithContext from './docsWithContext';
 import {getDefaultKeyBinding, ContentBlock, Editor, EditorState, RichUtils} from 'draft-js';
 import {pasteHTML, ensureAtomicBlocksAreSelectable} from './DocsModifiers';
-import {tryFocus, tryBlur, tryWarn, uniqueID, splitTextIntoTextBlocks} from './DocsHelpers';
+import splitTextIntoTextBlocks from './splitTextIntoTextBlocks';
+import tryBlur from './tryBlur';
+import tryFocus from './tryFocus';
+import uniqueID from './uniqueID';
+import warn from './warn';
+
 
 import './DocsBaseEditor.css';
 
@@ -25,7 +30,7 @@ selectionPrototype.extend = function tryExtendSelection(node, offset) {
   try {
     selectionPrototypeExtend.call(this, node, offset);
   } catch (ex) {
-    tryWarn(ex);
+    warn(ex);
   }
 };
 
@@ -38,7 +43,7 @@ class DraftEditorPatched extends Editor {
       try {
         return  handler.apply(this, args);
       } catch (ex) {
-        tryWarn(ex);
+        warn(ex);
       }
     };
   }

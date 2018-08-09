@@ -4,6 +4,7 @@ import React from 'react';
 import {ButtonGroup, Button} from 'react-bootstrap';
 import {DocsEditor, DocsContext, convertToRaw, convertFromRaw, uniqueID} from 'docs-editor';
 
+
 // Because React-Bootstrap doesn't depend on a very precise version of
 // Bootstrap, we don't ship with any included css. However, some stylesheet is
 // required to use these components. How and which bootstrap styles you

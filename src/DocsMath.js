@@ -2,15 +2,15 @@
 
 import DocsDataAttributes from './DocsDataAttributes';
 import DocsEventTypes from './DocsEventTypes';
-import DocsResourcesLoader from './DocsResourcesLoader';
 import DocsMathEditor from './DocsMathEditor';
+import DocsResourcesLoader from './DocsResourcesLoader';
 import React from 'react';
 import cx from 'classnames';
 import docsWithContext from './docsWithContext';
+import renderLatexAsHTML from './renderLatexAsHTML';
 import showModalDialog from './showModalDialog';
-import {renderLatexAsHTML} from './DocsHelpers';
+import uniqueID from './uniqueID';
 import {setMathValue} from './MathModifiers';
-import {uniqueID} from './DocsHelpers';
 
 import './DocsMath.css';
 

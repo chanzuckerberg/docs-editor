@@ -3,7 +3,7 @@
 import React from 'react';
 import cx from 'classnames';
 import {DropdownButton} from 'react-bootstrap';
-import {uniqueID} from './DocsHelpers';
+import uniqueID from './uniqueID';
 
 class DocsDropdownButton extends React.PureComponent {
 

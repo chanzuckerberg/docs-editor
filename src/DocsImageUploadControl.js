@@ -1,6 +1,6 @@
 // @flow
 
-import {uniqueID} from './DocsHelpers';
+import uniqueID from './uniqueID';
 
 import type {EditorRuntime, DOMImage} from './Types';
 

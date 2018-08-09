@@ -1,7 +1,7 @@
 // @flow
 
 import React from 'react';
-import {renderLatexAsHTML} from './DocsHelpers';
+import renderLatexAsHTML from './renderLatexAsHTML';
 
 class DocsMathEditorGuide extends React.PureComponent {
   props: {

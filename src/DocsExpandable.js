@@ -13,7 +13,7 @@ import convertFromRaw from './convertFromRaw';
 import showModalDialog from './showModalDialog';
 import docsWithContext from './docsWithContext';
 import {convertToRaw, ContentBlock, EditorState, Entity} from 'draft-js';
-import {uniqueID} from './DocsHelpers';
+import uniqueID from './uniqueID';
 import {updateEntityData} from './DocsModifiers';
 import {updateLabel} from './DocsExpandableModifiers';
 

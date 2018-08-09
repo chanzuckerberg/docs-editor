@@ -1,8 +1,9 @@
 // @flow
 
+import asElement from './asElement';
 import nullthrows from 'nullthrows';
 import uniqueID from './uniqueID';
-import {asElement, tryWarn} from './DocsHelpers';
+import warn from './warn';
 
 function createElement(tag: string, attrs: Object): Element {
   const el:any = document.createElement(tag);
@@ -40,7 +41,7 @@ function injectElement(
     cleanElementHandlers(element);
     // re-try.
     const retry = injectElement.bind(null, element.cloneNode(true), onLoad);
-    tryWarn('Failed to load resource for <' + element.id + '>, will try again');
+    warn('Failed to load resource for <' + element.id + '>, will try again');
     setTimeout(retry, 1000);
   };
   const head = asElement(document.head || document.body);

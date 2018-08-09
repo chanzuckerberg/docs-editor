@@ -8,7 +8,7 @@ import captureDocumentEvents from './captureDocumentEvents';
 import invariant from 'invariant';
 import nullthrows from 'nullthrows';
 import {ContentBlock, EditorState, Entity} from 'draft-js';
-import {uniqueID} from './DocsHelpers';
+import uniqueID from './uniqueID';
 
 type Props = {
   block: ContentBlock,

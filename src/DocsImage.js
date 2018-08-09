@@ -8,11 +8,12 @@ import DocsSafeImage from './DocsSafeImage';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ResizeObserver from './ResizeObserver';
+import asElement from './asElement';
 import cx from 'classnames';
 import docsWithContext from './docsWithContext';
 import nullthrows from 'nullthrows';
 import showModalDialog from './showModalDialog';
-import {asElement, uniqueID} from './DocsHelpers';
+import uniqueID from './uniqueID';
 import {setSize} from './DocsImageModifiers';
 
 import './DocsImage.css';
