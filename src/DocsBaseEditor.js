@@ -7,16 +7,21 @@ import React from 'react';
 import Timer from './Timer';
 import _ from 'underscore';
 import cx from 'classnames';
-import docsWithContext from './docsWithContext';
+import withDocsContext from './withDocsContext';
 import {getDefaultKeyBinding, ContentBlock, Editor, EditorState, RichUtils} from 'draft-js';
 import {pasteHTML, ensureAtomicBlocksAreSelectable} from './DocsModifiers';
-import {tryFocus, tryBlur, tryWarn, uniqueID, splitTextIntoTextBlocks} from './DocsHelpers';
+import splitTextIntoTextBlocks from './splitTextIntoTextBlocks';
+import tryBlur from './tryBlur';
+import tryFocus from './tryFocus';
+import uniqueID from './uniqueID';
+import warn from './warn';
+
 
 import './DocsBaseEditor.css';
 
-import type {EditorProps} from './Types';
+import type {DocsEditorProps} from './Types';
 
-type Props = EditorProps;
+type Props = DocsEditorProps;
 
 // Patch
 const selectionPrototype: any = Selection.prototype;
@@ -25,7 +30,7 @@ selectionPrototype.extend = function tryExtendSelection(node, offset) {
   try {
     selectionPrototypeExtend.call(this, node, offset);
   } catch (ex) {
-    tryWarn(ex);
+    warn(ex);
   }
 };
 
@@ -38,7 +43,7 @@ class DraftEditorPatched extends Editor {
       try {
         return  handler.apply(this, args);
       } catch (ex) {
-        tryWarn(ex);
+        warn(ex);
       }
     };
   }
@@ -58,7 +63,7 @@ class DocsBaseEditor extends React.PureComponent {
     focused: false,
   };
 
-  props: EditorProps;
+  props: DocsEditorProps;
 
   constructor(props: Props, context: Object) {
     super(props);
@@ -257,4 +262,4 @@ class DocsBaseEditor extends React.PureComponent {
   }
 }
 
-module.exports = docsWithContext(DocsBaseEditor);
+module.exports = withDocsContext(DocsBaseEditor);

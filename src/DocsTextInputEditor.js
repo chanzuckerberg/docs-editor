@@ -4,7 +4,8 @@ import Input from './DocsInput';
 import React from 'react';
 import Timer from './Timer';
 import {Button} from 'react-bootstrap';
-import {tryFocus, uniqueID} from './DocsHelpers';
+import uniqueID from './uniqueID';
+import tryFocus from './tryFocus';
 
 type Props = {
   value: ?string,

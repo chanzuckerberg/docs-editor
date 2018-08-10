@@ -5,11 +5,15 @@ import DocsEventTypes from './DocsEventTypes';
 import ReactDOM from 'react-dom';
 import Timer from './Timer';
 import captureDocumentEvents from './captureDocumentEvents';
+import createDOMCustomEvent from './createDOMCustomEvent';
 import invariant from 'invariant';
 import nullthrows from 'nullthrows';
-import type {BaseEditor} from './Types';
-import {createDOMCustomEvent, tryFocus, tryBlur, tryFindDOMNode} from './DocsHelpers';
+import tryBlur from './tryBlur';
+import tryFindDOMNode from './tryFindDOMNode';
+import tryFocus from './tryFocus';
 import {updateEntityData} from './DocsModifiers';
+
+import type {DocsEditorLike} from './Types';
 
 // How long do we wait until starting transitioning focus from one editor to
 // another.
@@ -40,7 +44,7 @@ function getEditorByElement(
     if (elementToEditor.has(element)) {
       return elementToEditor.get(element);
     }
-    element = element.parentNode;
+    element = element.parentElement;
   }
   return null;
 }
@@ -65,14 +69,14 @@ class DocsEditorFocusManager {
     });
   }
 
-  register(id: string, editor: BaseEditor) {
+  register(id: string, editor: DocsEditorLike) {
     invariant(!this._editorsMap.has(id), 'already registered');
     invariant(!this._editorsSet.has(editor), 'already registered');
     this._editorsSet.add(editor);
     this._editorsMap.set(id, editor);
   }
 
-  unregister(id: string, editor: BaseEditor) {
+  unregister(id: string, editor: DocsEditorLike) {
     invariant(this._editorsMap.get(id) === editor, 'not registered');
     invariant(this._editorsSet.has(editor), 'not registered');
     this._editorsSet.delete(editor);
@@ -138,7 +142,7 @@ class DocsEditorFocusManager {
             true;
         }
       }
-      node = node.parentNode;
+      node = node.parentElement;
     }
 
     this._activeEditor = null;
@@ -204,7 +208,7 @@ class DocsEditorFocusManager {
       if (scrollTop) {
         scrollableNodes.set(currentNode, scrollTop);
       }
-      currentNode = currentNode.parentNode;
+      currentNode = currentNode.parentElement;
     }
 
     tryFocus(editor);

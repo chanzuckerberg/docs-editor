@@ -4,14 +4,16 @@ import DocsBlockTypes from './DocsBlockTypes';
 import DocsDataAttributes from './DocsDataAttributes';
 import DocsDecorator from './DocsDecorator';
 import DocsDecoratorTypes from './DocsDecoratorTypes';
+import asElement from './asElement';
+import getSafeBodyFromHTML from './getSafeBodyFromHTML';
 import invariant from 'invariant';
-import {asElement, getSafeBodyFromHTML, uniqueID} from './DocsHelpers';
+import uniqueID from './uniqueID';
 import {convertFromHTML} from 'draft-convert';
 import {convertToRaw, ContentState, Modifier, EditorState, Entity} from 'draft-js';
 import {getEntityDataID} from './DocsTableModifiers';
 import {toggleHeaderBackground} from './DocsTableModifiers';
 
-import type {TableEntityData} from './Types';
+import type {DocsTableEntityData,  ElementLike} from './Types';
 
 type SafeHTML = {
   html: string,
@@ -72,7 +74,7 @@ function docsConvertFromHTML(
 
 // Fake DOM Node that is good enough work with. This is faster than using
 // a real DOM node.
-class FakeAtomicNode {
+class FakeAtomicElement {
   _attributes = new Map();
   nodeName = 'FIGURE';
   nodeType = NODE_TYPE_ELEMENT;
@@ -141,7 +143,7 @@ function getSafeHTML(html: string): SafeHTML {
 function htmlToStyle(
   safeHTML: SafeHTML,
   nodeName: string,
-  node: Node,
+  node: Node | ElementLike,
   currentStyle: Object,
 ): Object {
   if (node.nodeType !== NODE_TYPE_ELEMENT) {
@@ -236,7 +238,7 @@ function htmlToEntity(
 function htmlToAtomicBlockEntity(
   safeHTML: SafeHTML,
   nodeName: string,
-  node: Node,
+  node: Node | ElementLike,
   createEntity: Function
 ): ?Entity {
   if (nodeName !== 'figure') {
@@ -275,7 +277,7 @@ function textToEntity(
 function htmlToBlock(
   safeHTML: SafeHTML,
   nodeName: string,
-  node: Node
+  node: Node | ElementLike,
 ): ?Object {
 
   const normalizedNode =
@@ -290,7 +292,7 @@ function htmlToBlock(
 function htmlToAtomicBlock(
   safeHTML: SafeHTML,
   nodeName: string,
-  node: Node
+  node: Node | ElementLike,
 ): ?Object {
   if (nodeName !== 'figure') {
     return null;
@@ -319,8 +321,8 @@ function htmlToAtomicBlock(
 function normalizeNodeForTable(
   safeHTML: SafeHTML,
   nodeName: string,
-  node: Node,
-): ?Node {
+  node: Node | ElementLike,
+): ?ElementLike {
   if (nodeName !== 'table') {
     return null;
   }
@@ -330,19 +332,19 @@ function normalizeNodeForTable(
     return null;
   }
 
-  const entityData = createTableEntityDataFromElement(safeHTML, element);
+  const entityData = createDocsTableEntityDataFromElement(safeHTML, element);
   const data = {
     blockType: DocsBlockTypes.DOCS_TABLE,
     entityData,
   };
-  const atomicNode: any = new FakeAtomicNode(data);
+  const atomicNode: any = new FakeAtomicElement(data);
   return atomicNode;
 }
 
-function createTableEntityDataFromElement(
+function createDocsTableEntityDataFromElement(
   safeHTML: SafeHTML,
-  table: Node,
-): TableEntityData {
+  table: ElementLike,
+): DocsTableEntityData {
   invariant(table.nodeName === 'TABLE', 'must be a table');
   let entityData = {
     rowsCount: 0,
@@ -355,7 +357,14 @@ function createTableEntityDataFromElement(
 
   // TODO: What about having multiple <tbody />, <thead /> and <col />
   // colsSpan, rowsSpan...etc?
-  if (el.rows.length === 0 || el.rows[0].cells.length === 0) {
+  const {rows} = el;
+
+  if (
+    !rows ||
+    !rows[0] ||
+    !rows[0].cells ||
+    rows[0].cells.length === 0
+  ) {
     return entityData;
   }
 
@@ -363,9 +372,15 @@ function createTableEntityDataFromElement(
   const emptyEditorState = EditorState.createEmpty(decorator);
 
   const data: any = entityData;
-  const rowsCount = el.rows.length;
-  const colsCount = Array.from(el.rows).reduce(
-    (max, row) => Math.max(max, row.cells.length),
+  const rowsCount = rows ? rows.length : 0;
+  const colsCount = Array.from(rows).reduce(
+    (max, row) => {
+      if (row && row.cells) {
+        const len = row.cells.length;
+        return len > max ? len : max;
+      }
+      return max;
+    },
     0,
   );
 
@@ -379,9 +394,10 @@ function createTableEntityDataFromElement(
       // row could be empty, if "rowSpan={n}" is set.
       // cell could be  empty, if "colsSpan={n}" is set.
       let html = '';
-      const row = el.rows[rr];
+      const row = rows[rr];
       if (row) {
-        const cell = row.cells[cc];
+        const {cells} = row;
+        const cell = cells ? cells[cc] : null;
         if (cell) {
           html = cell.innerHTML;
           if (rr === 0 && cell.nodeName === 'TH') {

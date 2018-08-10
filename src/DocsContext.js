@@ -5,13 +5,13 @@ import DocsActionTypes from './DocsActionTypes';
 import {Record, Set as ImmutableSet} from 'immutable';
 import invariant from 'invariant';
 
-import type {EditorRuntime} from './Types';
+import type {DocsEditorRuntime} from './Types';
 
 type RecordData = {
   allowedActions?: ?(ImmutableSet<string> | Array<string>),
   canEdit?: ?boolean,
   id?: ?string,
-  runtime?: ?EditorRuntime,
+  runtime?: ?DocsEditorRuntime,
 };
 
 const ALL_ACTIONS = ImmutableSet(Object.keys(DocsActionTypes));

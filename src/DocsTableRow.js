@@ -5,12 +5,12 @@ import DocsTableCell from './DocsTableCell';
 import DocsTableModifiers from './DocsTableModifiers';
 import React from 'react';
 import cx from 'classnames';
-import docsWithContext from './docsWithContext';
+import withDocsContext from './withDocsContext';
 import {EditorState} from 'draft-js';
 import {getEntityDataID} from './DocsTableModifiers';
 import {updateEntityData} from './DocsModifiers';
 
-import type {TableEntityData} from './Types';
+import type {DocsTableEntityData} from './Types';
 
 type Props = {
   editorCellIndex: number,
@@ -23,7 +23,7 @@ type Props = {
   rowIndex: number,
 };
 
-const {TableEntityDataKeys} = DocsTableModifiers;
+const {DocsTableEntityDataKeys} = DocsTableModifiers;
 
 class DocsTableRow extends React.PureComponent {
 
@@ -40,7 +40,7 @@ class DocsTableRow extends React.PureComponent {
       resizable,
     } = this.props;
 
-    const entityData: TableEntityData = entity.getData();
+    const entityData: DocsTableEntityData = entity.getData();
     const {colsCount, colWidths} = entityData;
     const cells = [];
     const rr = rowIndex;
@@ -62,7 +62,7 @@ class DocsTableRow extends React.PureComponent {
           key={id}
           onChange={this._onCellEditChange}
           onColumnResizeEnd={this._onColumnResizeEnd}
-          paddingSize={entityData[TableEntityDataKeys.PADDING_SIZE]}
+          paddingSize={entityData[DocsTableEntityDataKeys.PADDING_SIZE]}
           rawContentState={rawContentState}
           resizable={resizable}
           rowIndex={rr}
@@ -74,7 +74,7 @@ class DocsTableRow extends React.PureComponent {
     const className = cx({
       'docs-table-row': true,
       'docs-table-row-header':
-        rr === 0 && !!entityData[TableEntityDataKeys.TOP_ROW_BG_STYLE],
+        rr === 0 && !!entityData[DocsTableEntityDataKeys.TOP_ROW_BG_STYLE],
     });
     const attrs = {
       [DocsDataAttributes.ELEMENT]: true,
@@ -121,4 +121,4 @@ class DocsTableRow extends React.PureComponent {
   };
 }
 
-module.exports = docsWithContext(DocsTableRow);
+module.exports = withDocsContext(DocsTableRow);

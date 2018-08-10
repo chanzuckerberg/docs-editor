@@ -11,15 +11,15 @@ import Timer from './Timer';
 import cx from 'classnames';
 import convertFromRaw from './convertFromRaw';
 import showModalDialog from './showModalDialog';
-import docsWithContext from './docsWithContext';
+import withDocsContext from './withDocsContext';
 import {convertToRaw, ContentBlock, EditorState, Entity} from 'draft-js';
-import {uniqueID} from './DocsHelpers';
+import uniqueID from './uniqueID';
 import {updateEntityData} from './DocsModifiers';
 import {updateLabel} from './DocsExpandableModifiers';
 
 import './DocsExpandable.css';
 
-import type {BaseEditor} from './Types';
+import type {DocsEditorLike} from './Types';
 import type {ModalHandle} from './showModalDialog';
 
 type Props = {
@@ -235,7 +235,7 @@ class DocsExpandable extends React.PureComponent {
     onChange(newEditorState);
   };
 
-  _getEditor = (): ?BaseEditor => {
+  _getEditor = (): ?DocsEditorLike => {
     return this._activeEditor;
   };
 
@@ -328,4 +328,4 @@ class DocsExpandable extends React.PureComponent {
   };
 }
 
-module.exports = docsWithContext(DocsExpandable);
+module.exports = withDocsContext(DocsExpandable);

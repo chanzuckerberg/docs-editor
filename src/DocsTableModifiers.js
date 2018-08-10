@@ -1,8 +1,8 @@
 // @flow
 
-import type {TableEntityData} from './Types';
+import type {DocsTableEntityData} from './Types';
 
-const TableEntityDataKeys = {
+const DocsTableEntityDataKeys = {
   LEFT_COL_BG_STYLE: 'leftColBgStyle',
   NO_BORDERS: 'noBorders',
   PADDING_SIZE: 'paddingSize',
@@ -18,10 +18,10 @@ function getEntityDataID(rowIndex: number, cellIndex: number): string {
 // These are the very naive implementation of functions that update rows.
 // Need a better way of doing this.
 function insertRow(
-  entityData: TableEntityData,
+  entityData: DocsTableEntityData,
   rowIndex: number,
   before: boolean,
-): TableEntityData {
+): DocsTableEntityData {
   const {rowsCount, colsCount} = entityData;
   const newEntityData = {
     rowsCount: rowsCount + 1,
@@ -51,26 +51,26 @@ function insertRow(
 }
 
 function insertRowAfter(
-  entityData: TableEntityData,
+  entityData: DocsTableEntityData,
   rowIndex: number,
   colIndex: number,
-): TableEntityData {
+): DocsTableEntityData {
   return insertRow(entityData, rowIndex, false);
 }
 
 function insertRowBefore(
-  entityData: TableEntityData,
+  entityData: DocsTableEntityData,
   rowIndex: number,
   colIndex: number,
-): TableEntityData {
+): DocsTableEntityData {
   return insertRow(entityData, rowIndex, true);
 }
 
 function deleteRow(
-  entityData: TableEntityData,
+  entityData: DocsTableEntityData,
   rowIndex: number,
   colIndex: number,
-): TableEntityData {
+): DocsTableEntityData {
   const {rowsCount, colsCount} = entityData;
   if (rowsCount <= 1) {
     return entityData;
@@ -100,10 +100,10 @@ function deleteRow(
 }
 
 function deleteColumn(
-  entityData: TableEntityData,
+  entityData: DocsTableEntityData,
   rowIndex: number,
   colIndex: number,
-): TableEntityData {
+): DocsTableEntityData {
   const {rowsCount, colsCount} = entityData;
   if (colsCount <= 1) {
     return entityData;
@@ -153,10 +153,10 @@ function deleteColumn(
 }
 
 function insertColumn(
-  entityData: TableEntityData,
+  entityData: DocsTableEntityData,
   colIndex: number,
   before: boolean,
-): TableEntityData {
+): DocsTableEntityData {
   const {rowsCount, colsCount} = entityData;
   const newEntityData = {
     colWidths: null,
@@ -200,25 +200,25 @@ function insertColumn(
 }
 
 function insertColumnAfter(
-  entityData: TableEntityData,
+  entityData: DocsTableEntityData,
   rowIndex: number,
   colIndex: number,
-): TableEntityData {
+): DocsTableEntityData {
   return insertColumn(entityData, colIndex, false);
 }
 
 function insertColumnBefore(
-  entityData: TableEntityData,
+  entityData: DocsTableEntityData,
   rowIndex: number,
   colIndex: number,
-): TableEntityData {
+): DocsTableEntityData {
   return insertColumn(entityData, colIndex, true);
 }
 
 function toggleIndexColumnBackground(
-  entityData: TableEntityData,
-): TableEntityData {
-  const key = TableEntityDataKeys.LEFT_COL_BG_STYLE;
+  entityData: DocsTableEntityData,
+): DocsTableEntityData {
+  const key = DocsTableEntityDataKeys.LEFT_COL_BG_STYLE;
   const value = !entityData[key];
   return {
     ...entityData,
@@ -227,9 +227,9 @@ function toggleIndexColumnBackground(
 }
 
 function toggleHeaderBackground(
-  entityData: TableEntityData,
-): TableEntityData {
-  const key = TableEntityDataKeys.TOP_ROW_BG_STYLE;
+  entityData: DocsTableEntityData,
+): DocsTableEntityData {
+  const key = DocsTableEntityDataKeys.TOP_ROW_BG_STYLE;
   const value = !entityData[key];
   return {
     ...entityData,
@@ -238,9 +238,9 @@ function toggleHeaderBackground(
 }
 
 function toggleBorders(
-  entityData: TableEntityData,
-): TableEntityData {
-  const key = TableEntityDataKeys.NO_BORDERS;
+  entityData: DocsTableEntityData,
+): DocsTableEntityData {
+  const key = DocsTableEntityDataKeys.NO_BORDERS;
   const value = !entityData[key];
   const v = {
     ...entityData,
@@ -250,9 +250,9 @@ function toggleBorders(
 }
 
 function togglePaddings(
-  entityData: TableEntityData,
-): TableEntityData {
-  const key = TableEntityDataKeys.PADDING_SIZE;
+  entityData: DocsTableEntityData,
+): DocsTableEntityData {
+  const key = DocsTableEntityDataKeys.PADDING_SIZE;
   const value = !entityData[key];
   return {
     ...entityData,
@@ -262,7 +262,7 @@ function togglePaddings(
 
 module.exports = {
   LOCAL_CHANGE_ID,
-  TableEntityDataKeys,
+  DocsTableEntityDataKeys,
   deleteColumn,
   deleteRow,
   getEntityDataID,

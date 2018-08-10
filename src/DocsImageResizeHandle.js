@@ -4,7 +4,7 @@ import React from 'react';
 import Timer from './Timer';
 import captureDocumentEvents from './captureDocumentEvents';
 import cx from 'classnames';
-import docsWithContext from './docsWithContext';
+import withDocsContext from './withDocsContext';
 
 type Props = {
   imageID: string,
@@ -14,9 +14,9 @@ type Props = {
 // Get the maxWidth that the image could be resized to.
 function getMaxResizeWidth(el: any): number {
   // Ideally, the image should bot be wider then its containing element.
-  let node: any = el.parentNode;
+  let node: any = el.parentElement;
   while (node && !node.offsetParent) {
-    node = node.parentNode;
+    node = node.parentElement;
   }
   if (
     node &&
@@ -169,4 +169,4 @@ class DocsImageResizeHandle extends React.PureComponent {
   }
 }
 
-module.exports = docsWithContext(DocsImageResizeHandle);
+module.exports = withDocsContext(DocsImageResizeHandle);

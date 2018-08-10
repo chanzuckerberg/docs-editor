@@ -3,9 +3,9 @@
   "version": "0.0.4",
   "subversion": "1",
   "description": "rich text editor for education purpose",
-  "main": "lib/index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "build": "./utils/build.sh",
+    "build_dist": "./utils/build_dist.sh",
     "build_deploy": "node utils/build_deploy.js",
     "flow": "flow",
     "start": "node utils/webserver.js"

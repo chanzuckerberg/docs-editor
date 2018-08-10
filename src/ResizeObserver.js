@@ -2,12 +2,14 @@
 // @flow
 
 import ResizeObserver from 'resize-observer-polyfill';
-
+import asElement from './asElement';
 import nullthrows from 'nullthrows';
+
+import type {ElementLike} from './Types';
 
 // flow type copied from https://github.com/que-etc/resize-observer-polyfill/blob/master/src/index.js.flow
 
-type DOMRectReadOnly = {
+type ClientRectLikeReadOnly = {
   +x: number,
   +y: number,
   +width: number,
@@ -24,7 +26,7 @@ type Entries = $ReadOnlyArray<ResizeObserverEntry>;
 
 export type ResizeObserverEntry = {
   +target: Element,
-  +contentRect: DOMRectReadOnly,
+  +contentRect: ClientRectLikeReadOnly,
 };
 
 let instance: ?ResizeObserver = null;
@@ -42,41 +44,45 @@ function handleResizeObserverEntry(entry: ResizeObserverEntry): void {
   callbacks && callbacks.forEach(executeCallback);
 }
 
-function observe(node: Element, callback: (ResizeObserverEntry) => void): void {
+function observe(
+  node: ElementLike,
+  callback: (ResizeObserverEntry) => void,
+): void {
+  const el: any = node;
   const observer = instance || (instance = new ResizeObserver(onResizeObserve));
-  if (nodesObserving.has(node)) {
+  if (nodesObserving.has(el)) {
     // Already observing node.
-    const callbacks = nullthrows(nodesObserving.get(node));
+    const callbacks = nullthrows(nodesObserving.get(el));
     callbacks.push(callback);
   } else {
     const callbacks = [callback];
-    nodesObserving.set(node, callbacks);
-    observer.observe(node);
+    nodesObserving.set(el, callbacks);
+    observer.observe(el);
   }
 }
 
-function unobserve(node: Element, callback?: ResizeCallback): void {
+function unobserve(node: ElementLike, callback?: ResizeCallback): void {
   const observer = instance;
   if (!observer) {
     return;
   }
-
-  observer.unobserve(node);
+  const el: any = node;
+  observer.unobserve(el);
 
   if (callback) {
     // Remove the passed in callback from the callbacks of the observed node
     // And, if no more callbacks then stop observing the node
-    const callbacks = nodesObserving.has(node)  ?
-      nullthrows(nodesObserving.get(node)).filter(cb => cb !== callback) :
+    const callbacks = nodesObserving.has(el)  ?
+      nullthrows(nodesObserving.get(el)).filter(cb => cb !== callback) :
       null;
     if (callbacks && callbacks.length) {
-      nodesObserving.set(node, callbacks);
+      nodesObserving.set(el, callbacks);
     } else {
-      nodesObserving.delete(node);
+      nodesObserving.delete(el);
     }
   } else {
     // Delete all callbacks for the node.
-    nodesObserving.delete(node);
+    nodesObserving.delete(el);
   }
 
   if (!nodesObserving.size) {

@@ -13,24 +13,24 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ResizeObserver from './ResizeObserver';
 import Timer from './Timer';
-import cx from 'classnames';
+import asElement from './asElement';
 import convertFromRaw from './convertFromRaw';
-import docsWithContext from './docsWithContext';
+import cx from 'classnames';
+import withDocsContext from './withDocsContext';
 import invariant from 'invariant';
 import noop from './noop';
 import uniqueID from './uniqueID';
-import {asElement} from './DocsHelpers';
 import {EditorState} from 'draft-js';
 
 import './DocsEditor.css';
 
-import type {BaseEditor, EditorProps} from './Types';
+import type {DocsEditorLike, DocsEditorProps} from './Types';
 import type {ResizeObserverEntry} from './ResizeObserver';
 
 type Props = {
   className?: ?string,
   disabled?: ?boolean,
-  docsContext?: ?Object,
+  docsContext?: ?DocsContext,
   editorState?: ?EditorState,
   header?: ?React.Element<any>,
   height?: ?(string | number),
@@ -184,7 +184,7 @@ class DocsEditor extends React.PureComponent {
     );
   }
 
-  _getEditor = (): ?BaseEditor => {
+  _getEditor = (): ?DocsEditorLike => {
     return this._activeEditor;
   };
 
@@ -323,4 +323,4 @@ class DocsEditor extends React.PureComponent {
   }
 }
 
-module.exports = docsWithContext(DocsEditor);
+module.exports = withDocsContext(DocsEditor);

@@ -1,9 +1,9 @@
 // @flow
 
 import DocsBlockTypeToComponent from './DocsBlockTypeToComponent';
+import tryGetEntityAtContentState from './tryGetEntityAtContentState';
 import {ContentBlock, EditorState, DefaultDraftBlockRenderMap} from 'draft-js';
 import {Map as ImmutableMap} from 'immutable';
-import {tryGetEntityAtContentState} from './DocsHelpers';
 
 type Props = {
   onChange: (s: EditorState) => void,

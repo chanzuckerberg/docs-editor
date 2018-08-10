@@ -8,7 +8,7 @@ import captureDocumentEvents from './captureDocumentEvents';
 import invariant from 'invariant';
 import nullthrows from 'nullthrows';
 import {ContentBlock, EditorState, Entity} from 'draft-js';
-import {uniqueID} from './DocsHelpers';
+import uniqueID from './uniqueID';
 
 type Props = {
   block: ContentBlock,
@@ -112,7 +112,7 @@ class DocsAtomicBlock extends React.PureComponent {
     const {blockProps} = this.props;
     const {entity} = blockProps;
     const node: any = nullthrows(ReactDOM.findDOMNode(this._ref));
-    const atomicNode: any = nullthrows(node.parentNode);
+    const atomicNode: any = nullthrows(node.parentElement);
     invariant(
       atomicNode.nodeName === 'FIGURE' && atomicNode.hasAttribute('data-block'),
       'atomicNode not found',

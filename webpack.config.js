@@ -11,7 +11,9 @@ var webpack = require("webpack"),
     path = require("path");
 
 // load the secrets
-var alias = {};
+var alias = {
+  "docs-editor": path.resolve(__dirname, "src/index.js"),
+};
 
 var secretsPath = path.join(__dirname, ("secrets." + env.NODE_ENV + ".js"));
 

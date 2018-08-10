@@ -5,15 +5,19 @@ import DocsEventTypes from './DocsEventTypes';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Timer from './Timer';
+import asElement from './asElement';
 import captureDocumentEvents from './captureDocumentEvents';
+import createDOMCustomEvent from './createDOMCustomEvent';
 import cx from 'classnames';
 import invariant from 'invariant';
+import lookupElementByAttribute from './lookupElementByAttribute';
 import nullthrows from 'nullthrows';
+import uniqueID from './uniqueID';
 import {ContentState, Entity} from 'draft-js';
-import {createDOMCustomEvent} from './DocsHelpers';
-import {uniqueID, asElement, lookupElementByAttribute} from './DocsHelpers';
 
 import './DocsDecoratorEntityDataContainer.css';
+
+import type {ElementLike} from './Types';
 
 type Props = {
   contentState: ContentState,
@@ -139,7 +143,7 @@ class DocsDecoratorEntityDataContainer extends React.PureComponent {
     this._timer.set(this._eraseEntityData);
   };
 
-  _getEditorElement(): ?Element {
+  _getEditorElement(): ?ElementLike {
     return lookupElementByAttribute(
       asElement(ReactDOM.findDOMNode(this)),
       DocsDataAttributes.EDITOR_FOR,
@@ -172,8 +176,7 @@ class DocsDecoratorEntityDataContainer extends React.PureComponent {
       return;
     }
     // Inject EntityData as node so that they could be copied.0
-    const node: Element = asElement(ReactDOM.findDOMNode(this));
-    invariant(node.nodeType === 1, 'must be an element');
+    const node = asElement(ReactDOM.findDOMNode(this));
     this._node = node;
 
     const entity = this._getEntity();

@@ -1,8 +1,8 @@
 // @flow
 
 import DocsDecoratorEntityDataContainer from './DocsDecoratorEntityDataContainer';
+import findEntitiesForType from './findEntitiesForType';
 import {CompositeDecorator} from 'draft-js';
-import {findEntitiesForType} from './DocsHelpers';
 
 const entries = [];
 

@@ -2,28 +2,50 @@
 
 import {EditorState} from 'draft-js';
 
-// TODO(Fix this.)
-export type DOMElement = any;
-
-export type Action = {
-  editor: BaseEditor,
-  type: string,
+type HTMLCollectionLike = {
+  [index: number]: ElementLike,
+  length: number,
 };
 
-export type ReducerState = {
-  editorState: any,
+type CSSStyleDeclarationLike = {
+  fontWeight: string,
 };
 
-export type DOMRect = {
+type EventLike = {
+
+};
+
+export type BgStyle = 'dark';
+
+export type ElementLike = {
+  appendChild: (child: ElementLike) => ElementLike,
+  cells: ?HTMLCollectionLike,
+  className: string,
+  dispatchEvent: (e: EventLike) => void,
+  getAttribute: (attr: string) => string,
+  hasAttribute: (attr: string) => boolean,
+  href: string,
+  id: string,
+  innerHTML: string,
+  nodeName: string,
+  nodeType: number,
+  parentElement: ?ElementLike,
+  removeAttribute: (attr: string) => void,
+  rows: ?HTMLCollectionLike,
+  setAttribute: (attr: string, value: string) => void,
+  style: CSSStyleDeclarationLike,
+};
+
+export type ClientRectLike = {
   height: number,
   width: number,
   x: number,
   y: number,
 };
 
-export type DOMImage = {
-  element?: ?DOMElement,
+export type ImageLike = {
   height: number,
+  id: string,
   src: string,
   width: number,
 };
@@ -32,14 +54,14 @@ export type DOMImage = {
 // is running within. This serves as a bridge to enable editor communicate
 // with the app server to do tasks such as uploading images, load comments,
 // ...etc.
-export type EditorRuntime = {
+export type DocsEditorRuntime = {
   canUploadImage: () => boolean,
   canProxyImageSrc: (src: string) => boolean,
   getProxyImageSrc: (src: string) => string,
-  uploadImage: (obj: Blob) => Promise<DOMImage>,
+  uploadImage: (obj: Blob) => Promise<ImageLike>,
 };
 
-export type EditorProps = {
+export type DocsEditorProps = {
   docsContext: ?Object,
   editorState: EditorState,
   id?: ?string,
@@ -47,23 +69,21 @@ export type EditorProps = {
   placeholder?: ?string,
 };
 
-export type BaseEditor = {
+export type DocsEditorLike = {
   id: string,
-  props: EditorProps,
+  props: DocsEditorProps,
 };
 
-export type BgStyle = 'dark';
-
-export type LinkEtityData = {
+export type DocsLinkEtityData = {
   url: string,
 };
 
-export type AnnotationEtityData = {
+export type DocsAnnotationEtityData = {
   token: ?string,
   color: string,
 };
 
-export type TableEntityData = {
+export type DocsTableEntityData = {
   colWidths?: ?Array<number>,
   colsCount: number,
   leftColBgStyle?: ?string,
@@ -73,7 +93,7 @@ export type TableEntityData = {
   topRowBgStyle?: ?BgStyle,
 };
 
-export type ImageEntityData = {
+export type DocsImageEntityData = {
   align?: ?string,
   frame?: ?boolean,
   height?: ?number,
@@ -81,7 +101,7 @@ export type ImageEntityData = {
   width?: ?number,
 };
 
-export type MathEntityData = {
+export type DocsMathEntityData = {
   asciimath?: ?string,
   latex?: ?string,
   text?: ?string,

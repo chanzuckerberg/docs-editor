@@ -8,12 +8,12 @@ import DocsTableToolbar from './DocsTableToolbar';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import cx from 'classnames';
-import docsWithContext from './docsWithContext';
+import withDocsContext from './withDocsContext';
 import {ContentBlock, EditorState, Entity} from 'draft-js';
 
 import './DocsTable.css';
 
-import type {BaseEditor} from './Types';
+import type {DocsEditorLike} from './Types';
 
 type Props = {
   block: ContentBlock,
@@ -25,7 +25,7 @@ type Props = {
   },
 };
 
-const {TableEntityDataKeys} = DocsTableModifiers;
+const {DocsTableEntityDataKeys} = DocsTableModifiers;
 
 class DocsTable extends React.PureComponent {
   _activeEditor = null;
@@ -79,7 +79,7 @@ class DocsTable extends React.PureComponent {
     const className = cx({
       'docs-table-main': true,
       'docs-table-main-active': !!editorID,
-      'docs-table-main-no-borders': entityData[TableEntityDataKeys.NO_BORDERS],
+      'docs-table-main-no-borders': entityData[DocsTableEntityDataKeys.NO_BORDERS],
     });
     const attrs = {
       [DocsDataAttributes.EDITOR_FOR]: editorID,
@@ -151,7 +151,7 @@ class DocsTable extends React.PureComponent {
             }
             break;
           }
-          node = node.parentNode;
+          node = node.parentElement;
         }
       } else {
         editor = null;
@@ -172,7 +172,7 @@ class DocsTable extends React.PureComponent {
     }
   };
 
-  _getEditor = (): ?BaseEditor => {
+  _getEditor = (): ?DocsEditorLike => {
     return this._activeEditor;
   };
 
@@ -219,4 +219,4 @@ class DocsTable extends React.PureComponent {
   }
 }
 
-module.exports = docsWithContext(DocsTable);
+module.exports = withDocsContext(DocsTable);

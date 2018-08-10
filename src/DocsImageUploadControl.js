@@ -1,8 +1,8 @@
 // @flow
 
-import {uniqueID} from './DocsHelpers';
+import uniqueID from './uniqueID';
 
-import type {EditorRuntime, DOMImage} from './Types';
+import type {DocsEditorRuntime, ImageLike} from './Types';
 
 import React from 'react';
 
@@ -10,8 +10,8 @@ type Props = {
   disabled?: ?boolean,
   onError: (e: Error) => void,
   onStart: () => void,
-  onSuccess: (m: DOMImage) => void,
-  runtime: EditorRuntime,
+  onSuccess: (m: ImageLike) => void,
+  runtime: DocsEditorRuntime,
 };
 
 class DocsImageUploadControl extends React.PureComponent {
@@ -65,7 +65,7 @@ class DocsImageUploadControl extends React.PureComponent {
     }
   };
 
-  _onSuccess = (image: DOMImage): void => {
+  _onSuccess = (image: ImageLike): void => {
     if (this._unmounted) {
       return;
     }

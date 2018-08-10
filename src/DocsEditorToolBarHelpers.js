@@ -5,7 +5,7 @@ import {EditorState, RichUtils} from 'draft-js';
 import {insertImage, insertTable, insertMath, toggleAnnotation, insertExpandable} from './DocsModifiers';
 
 import type {Spec} from './DocsEditorToolBarButton';
-import type {BaseEditor} from './Types';
+import type {DocsEditorLike} from './Types';
 
 type EditCapability = {
   annotation: boolean,
@@ -155,7 +155,7 @@ const ANNOTATION_SPECS = [
   },
 ];
 
-function isEditEnabled(editor: ?BaseEditor): boolean {
+function isEditEnabled(editor: ?DocsEditorLike): boolean {
   if (!editor) {
     return false;
   }
@@ -163,7 +163,7 @@ function isEditEnabled(editor: ?BaseEditor): boolean {
   return !!(onChange && editorState);
 }
 
-function isAnnotationEnabled(editor: ?BaseEditor): boolean {
+function isAnnotationEnabled(editor: ?DocsEditorLike): boolean {
   if (!editor || !isEditEnabled(editor)) {
     return false;
   }
@@ -173,7 +173,7 @@ function isAnnotationEnabled(editor: ?BaseEditor): boolean {
   return !selectionState.isCollapsed();
 }
 
-function getEditableInlineStyles(editor: ?BaseEditor): ?Set<any> {
+function getEditableInlineStyles(editor: ?DocsEditorLike): ?Set<any> {
   if (!editor || !isEditEnabled(editor)) {
     return null;
   }
@@ -198,7 +198,7 @@ function getEditableInlineStyles(editor: ?BaseEditor): ?Set<any> {
   return result;
 }
 
-function getEditableBlockStyles(editor: ?BaseEditor): ?Set<any> {
+function getEditableBlockStyles(editor: ?DocsEditorLike): ?Set<any> {
   if (!editor || !isEditEnabled(editor)) {
     return null;
   }
@@ -223,7 +223,7 @@ function getEditableBlockStyles(editor: ?BaseEditor): ?Set<any> {
   return result;
 }
 
-function getEditableHistory(editor: ?BaseEditor): ?Set<any> {
+function getEditableHistory(editor: ?DocsEditorLike): ?Set<any> {
   if (!editor || !isEditEnabled(editor)) {
     return null;
   }
@@ -241,7 +241,7 @@ function getEditableHistory(editor: ?BaseEditor): ?Set<any> {
   return result;
 }
 
-function isInsertTableEnabled(editor: ?BaseEditor): boolean {
+function isInsertTableEnabled(editor: ?DocsEditorLike): boolean {
   if (!editor || !isEditEnabled(editor)) {
     return false;
   }
@@ -256,7 +256,7 @@ function isInsertTableEnabled(editor: ?BaseEditor): boolean {
   );
 }
 
-function isInsertEnabled(editor: ?BaseEditor): boolean {
+function isInsertEnabled(editor: ?DocsEditorLike): boolean {
   if (!editor || !isEditEnabled(editor)) {
     return false;
   }
@@ -279,7 +279,7 @@ function maybeInsertBlock(
   return null;
 }
 
-function getEditCapability(editor: ?BaseEditor): EditCapability {
+function getEditCapability(editor: ?DocsEditorLike): EditCapability {
   return {
     annotation: isAnnotationEnabled(editor),
     blockStyles: getEditableBlockStyles(editor),

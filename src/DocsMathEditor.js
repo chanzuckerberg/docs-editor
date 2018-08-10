@@ -3,16 +3,16 @@
 import DocsMathEditorGuide  from './DocsMathEditorGuide';
 import React from 'react';
 import {Button} from 'react-bootstrap';
-import {uniqueID} from './DocsHelpers';
+import uniqueID from './uniqueID';
 
 import './DocsMathEditor.css';
 
-import type {MathEntityData} from './Types';
+import type {DocsMathEntityData} from './Types';
 
 type Props = {
-  entityData: MathEntityData,
+  entityData: DocsMathEntityData,
   onCancel: () => void,
-  onConfirm: (v: MathEntityData) => void,
+  onConfirm: (v: DocsMathEntityData) => void,
 };
 
 type State = {
@@ -25,7 +25,7 @@ type State = {
 // See http://cdn.summitlearning.org/assets/example_react_math_input_app_0_0_3_5.html
 type MessageDetail = {
   id: string,
-  value: MathEntityData,
+  value: DocsMathEntityData,
   contentLayout: {
     height: number,
     width: number,

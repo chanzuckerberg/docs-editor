@@ -4,12 +4,12 @@ import DocsDataAttributes from './DocsDataAttributes';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import cx from 'classnames';
-import docsWithContext from './docsWithContext';
+import withDocsContext from './withDocsContext';
 import nullthrows from 'nullthrows';
 
 import './DocsSafeImage.css';
 
-import type {DOMImage} from './Types';
+import type {ImageLike} from './Types';
 
 type Props = {
   alt?: string,
@@ -17,7 +17,7 @@ type Props = {
   height?: ?number,
   id?: string,
   onError?: ?(e: Error) => void,
-  onLoad?: ?(m: DOMImage) => void,
+  onLoad?: ?(m: ImageLike) => void,
   onClick?: ?(e: any) => void,
   src: ?string,
   width?: ?number,
@@ -151,14 +151,14 @@ class DocsSafeImage extends React.PureComponent {
   };
 
   _didLoad = (): void => {
-    const {onLoad, src} = this.props;
+    const {onLoad, src, id} = this.props;
     if (onLoad) {
       const element: any = nullthrows(ReactDOM.findDOMNode(this._ref));
       onLoad({
         src: nullthrows(src),
         height: nullthrows(element.naturalHeight),
         width: nullthrows(element.naturalWidth),
-        element: element,
+        id: id || '',
       });
     }
   };
@@ -174,4 +174,4 @@ class DocsSafeImage extends React.PureComponent {
   };
 }
 
-module.exports = docsWithContext(DocsSafeImage);
+module.exports = withDocsContext(DocsSafeImage);

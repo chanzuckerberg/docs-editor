@@ -5,7 +5,7 @@ import DocsDataAttributes from './DocsDataAttributes';
 import DocsEditor from './DocsEditor';
 import React from 'react';
 import {EditorState} from 'draft-js';
-import {uniqueID} from './DocsHelpers';
+import uniqueID from './uniqueID';
 
 class DocsPage extends React.PureComponent {
 
