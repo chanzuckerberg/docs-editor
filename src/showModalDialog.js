@@ -117,7 +117,7 @@ class Modal extends React.PureComponent {
       return;
     }
 
-    const parentNode: any = node ? node.parentNode : null;
+    const parentNode: any = node ? node.parentElement : null;
     if (
       parentNode &&
       parentNode.getAttribute &&
@@ -189,7 +189,7 @@ function getRootElement(id: string): HTMLElement {
   // http://accessibility.athena-ict.com/aria/examples/dialog.shtml
   element.setAttribute('role', 'dialog');
   element.setAttribute('aria-hidden', 'true');
-  if (!element.parentNode) {
+  if (!element.parentElement) {
     root.appendChild(element);
   }
   return element;
@@ -207,7 +207,7 @@ function unrenderModal(props: Props): void {
   const {id} = props;
   const rootNode = getRootElement(id);
   ReactDOM.unmountComponentAtNode(rootNode);
-  rootNode.parentNode && rootNode.parentNode.removeChild(rootNode);
+  rootNode.parentElement && rootNode.parentElement.removeChild(rootNode);
   resetModalsAccessibility();
 }
 

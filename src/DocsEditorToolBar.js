@@ -9,7 +9,7 @@ import DocsTextInputEditor from './DocsTextInputEditor';
 import React from 'react';
 import Timer from './Timer';
 import captureDocumentEvents from './captureDocumentEvents';
-import docsWithContext from './docsWithContext';
+import withDocsContext from './withDocsContext';
 import showModalDialog from './showModalDialog';
 import {ButtonGroup} from 'react-bootstrap';
 import {EditorState} from 'draft-js';
@@ -19,12 +19,12 @@ import {updateLink, updateEntityData} from './DocsModifiers';
 
 import './DocsEditorToolBar.css';
 
-import type {BaseEditor} from './Types';
+import type {DocsEditorLike} from './Types';
 import type {Spec} from './DocsEditorToolBarButton';
 import type {ModalHandle} from './showModalDialog';
 
 type Props = {
-  getEditor: () => ?BaseEditor,
+  getEditor: () => ?DocsEditorLike,
 };
 
 function showLinkEditorModalDialog(url: ?string, callback: Function): ModalHandle {
@@ -95,7 +95,7 @@ function showMathEditorModalDialog(
 }
 
 
-function updateEditorLink(editor: BaseEditor, url: ?string): void {
+function updateEditorLink(editor: DocsEditorLike, url: ?string): void {
   if (url === undefined) {
     return;
   }
@@ -332,4 +332,4 @@ class DocsEditorToolBar extends React.PureComponent {
   };
 }
 
-module.exports = docsWithContext(DocsEditorToolBar);
+module.exports = withDocsContext(DocsEditorToolBar);

@@ -1,11 +1,11 @@
 // @flow
 
-import type {MathEntityData} from './Types';
+import type {DocsMathEntityData} from './Types';
 
 function setMathValue(
-  entityData: MathEntityData,
-  newValue: MathEntityData,
-): MathEntityData {
+  entityData: DocsMathEntityData,
+  newValue: DocsMathEntityData,
+): DocsMathEntityData {
   return {
     ...entityData,
     ...newValue,

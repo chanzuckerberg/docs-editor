@@ -2,11 +2,11 @@
 
 import invariant from 'invariant';
 
-import type {DOMRect, DOMElement} from './Types';
+import type {ClientRectLike, ElementLike} from './Types';
 
-function asElement(node: any): DOMElement {
+function asElement(node: any): ElementLike {
   invariant(node && node.nodeType === 1, 'invalid element');
-  const el: Element = node;
+  const el: ElementLike = node;
   return el;
 }
 

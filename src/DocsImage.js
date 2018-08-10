@@ -8,34 +8,34 @@ import DocsSafeImage from './DocsSafeImage';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import ResizeObserver from './ResizeObserver';
-import asElement from './asElement';
 import cx from 'classnames';
-import docsWithContext from './docsWithContext';
+import withDocsContext from './withDocsContext';
 import nullthrows from 'nullthrows';
 import showModalDialog from './showModalDialog';
 import uniqueID from './uniqueID';
+import asElement from './asElement';
 import {setSize} from './DocsImageModifiers';
 
 import './DocsImage.css';
 
-import type {ImageEntityData, DOMImage} from './Types';
+import type {DocsImageEntityData, ImageLike} from './Types';
 import type {ModalHandle} from './showModalDialog';
 import type {ResizeObserverEntry} from './ResizeObserver';
 
 type Props = {
-  entityData: ImageEntityData,
-  onEntityDataChange: (o: ?ImageEntityData) => void,
+  entityData: DocsImageEntityData,
+  onEntityDataChange: (o: ?DocsImageEntityData) => void,
 };
 
 type State = {
   editing: boolean,
   error: boolean,
-  resizeChange: ?ImageEntityData,
+  resizeChange: ?DocsImageEntityData,
 };
 
 function showImageEditorModalDialog(
   docsContext: DocsContext,
-  entityData: ImageEntityData,
+  entityData: DocsImageEntityData,
   callback: Function,
 ): ModalHandle {
   return showModalDialog(
@@ -132,27 +132,28 @@ class DocsImage extends React.Component {
     const {width, height, url} = this.props.entityData;
     const element = document.getElementById(this._imageID);
     if (element && width && height && url) {
-      const image: DOMImage = {
-        width: Number(width),
+      const image: ImageLike = {
         height: Number(height),
+        id: this._imageID,
         src: String(url),
-        element,
+        width: Number(width),
       };
       this._calibrateSize(image);
     }
   };
 
-  _onLoad = (image: DOMImage): void => {
+  _onLoad = (image: ImageLike): void => {
     this.setState({error: false});
     this._calibrateSize(image);
   };
 
-  _calibrateSize = (image: DOMImage): void => {
+  _calibrateSize = (image: ImageLike): void => {
     const {entityData} = this.props;
-    const {src, width, height, element} = image;
+    const {src, width, height, id} = image;
     if (src === entityData.url && width && height) {
       // If the displayed image is wider than the maximum width allowed,
       // we'd constraint the width to avoid broken layout.
+      const element = id ? document.getElementById(id) : null;
       const el = nullthrows(element);
       const maxWidth = DocsImageResizeHandle.getMaxResizeWidth(el);
       const aspectRatio = width / height;
@@ -200,7 +201,7 @@ class DocsImage extends React.Component {
     canEdit && onEntityDataChange(newEntityData);
   };
 
-  _onEntityDataChange = (data: ?ImageEntityData): void => {
+  _onEntityDataChange = (data: ?DocsImageEntityData): void => {
     if (this._unmounted) {
       return;
     }
@@ -212,4 +213,4 @@ class DocsImage extends React.Component {
   };
 }
 
-module.exports = docsWithContext(DocsImage);
+module.exports = withDocsContext(DocsImage);

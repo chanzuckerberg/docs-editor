@@ -7,7 +7,7 @@ import React from 'react';
 import Timer from './Timer';
 import cx from 'classnames';
 import convertFromRaw from './convertFromRaw';
-import docsWithContext from './docsWithContext';
+import withDocsContext from './withDocsContext';
 import {LOCAL_CHANGE_ID} from './DocsTableModifiers';
 import {convertToRaw, EditorState} from 'draft-js';
 import uniqueID from './uniqueID';
@@ -166,4 +166,4 @@ class DocsTableCell extends React.PureComponent {
   };
 }
 
-module.exports = docsWithContext(DocsTableCell);
+module.exports = withDocsContext(DocsTableCell);

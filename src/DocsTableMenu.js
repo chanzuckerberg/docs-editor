@@ -6,7 +6,7 @@ import React from 'react';
 import {EditorState} from 'draft-js';
 import {updateEntityData} from './DocsModifiers';
 
-import type {BaseEditor} from './Types';
+import type {DocsEditorLike} from './Types';
 
 type Option = {
   action?: ?string,
@@ -20,7 +20,7 @@ type Props = {
   editorState: EditorState,
   entity: Object,
   entityKey: string,
-  getEditor: () => ?BaseEditor,
+  getEditor: () => ?DocsEditorLike,
   onChange: (e: EditorState) => void,
   options: Array<?Option>,
   title: string,

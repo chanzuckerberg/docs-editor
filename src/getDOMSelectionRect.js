@@ -1,8 +1,8 @@
 // @flow
 
-import type {DOMRect, DOMElement} from './Types';
+import type {ClientRectLike, ElementLike} from './Types';
 
-function getDOMSelectionRect(): ?DOMRect  {
+function getDOMSelectionRect(): ?ClientRectLike  {
   const selection = window.getSelection();
   if (!selection || selection.rangeCount !== 1) {
     return null;

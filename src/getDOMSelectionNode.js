@@ -9,7 +9,7 @@ function getDOMSelectionNode(): ?Element {
   let node = range.commonAncestorContainer;
   if (node && node.nodeType === 3) {
     // TEXT_NODE
-    node = node.parentNode;
+    node = node.parentElement;
   }
   return node || null;
 }

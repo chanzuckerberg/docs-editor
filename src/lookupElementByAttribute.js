@@ -1,10 +1,12 @@
 // @flow
 
+import type {ElementLike} from './Types';
+
 function lookupElementByAttribute(
-  element: ?Element,
+  element: ElementLike,
   attr: string,
   value: ?string,
-): ?Element {
+): ?ElementLike {
   let node: any = element;
   while (node) {
     if (node && node.nodeType === 1) {
@@ -14,7 +16,7 @@ function lookupElementByAttribute(
         return node;
       }
     }
-    node = node.parentNode;
+    node = node.parentElement;
   }
   return null;
 }

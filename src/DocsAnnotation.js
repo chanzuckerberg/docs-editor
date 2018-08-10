@@ -2,12 +2,12 @@
 
 import React from 'react';
 
-import type {AnnotationEtityData} from './Types';
+import type {DocsAnnotationEtityData} from './Types';
 
 import './DocsAnnotation.css';
 
 type Props = {
-  entityData: AnnotationEtityData,
+  entityData: DocsAnnotationEtityData,
   children?: any,
 };
 

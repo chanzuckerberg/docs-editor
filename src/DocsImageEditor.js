@@ -8,28 +8,28 @@ import DocsMenuItem from './DocsMenuItem';
 import DocsSafeImage from './DocsSafeImage';
 import Input from './DocsInput';
 import React from 'react';
-import docsWithContext from './docsWithContext';
+import withDocsContext from './withDocsContext';
 
 import {Alert, Button} from 'react-bootstrap';
 import {setURL} from './DocsImageModifiers';
 
 import './DocsImageEditor.css';
 
-import type {ImageEntityData, DOMImage} from './Types';
+import type {DocsImageEntityData, ImageLike} from './Types';
 
 type Props = {
   docsContext: DocsContext,
-  entityData: ImageEntityData,
+  entityData: DocsImageEntityData,
   onCancel: () => void,
-  onConfirm: (o: ImageEntityData) => void,
+  onConfirm: (o: DocsImageEntityData) => void,
 };
 
 type State = {
-  data: ImageEntityData,
+  data: DocsImageEntityData,
   errorMessage: string,
   isUploading: boolean,
   isValidating: boolean,
-  validatedImage: ?DOMImage,
+  validatedImage: ?ImageLike,
 };
 
 const ENTER_CODE = 13;
@@ -78,6 +78,7 @@ function getInitialState(props: Props): State {
       src: url,
       width,
       height,
+      id: '',
     } :
     null;
 
@@ -284,7 +285,7 @@ class DocsImageEditor extends React.PureComponent {
     });
   };
 
-  _onValidateSuccess = (image: DOMImage): void => {
+  _onValidateSuccess = (image: ImageLike): void => {
     const {data} = this.state;
     const {src, width, height} = image;
     this.setState({
@@ -315,7 +316,7 @@ class DocsImageEditor extends React.PureComponent {
     });
   };
 
-  _onUploadSuccess = (image: DOMImage): void => {
+  _onUploadSuccess = (image: ImageLike): void => {
     const {src, width, height} = image;
     const {data} = this.state;
     this.setState({
@@ -343,4 +344,4 @@ class DocsImageEditor extends React.PureComponent {
   };
 }
 
-module.exports = docsWithContext(DocsImageEditor);
+module.exports = withDocsContext(DocsImageEditor);

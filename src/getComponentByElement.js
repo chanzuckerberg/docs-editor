@@ -20,7 +20,7 @@ function getComponentByElement(
     if (elementToComponent.has(element)) {
       return elementToComponent.get(element);
     }
-    element = element.parentNode;
+    element = element.parentElement;
   }
   return null;
 }

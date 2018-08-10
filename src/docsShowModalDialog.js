@@ -78,7 +78,7 @@ function getRootElement(id: string): HTMLElement {
   const element = document.getElementById(id) || document.createElement('div');
   element.className = 'modal-dialog-root';
   element.id = id;
-  if (!element.parentNode) {
+  if (!element.parentElement) {
     root.insertBefore(element, element.firstChild);
   }
   return element;
@@ -95,7 +95,7 @@ function unrenderModal(props: Props): void {
   const {id} = props;
   const rootNode = getRootElement(id);
   ReactDOM.unmountComponentAtNode(rootNode);
-  rootNode.parentNode && rootNode.parentNode.removeChild(rootNode);
+  rootNode.parentElement && rootNode.parentElement.removeChild(rootNode);
 }
 
 function docsShowModalDialog(

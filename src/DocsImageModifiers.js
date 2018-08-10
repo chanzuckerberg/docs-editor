@@ -1,8 +1,8 @@
 // @flow
 
-import type {ImageEntityData} from './Types';
+import type {DocsImageEntityData} from './Types';
 
-function setURL(entityData: ImageEntityData, url: string): ImageEntityData {
+function setURL(entityData: DocsImageEntityData, url: string): DocsImageEntityData {
   return {
     ...entityData,
     height: undefined,
@@ -12,10 +12,10 @@ function setURL(entityData: ImageEntityData, url: string): ImageEntityData {
 }
 
 function setSize(
-  entityData: ImageEntityData,
+  entityData: DocsImageEntityData,
   width: number,
   height: number,
-): ImageEntityData {
+): DocsImageEntityData {
   return {
     ...entityData,
     width,
@@ -24,9 +24,9 @@ function setSize(
 }
 
 function setAlignment(
-  entityData: ImageEntityData,
+  entityData: DocsImageEntityData,
   align: string,
-): ImageEntityData {
+): DocsImageEntityData {
   return {
     ...entityData,
     align,

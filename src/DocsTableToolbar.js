@@ -5,8 +5,8 @@ import DocsTableMenu from './DocsTableMenu';
 import DocsTableModifiers from './DocsTableModifiers';
 import React from 'react';
 import cx from 'classnames';
-import docsWithContext from './docsWithContext';
-import type {BaseEditor} from './Types';
+import withDocsContext from './withDocsContext';
+import type {DocsEditorLike} from './Types';
 import {ButtonGroup} from 'react-bootstrap';
 import {EditorState} from 'draft-js';
 
@@ -14,11 +14,11 @@ type Props = {
   editorState: EditorState,
   entity: Object,
   entityKey: string,
-  getEditor: () => ?BaseEditor,
+  getEditor: () => ?DocsEditorLike,
   onChange: (e: EditorState) => void,
 };
 
-const {TableEntityDataKeys} = DocsTableModifiers;
+const {DocsTableEntityDataKeys} = DocsTableModifiers;
 
 const GRID_OPTIONS = [
   {
@@ -64,26 +64,26 @@ const GRID_OPTIONS = [
 const STYLE_OPTIONS = [
   {
     action: DocsActionTypes.TABLE_TOOGLE_HEADER_BACKGROUND,
-    activeName: TableEntityDataKeys.TOP_ROW_BG_STYLE,
+    activeName: DocsTableEntityDataKeys.TOP_ROW_BG_STYLE,
     label: 'Highlight Header',
     modifier: DocsTableModifiers.toggleHeaderBackground,
   },
   {
     action: DocsActionTypes.TABLE_TOOGLE_INDEX_COLUMN_BACKGROUND,
-    activeName: TableEntityDataKeys.LEFT_COL_BG_STYLE,
+    activeName: DocsTableEntityDataKeys.LEFT_COL_BG_STYLE,
     entityDataName: 'leftColBgStyle',
     label: 'Highlight First Column',
     modifier: DocsTableModifiers.toggleIndexColumnBackground,
   },
   {
     action: DocsActionTypes.TABLE_TOOGLE_BORDERS,
-    activeName: TableEntityDataKeys.NO_BORDERS,
+    activeName: DocsTableEntityDataKeys.NO_BORDERS,
     label: 'Hide Borders',
     modifier: DocsTableModifiers.toggleBorders,
   },
   {
     action: DocsActionTypes.TABLE_TOOGLE_PADDINGS,
-    activeName: TableEntityDataKeys.PADDING_SIZE,
+    activeName: DocsTableEntityDataKeys.PADDING_SIZE,
     label: 'Larger Paddings',
     modifier: DocsTableModifiers.togglePaddings,
   },
@@ -124,4 +124,4 @@ class DocsTableToolbar extends React.PureComponent {
   }
 }
 
-module.exports = docsWithContext(DocsTableToolbar);
+module.exports = withDocsContext(DocsTableToolbar);

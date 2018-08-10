@@ -2,10 +2,10 @@
 
 import React from 'react';
 
-import type {LinkEtityData} from './Types';
+import type {DocsLinkEtityData} from './Types';
 
 type Props = {
-  entityData: LinkEtityData,
+  entityData: DocsLinkEtityData,
   children?: any,
 };
 

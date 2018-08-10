@@ -7,7 +7,7 @@ import React from 'react';
 import Timer from './Timer';
 import _ from 'underscore';
 import cx from 'classnames';
-import docsWithContext from './docsWithContext';
+import withDocsContext from './withDocsContext';
 import {getDefaultKeyBinding, ContentBlock, Editor, EditorState, RichUtils} from 'draft-js';
 import {pasteHTML, ensureAtomicBlocksAreSelectable} from './DocsModifiers';
 import splitTextIntoTextBlocks from './splitTextIntoTextBlocks';
@@ -19,9 +19,9 @@ import warn from './warn';
 
 import './DocsBaseEditor.css';
 
-import type {EditorProps} from './Types';
+import type {DocsEditorProps} from './Types';
 
-type Props = EditorProps;
+type Props = DocsEditorProps;
 
 // Patch
 const selectionPrototype: any = Selection.prototype;
@@ -63,7 +63,7 @@ class DocsBaseEditor extends React.PureComponent {
     focused: false,
   };
 
-  props: EditorProps;
+  props: DocsEditorProps;
 
   constructor(props: Props, context: Object) {
     super(props);
@@ -262,4 +262,4 @@ class DocsBaseEditor extends React.PureComponent {
   }
 }
 
-module.exports = docsWithContext(DocsBaseEditor);
+module.exports = withDocsContext(DocsBaseEditor);

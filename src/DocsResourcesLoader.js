@@ -1,6 +1,5 @@
 // @flow
 
-import asElement from './asElement';
 import nullthrows from 'nullthrows';
 import uniqueID from './uniqueID';
 import warn from './warn';
@@ -14,7 +13,7 @@ function createElement(tag: string, attrs: Object): Element {
       el.setAttribute(key, attrs[key]);
     }
   });
-  return asElement(el);
+  return el;
 }
 
 function cleanElementHandlers(element: Element): void {
@@ -29,8 +28,8 @@ function injectElement(
 ): void {
   const oldEl = element.id ? document.getElementById(element.id) : null;
   if (oldEl) {
-    cleanElementHandlers(asElement(oldEl));
-    oldEl.parentNode && oldEl.parentNode.removeChild(oldEl);
+    cleanElementHandlers(oldEl);
+    oldEl.parentElement && oldEl.parentElement.removeChild(oldEl);
   }
   const node: any = element;
   node.onload = () => {
@@ -44,7 +43,7 @@ function injectElement(
     warn('Failed to load resource for <' + element.id + '>, will try again');
     setTimeout(retry, 1000);
   };
-  const head = asElement(document.head || document.body);
+  const head = nullthrows(document.head || document.body);
   head.appendChild(element);
 }
 
@@ -64,7 +63,7 @@ function isUsingMaterialIcon() {
     root.insertBefore(el, root.firstChild);
   }
   const result = /material/ig.test(window.getComputedStyle(el).fontFamily);
-  nullthrows(el.parentNode).removeChild(el);
+  nullthrows(el.parentElement).removeChild(el);
   return result;
 }
 
@@ -133,5 +132,4 @@ class DocsResourcesLoader {
   };
 }
 
-module.exports = new DocsResourcesLoader();
 module.exports = new DocsResourcesLoader();

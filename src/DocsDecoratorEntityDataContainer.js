@@ -17,6 +17,8 @@ import {ContentState, Entity} from 'draft-js';
 
 import './DocsDecoratorEntityDataContainer.css';
 
+import type {ElementLike} from './Types';
+
 type Props = {
   contentState: ContentState,
   entityKey: string,
@@ -141,7 +143,7 @@ class DocsDecoratorEntityDataContainer extends React.PureComponent {
     this._timer.set(this._eraseEntityData);
   };
 
-  _getEditorElement(): ?Element {
+  _getEditorElement(): ?ElementLike {
     return lookupElementByAttribute(
       asElement(ReactDOM.findDOMNode(this)),
       DocsDataAttributes.EDITOR_FOR,
@@ -174,8 +176,7 @@ class DocsDecoratorEntityDataContainer extends React.PureComponent {
       return;
     }
     // Inject EntityData as node so that they could be copied.0
-    const node: Element = asElement(ReactDOM.findDOMNode(this));
-    invariant(node.nodeType === 1, 'must be an element');
+    const node = asElement(ReactDOM.findDOMNode(this));
     this._node = node;
 
     const entity = this._getEntity();
