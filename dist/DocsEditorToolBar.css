@@ -1,0 +1,11 @@
+.docs-editor-toolbar {
+  user-select: none;
+}
+
+.docs-editor-toolbar-body {
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 5px;
+  padding: 0;
+  position: relative;
+  user-select: none;
+}

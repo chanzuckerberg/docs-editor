@@ -1,0 +1,109 @@
+// @flow
+
+import DocsDataAttributes from './DocsDataAttributes';
+import DocsEventTypes from './DocsEventTypes';
+import DocsMathEditor from './DocsMathEditor';
+import DocsResourcesLoader from './DocsResourcesLoader';
+import React from 'react';
+import cx from 'classnames';
+import withDocsContext from './withDocsContext';
+import renderLatexAsHTML from './renderLatexAsHTML';
+import showModalDialog from './showModalDialog';
+import uniqueID from './uniqueID';
+import {setMathValue} from './MathModifiers';
+
+import './DocsMath.css';
+
+import type {DocsMathEntityData} from './Types';
+import type {ModalHandle} from './showModalDialog';
+
+type Props = {
+  entityData: DocsMathEntityData,
+  onEntityDataChange: (o: ?DocsMathEntityData) => void,
+};
+
+function showMathEditorModalDialog(
+  entityData: DocsMathEntityData,
+  callback: Function,
+): ModalHandle {
+  return showModalDialog(
+    DocsMathEditor, {
+    title: 'Edit Math',
+    entityData,
+  }, callback);
+}
+
+DocsResourcesLoader.init();
+
+class DocsMath extends React.PureComponent {
+
+  props: Props;
+
+  _id = uniqueID();
+  _mathEditorModal = null;
+
+  state = {
+    editing: false,
+    ready: DocsResourcesLoader.isReady(),
+  };
+
+  componentWillMount(): void {
+    DocsResourcesLoader.on(DocsEventTypes.LOAD, this._onKatexLoad);
+  }
+
+  componentWillUnmount(): void {
+    this._mathEditorModal && this._mathEditorModal.dispose();
+    DocsResourcesLoader.off(DocsEventTypes.LOAD, this._onKatexLoad);
+  }
+
+  render(): React.Element<any> {
+    const {canEdit} = this.context.docsContext;
+    const {editing, ready} = this.state;
+    const {entityData} = this.props;
+    const {latex} = entityData;
+    const className = cx({
+      'docs-math': true,
+      'docs-math-editing': editing,
+    });
+
+    const attrs = {
+      [DocsDataAttributes.WIDGET]: true,
+    };
+    const content = ready ?
+      <span dangerouslySetInnerHTML={{__html: renderLatexAsHTML(latex || '')}} /> :
+      <span>...</span>;
+    return (
+      <span
+        {...attrs}
+        className={className}
+        contentEditable={false}
+        onClick={canEdit ? this._onClick : null}>
+        {content}
+      </span>
+    );
+  }
+
+  _onMathValueSet = (value: ?DocsMathEntityData): void => {
+    this.setState({editing: false});
+    if (!value) {
+      // cancelled.
+      return;
+    }
+    const {entityData, onEntityDataChange} = this.props;
+    onEntityDataChange(setMathValue(entityData, value));
+  };
+
+  _onKatexLoad = (): void => {
+    this.setState({ready: true});
+  };
+
+  _onClick = (e: any) => {
+    e.preventDefault();
+    this.setState({editing: true});
+    const {entityData} = this.props;
+    this._mathEditorModal =
+      showMathEditorModalDialog(entityData, this._onMathValueSet);
+  }
+}
+
+module.exports = withDocsContext(DocsMath);

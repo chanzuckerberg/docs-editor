@@ -1,0 +1,21 @@
+.docs-icon {
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  direction: ltr;
+  display: inline-block;
+  font-family: 'Material Icons';
+  font-feature-settings: 'liga';
+  font-size: 120%;
+  font-style: normal;
+  font-weight: normal;
+  height: 1em;
+  letter-spacing: normal;
+  line-height: 1;
+  position: relative;
+  text-rendering: optimizeLegibility;
+  text-transform: none;
+  top: 3px;
+  white-space: nowrap;
+  width: 1em;
+  word-wrap: normal;
+}
