@@ -1,5 +1,5 @@
 // @flow
-import keyMirror from 'fbjs/lib/keyMirror';
+import keyMirror from './keyMirror';
 module.exports = keyMirror({
   EDITOR_IN: null,
   EDITOR_OUT: null,

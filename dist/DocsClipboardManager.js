@@ -8,10 +8,6 @@ var _createClass2 = require('babel-runtime/helpers/createClass');
 
 var _createClass3 = _interopRequireDefault(_createClass2);
 
-var _DataTransfer = require('fbjs/lib/DataTransfer');
-
-var _DataTransfer2 = _interopRequireDefault(_DataTransfer);
-
 var _Timer = require('./Timer');
 
 var _Timer2 = _interopRequireDefault(_Timer);
@@ -23,6 +19,10 @@ var _captureDocumentEvents2 = _interopRequireDefault(_captureDocumentEvents);
 var _nullthrows = require('nullthrows');
 
 var _nullthrows2 = _interopRequireDefault(_nullthrows);
+
+var _DataTransfer = require('fbjs/lib/DataTransfer');
+
+var _DataTransfer2 = _interopRequireDefault(_DataTransfer);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -55,7 +55,8 @@ var DocsClipboardManager = function () {
   (0, _createClass3.default)(DocsClipboardManager, [{
     key: 'getClipboardData',
     value: function getClipboardData() {
-      return this._pasteData;
+      var dt = this._pasteData;
+      return dt;
     }
   }]);
   return DocsClipboardManager;

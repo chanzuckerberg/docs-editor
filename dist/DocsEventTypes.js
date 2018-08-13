@@ -1,6 +1,6 @@
 'use strict';
 
-var _keyMirror = require('fbjs/lib/keyMirror');
+var _keyMirror = require('./keyMirror');
 
 var _keyMirror2 = _interopRequireDefault(_keyMirror);
 

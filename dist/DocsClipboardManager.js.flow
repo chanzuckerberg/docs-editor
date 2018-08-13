@@ -1,9 +1,13 @@
 // @flow
 
-import DataTransfer from 'fbjs/lib/DataTransfer';
 import Timer from './Timer';
 import captureDocumentEvents from './captureDocumentEvents';
 import nullthrows from 'nullthrows';
+import DataTransfer from 'fbjs/lib/DataTransfer';
+
+type ClipboardData = {
+  isRichText: () => boolean,
+};
 
 class DocsClipboardManager {
   _pasteData = null;
@@ -17,8 +21,9 @@ class DocsClipboardManager {
     });
   }
 
-  getClipboardData(): ?DataTransfer {
-    return this._pasteData;
+  getClipboardData(): ?ClipboardData {
+    const dt: any = this._pasteData;
+    return dt;
   }
 
   _onPaste = (e: any): void => {
