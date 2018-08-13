@@ -1,92 +1,121 @@
 'use strict';
 
-var _defineProperty2 = require('babel-runtime/helpers/defineProperty');
-
-var _defineProperty3 = _interopRequireDefault(_defineProperty2);
-
-var _DocsActionTypes = require('./DocsActionTypes');
-
-var _DocsActionTypes2 = _interopRequireDefault(_DocsActionTypes);
-
-var _DocsContext = require('./DocsContext');
-
-var _DocsContext2 = _interopRequireDefault(_DocsContext);
-
-var _DocsEditor = require('./DocsEditor');
-
-var _DocsEditor2 = _interopRequireDefault(_DocsEditor);
-
-var _DocsImageUploadControl = require('./DocsImageUploadControl');
-
-var _DocsImageUploadControl2 = _interopRequireDefault(_DocsImageUploadControl);
-
-var _Timer = require('./Timer');
-
-var _Timer2 = _interopRequireDefault(_Timer);
-
-var _Types = require('./Types');
-
-var _Types2 = _interopRequireDefault(_Types);
-
-var _captureDocumentEvents = require('./captureDocumentEvents');
-
-var _captureDocumentEvents2 = _interopRequireDefault(_captureDocumentEvents);
-
-var _convertFromRaw = require('./convertFromRaw');
-
-var _convertFromRaw2 = _interopRequireDefault(_convertFromRaw);
-
-var _isEditorStateEmpty = require('./isEditorStateEmpty');
-
-var _isEditorStateEmpty2 = _interopRequireDefault(_isEditorStateEmpty);
-
-var _showModalDialog = require('./showModalDialog');
-
-var _showModalDialog2 = _interopRequireDefault(_showModalDialog);
-
-var _uniqueID = require('./uniqueID');
-
-var _uniqueID2 = _interopRequireDefault(_uniqueID);
-
-var _withDocsContext = require('./withDocsContext');
-
-var _withDocsContext2 = _interopRequireDefault(_withDocsContext);
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 var _draftJs = require('draft-js');
 
+Object.defineProperty(exports, 'convertToRaw', {
+  enumerable: true,
+  get: function get() {
+    return _draftJs.convertToRaw;
+  }
+});
+Object.defineProperty(exports, 'EditorState', {
+  enumerable: true,
+  get: function get() {
+    return _draftJs.EditorState;
+  }
+});
+
+var _DocsActionTypes = require('./DocsActionTypes');
+
+Object.defineProperty(exports, 'DocsActionTypes', {
+  enumerable: true,
+  get: function get() {
+    return _interopRequireDefault(_DocsActionTypes).default;
+  }
+});
+
+var _DocsContext = require('./DocsContext');
+
+Object.defineProperty(exports, 'DocsContext', {
+  enumerable: true,
+  get: function get() {
+    return _interopRequireDefault(_DocsContext).default;
+  }
+});
+
+var _DocsEditor = require('./DocsEditor');
+
+Object.defineProperty(exports, 'DocsEditor', {
+  enumerable: true,
+  get: function get() {
+    return _interopRequireDefault(_DocsEditor).default;
+  }
+});
+
+var _DocsImageUploadControl = require('./DocsImageUploadControl');
+
+Object.defineProperty(exports, 'DocsImageUploadControl', {
+  enumerable: true,
+  get: function get() {
+    return _interopRequireDefault(_DocsImageUploadControl).default;
+  }
+});
+
+var _Timer = require('./Timer');
+
+Object.defineProperty(exports, 'Timer', {
+  enumerable: true,
+  get: function get() {
+    return _interopRequireDefault(_Timer).default;
+  }
+});
+
+var _captureDocumentEvents = require('./captureDocumentEvents');
+
+Object.defineProperty(exports, 'captureDocumentEvents', {
+  enumerable: true,
+  get: function get() {
+    return _interopRequireDefault(_captureDocumentEvents).default;
+  }
+});
+
+var _convertFromRaw = require('./convertFromRaw');
+
+Object.defineProperty(exports, 'convertFromRaw', {
+  enumerable: true,
+  get: function get() {
+    return _interopRequireDefault(_convertFromRaw).default;
+  }
+});
+
+var _withDocsContext = require('./withDocsContext');
+
+Object.defineProperty(exports, 'withDocsContext', {
+  enumerable: true,
+  get: function get() {
+    return _interopRequireDefault(_withDocsContext).default;
+  }
+});
+
+var _isEditorStateEmpty = require('./isEditorStateEmpty');
+
+Object.defineProperty(exports, 'isEditorStateEmpty', {
+  enumerable: true,
+  get: function get() {
+    return _interopRequireDefault(_isEditorStateEmpty).default;
+  }
+});
+
+var _showModalDialog = require('./showModalDialog');
+
+Object.defineProperty(exports, 'showModalDialog', {
+  enumerable: true,
+  get: function get() {
+    return _interopRequireDefault(_showModalDialog).default;
+  }
+});
+
+var _uniqueID = require('./uniqueID');
+
+Object.defineProperty(exports, 'uniqueID', {
+  enumerable: true,
+  get: function get() {
+    return _interopRequireDefault(_uniqueID).default;
+  }
+});
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-module.exports = (0, _defineProperty3.default)({
-  DocsActionTypes: _DocsActionTypes2.default,
-  DocsContext: _DocsContext2.default,
-  DocsEditor: _DocsEditor2.default,
-  DocsImageUploadControl: _DocsImageUploadControl2.default,
-  EditorState: _draftJs.EditorState,
-  Timer: _Timer2.default,
-  captureDocumentEvents: _captureDocumentEvents2.default,
-  convertFromRaw: _convertFromRaw2.default,
-  convertToRaw: _draftJs.convertToRaw,
-  isEditorStateEmpty: _isEditorStateEmpty2.default,
-  showModalDialog: _showModalDialog2.default,
-  uniqueID: _uniqueID2.default,
-  withDocsContext: _withDocsContext2.default
-
-}, 'withDocsContext', _withDocsContext2.default);
-
-/*
-export {convertToRaw, EditorState} from 'draft-js';
-export {default as DocsActionTypes} from './DocsActionTypes';
-export {default as DocsContext} from './DocsContext';
-export {default as DocsEditor} from './DocsEditor';
-export {default as DocsImageUploadControl} from './DocsImageUploadControl';
-export {default as Timer} from './Timer';
-export {default as captureDocumentEvents} from './captureDocumentEvents';
-export {default as convertFromRaw} from './convertFromRaw';
-export {default as withDocsContext} from './withDocsContext';
-export {default as isEditorStateEmpty} from './isEditorStateEmpty';
-export {default as showModalDialog} from './showModalDialog';
-export {default as uniqueID} from './uniqueID';
-
-// Flow types.
-export type {DocsImageEntityData, ImageLike, DocsEditorRuntime} from './Types';
-*/
