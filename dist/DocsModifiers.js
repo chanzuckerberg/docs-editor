@@ -16,9 +16,9 @@ var _DocsDecoratorTypes = require('./DocsDecoratorTypes');
 
 var _DocsDecoratorTypes2 = _interopRequireDefault(_DocsDecoratorTypes);
 
-var _docsConvertFromHTML = require('./docsConvertFromHTML');
+var _convertFromHTML = require('./convertFromHTML');
 
-var _docsConvertFromHTML2 = _interopRequireDefault(_docsConvertFromHTML);
+var _convertFromHTML2 = _interopRequireDefault(_convertFromHTML);
 
 var _getCurrentSelectionEntity = require('./getCurrentSelectionEntity');
 
@@ -279,7 +279,7 @@ function ensureAtomicBlocksAreSelectable(editorState) {
 }
 
 function pasteHTML(editorState, html) {
-  var newContentState = (0, _docsConvertFromHTML2.default)(editorState, html);
+  var newContentState = (0, _convertFromHTML2.default)(editorState, html);
   return _draftJs.EditorState.push(editorState, newContentState, 'insert-fragment');
 }
 

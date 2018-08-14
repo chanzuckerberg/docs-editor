@@ -4,7 +4,7 @@ import DocsBlockTypeToComponent from './DocsBlockTypeToComponent';
 import DocsBlockTypes from './DocsBlockTypes';
 import DocsDecorator from './DocsDecorator';
 import DocsDecoratorTypes from './DocsDecoratorTypes';
-import docsConvertFromHTML from './docsConvertFromHTML';
+import convertFromHTML from './convertFromHTML';
 import getCurrentSelectionEntity from './getCurrentSelectionEntity';
 import tryInsertAtomicBlock from './tryInsertAtomicBlock';
 import uniqueID from './uniqueID';
@@ -387,7 +387,7 @@ function pasteHTML(
   editorState: EditorState,
   html: string,
 ): EditorState {
-  const newContentState = docsConvertFromHTML(editorState, html);
+  const newContentState = convertFromHTML(editorState, html);
   return EditorState.push(editorState, newContentState, 'insert-fragment');
 }
 
