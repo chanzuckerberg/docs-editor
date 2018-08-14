@@ -1,7 +1,7 @@
 {
-  "name": "education-doc-editor",
+  "name": "doc-editor",
   "version": "0.0.4",
-  "subversion": "1",
+  "subversion": "2",
   "description": "rich text editor for education purpose",
   "main": "dist/index.js",
   "scripts": {

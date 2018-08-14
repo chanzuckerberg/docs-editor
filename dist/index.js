@@ -73,21 +73,21 @@ Object.defineProperty(exports, 'captureDocumentEvents', {
   }
 });
 
+var _convertFromHTML = require('./convertFromHTML');
+
+Object.defineProperty(exports, 'convertFromHTML', {
+  enumerable: true,
+  get: function get() {
+    return _interopRequireDefault(_convertFromHTML).default;
+  }
+});
+
 var _convertFromRaw = require('./convertFromRaw');
 
 Object.defineProperty(exports, 'convertFromRaw', {
   enumerable: true,
   get: function get() {
     return _interopRequireDefault(_convertFromRaw).default;
-  }
-});
-
-var _withDocsContext = require('./withDocsContext');
-
-Object.defineProperty(exports, 'withDocsContext', {
-  enumerable: true,
-  get: function get() {
-    return _interopRequireDefault(_withDocsContext).default;
   }
 });
 
@@ -115,6 +115,15 @@ Object.defineProperty(exports, 'uniqueID', {
   enumerable: true,
   get: function get() {
     return _interopRequireDefault(_uniqueID).default;
+  }
+});
+
+var _withDocsContext = require('./withDocsContext');
+
+Object.defineProperty(exports, 'withDocsContext', {
+  enumerable: true,
+  get: function get() {
+    return _interopRequireDefault(_withDocsContext).default;
   }
 });
 

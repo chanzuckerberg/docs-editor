@@ -3,7 +3,7 @@
 import React from 'react';
 
 import {ButtonGroup, Button} from 'react-bootstrap';
-import {DocsEditor, DocsContext, convertToRaw, convertFromRaw, uniqueID} from '../src/index.js';
+import {DocsEditor, DocsContext, EditorState, convertToRaw, convertFromRaw, convertFromHTML, uniqueID} from '../src/index.js';
 
 // Because React-Bootstrap doesn't depend on a very precise version of
 // Bootstrap, we don't ship with any included css. However, some stylesheet is
@@ -110,7 +110,8 @@ class DemoApp extends React.PureComponent<any, any, any> {
               <Button onClick={this._clear}>Clear</Button>
             </ButtonGroup>
             <ButtonGroup>
-              <Button onClick={this._import}>Import</Button>
+              <Button onClick={this._importJSON}>Import JSON</Button>
+              <Button onClick={this._importHTML}>Import HTML</Button>
               <Button onClick={this._reset}>Reset</Button>
             </ButtonGroup>
           </div>
@@ -128,7 +129,18 @@ class DemoApp extends React.PureComponent<any, any, any> {
     this.setState({editorState});
   };
 
-  _import = (): void => {
+  _importHTML = (): void => {
+    const {debugKey, editorState} = this.state;
+    const el:any = document.getElementById(debugKey);
+    if (!el) {
+      return;
+    }
+    this.setState({
+      editorState: convertFromHTML(el.value, editorState),
+    });
+  };
+
+  _importJSON = (): void => {
     const {debugKey, editorState} = this.state;
     const el:any = document.getElementById(debugKey);
     if (el) {

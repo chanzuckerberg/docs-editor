@@ -387,8 +387,7 @@ function pasteHTML(
   editorState: EditorState,
   html: string,
 ): EditorState {
-  const newContentState = convertFromHTML(editorState, html);
-  return EditorState.push(editorState, newContentState, 'insert-fragment');
+  return convertFromHTML(html, editorState);
 }
 
 // Helper function for `ensureAtomicBlocksAreSelectable()`.

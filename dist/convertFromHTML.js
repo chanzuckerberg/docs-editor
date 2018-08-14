@@ -48,6 +48,10 @@ var _asElement = require('./asElement');
 
 var _asElement2 = _interopRequireDefault(_asElement);
 
+var _convertFromRaw = require('./convertFromRaw');
+
+var _convertFromRaw2 = _interopRequireDefault(_convertFromRaw);
+
 var _getSafeBodyFromHTML = require('./getSafeBodyFromHTML');
 
 var _getSafeBodyFromHTML2 = _interopRequireDefault(_getSafeBodyFromHTML);
@@ -98,7 +102,7 @@ var ZERO_WIDTH_CHAR = '\u200B';
 // https://github.com/facebook/draft-js/issues/787
 // https://github.com/HubSpot/draft-convert#convertfromhtml
 // https://zhuanlan.zhihu.com/p/24951621
-function convertFromHTMLImpl(editorState, html) {
+function convertFromHTML(html, editorState) {
   // See https://github.com/HubSpot/draft-convert#convertfromhtml
   var safeHTML = getSafeHTML(html);
   var handlers = {
@@ -112,7 +116,9 @@ function convertFromHTMLImpl(editorState, html) {
     handlers[key] = fn.bind(null, safeHTML);
   });
   var convertedContentState = (0, _draftConvert.convertFromHTML)(handlers)(safeHTML.html);
-  return _draftJs.Modifier.replaceWithFragment(editorState.getCurrentContent(), editorState.getSelection(), convertedContentState.blockMap);
+  var currentEditorState = editorState || createEmptyEditorState();
+  var newContentState = _draftJs.Modifier.replaceWithFragment(currentEditorState.getCurrentContent(), currentEditorState.getSelection(), convertedContentState.blockMap);
+  return _draftJs.EditorState.push(currentEditorState, newContentState, 'insert-fragment');
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -344,6 +350,12 @@ function normalizeNodeForTable(safeHTML, nodeName, node) {
   return atomicNode;
 }
 
+function createEmptyEditorState() {
+  var decorator = _DocsDecorator2.default.get();
+  var emptyEditorState = _draftJs.EditorState.createEmpty(decorator);
+  return emptyEditorState;
+}
+
 function createDocsTableEntityDataFromElement(safeHTML, table) {
   (0, _invariant2.default)(table.nodeName === 'TABLE', 'must be a table');
   var entityData = {
@@ -364,8 +376,7 @@ function createDocsTableEntityDataFromElement(safeHTML, table) {
     return entityData;
   }
 
-  var decorator = _DocsDecorator2.default.get();
-  var emptyEditorState = _draftJs.EditorState.createEmpty(decorator);
+  var emptyEditorState = createEmptyEditorState();
 
   var data = entityData;
   var rowsCount = rows ? rows.length : 0;
@@ -399,10 +410,9 @@ function createDocsTableEntityDataFromElement(safeHTML, table) {
           }
         }
       }
-      // html = 'xxx';
-      var contentState = (0, _draftConvert.convertFromHTML)(emptyEditorState, _html);
+      var cellEditorState = convertFromHTML(_html, emptyEditorState);
       var id = (0, _DocsTableModifiers.getEntityDataID)(rr, cc);
-      data[id] = (0, _draftJs.convertToRaw)(contentState);
+      data[id] = (0, _draftJs.convertToRaw)(cellEditorState.getCurrentContent());
       cc++;
     }
     rr++;
@@ -447,4 +457,4 @@ function imageNodeToPlaceholder(img) {
   parentNode.removeChild(img);
 }
 
-module.exports = convertFromHTMLImpl;
+module.exports = convertFromHTML;

@@ -279,8 +279,7 @@ function ensureAtomicBlocksAreSelectable(editorState) {
 }
 
 function pasteHTML(editorState, html) {
-  var newContentState = (0, _convertFromHTML2.default)(editorState, html);
-  return _draftJs.EditorState.push(editorState, newContentState, 'insert-fragment');
+  return (0, _convertFromHTML2.default)(html, editorState);
 }
 
 // Helper function for `ensureAtomicBlocksAreSelectable()`.

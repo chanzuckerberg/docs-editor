@@ -5,10 +5,11 @@ import DocsDataAttributes from './DocsDataAttributes';
 import DocsDecorator from './DocsDecorator';
 import DocsDecoratorTypes from './DocsDecoratorTypes';
 import asElement from './asElement';
+import convertFromRaw from './convertFromRaw';
 import getSafeBodyFromHTML from './getSafeBodyFromHTML';
 import invariant from 'invariant';
 import uniqueID from './uniqueID';
-import {convertFromHTML} from 'draft-convert';
+import {convertFromHTML as draftConvertFromHTML} from 'draft-convert';
 import {convertToRaw, ContentState, Modifier, EditorState, Entity} from 'draft-js';
 import {getEntityDataID} from './DocsTableModifiers';
 import {toggleHeaderBackground} from './DocsTableModifiers';
@@ -46,10 +47,10 @@ const ZERO_WIDTH_CHAR = '\u200B';
 // https://github.com/facebook/draft-js/issues/787
 // https://github.com/HubSpot/draft-convert#convertfromhtml
 // https://zhuanlan.zhihu.com/p/24951621
-function convertFromHTMLImpl(
-  editorState: EditorState,
+function convertFromHTML(
   html: string,
-): ContentState {
+  editorState?: ?EditorState,
+): EditorState {
   // See https://github.com/HubSpot/draft-convert#convertfromhtml
   const safeHTML = getSafeHTML(html);
   const handlers = {
@@ -62,11 +63,17 @@ function convertFromHTMLImpl(
     const fn: any = handlers[key];
     handlers[key] = fn.bind(null, safeHTML);
   });
-  const convertedContentState = convertFromHTML(handlers)(safeHTML.html);
-  return Modifier.replaceWithFragment(
-    editorState.getCurrentContent(),
-    editorState.getSelection(),
+  const convertedContentState = draftConvertFromHTML(handlers)(safeHTML.html);
+  const currentEditorState = editorState || createEmptyEditorState();
+  const newContentState = Modifier.replaceWithFragment(
+    currentEditorState.getCurrentContent(),
+    currentEditorState.getSelection(),
     convertedContentState.blockMap,
+  );
+  return EditorState.push(
+    currentEditorState,
+    newContentState,
+    'insert-fragment',
   );
 }
 
@@ -341,6 +348,12 @@ function normalizeNodeForTable(
   return atomicNode;
 }
 
+function createEmptyEditorState(): EditorState {
+  const decorator = DocsDecorator.get();
+  const emptyEditorState = EditorState.createEmpty(decorator);
+  return emptyEditorState;
+}
+
 function createDocsTableEntityDataFromElement(
   safeHTML: SafeHTML,
   table: ElementLike,
@@ -368,8 +381,7 @@ function createDocsTableEntityDataFromElement(
     return entityData;
   }
 
-  const decorator = DocsDecorator.get();
-  const emptyEditorState = EditorState.createEmpty(decorator);
+  const emptyEditorState = createEmptyEditorState();
 
   const data: any = entityData;
   const rowsCount = rows ? rows.length : 0;
@@ -405,10 +417,9 @@ function createDocsTableEntityDataFromElement(
           }
         }
       }
-      // html = 'xxx';
-      const contentState = convertFromHTML(emptyEditorState, html);
+      const cellEditorState = convertFromHTML(html, emptyEditorState);
       const id = getEntityDataID(rr, cc);
-      data[id] = convertToRaw(contentState);
+      data[id] = convertToRaw(cellEditorState.getCurrentContent());
       cc++;
     }
     rr++;
@@ -457,4 +468,4 @@ function imageNodeToPlaceholder(img: Object): void {
   parentNode.removeChild(img);
 }
 
-module.exports = convertFromHTMLImpl;
+module.exports = convertFromHTML;
