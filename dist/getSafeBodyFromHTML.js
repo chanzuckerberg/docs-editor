@@ -13,14 +13,30 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // Provides a dom node that will not execute scripts
 // https://developer.mozilla.org/en-US/docs/Web/API/DOMImplementation.createHTMLDocument
 // https://developer.mozilla.org/en-US/Add-ons/Code_snippets/HTML_to_DOM
-function getSafeBodyFromHTML(html) {
-  var doc = void 0;
+var babelPluginFlowReactPropTypes_proptype_ElementLike = require('./Types').babelPluginFlowReactPropTypes_proptype_ElementLike || require('prop-types').any;
+
+var babelPluginFlowReactPropTypes_proptype_DocumentLike = require('./Types').babelPluginFlowReactPropTypes_proptype_DocumentLike || require('prop-types').any;
+
+var babelPluginFlowReactPropTypes_proptype_DocsTableEntityData = require('./Types').babelPluginFlowReactPropTypes_proptype_DocsTableEntityData || require('prop-types').any;
+
+function getSafeBodyFromHTML(html, domDocument) {
   var root = null;
+
+  if (/<body[\s>]/i.test(html) === false) {
+    html = '<!doctype><html><body>' + html + '</body></html>';
+  }
+
   // Provides a safe context
-  if (document.implementation && document.implementation.createHTMLDocument) {
-    doc = document.implementation.createHTMLDocument('');
-    (0, _invariant2.default)(doc.documentElement, 'Missing doc.documentElement');
-    doc.documentElement.innerHTML = html;
+  if (domDocument) {
+    domDocument.open();
+    domDocument.write(html);
+    domDocument.close();
+    root = domDocument.getElementsByTagName('body')[0];
+  } else if (typeof document !== 'undefined' && document.implementation && document.implementation.createHTMLDocument) {
+    var doc = document.implementation.createHTMLDocument('');
+    doc.open();
+    doc.write(html);
+    doc.close();
     root = doc.getElementsByTagName('body')[0];
   }
   return root;

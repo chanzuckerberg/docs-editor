@@ -1,32 +1,36 @@
 'use strict';
 
+var _defineProperty2 = require('babel-runtime/helpers/defineProperty');
+
+var _defineProperty3 = _interopRequireDefault(_defineProperty2);
+
+var _require$shape;
+
 var _draftJs = require('draft-js');
 
-if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginFlowReactPropTypes_proptype_ElementLike', {
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginFlowReactPropTypes_proptype_DocumentLike', {
   value: require('prop-types').shape({
+    close: require('prop-types').func.isRequired,
+    getElementsByTagName: require('prop-types').func.isRequired,
+    open: require('prop-types').func.isRequired,
+    write: require('prop-types').func.isRequired
+  })
+});
+if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginFlowReactPropTypes_proptype_ElementLike', {
+  value: require('prop-types').shape((_require$shape = {
     appendChild: require('prop-types').func.isRequired,
     cells: require('prop-types').shape({
       length: require('prop-types').number.isRequired
     }),
     className: require('prop-types').string.isRequired,
-    dispatchEvent: require('prop-types').func.isRequired,
-    getAttribute: require('prop-types').func.isRequired,
-    hasAttribute: require('prop-types').func.isRequired,
-    href: require('prop-types').string.isRequired,
-    id: require('prop-types').string.isRequired,
-    innerHTML: require('prop-types').string.isRequired,
-    nodeName: require('prop-types').string.isRequired,
-    nodeType: require('prop-types').number.isRequired,
-    parentElement: require('prop-types').any,
-    removeAttribute: require('prop-types').func.isRequired,
-    rows: require('prop-types').shape({
-      length: require('prop-types').number.isRequired
-    }),
-    setAttribute: require('prop-types').func.isRequired,
-    style: require('prop-types').shape({
-      fontWeight: require('prop-types').string.isRequired
-    }).isRequired
-  })
+    dispatchEvent: require('prop-types').func.isRequired
+  }, (0, _defineProperty3.default)(_require$shape, 'dispatchEvent', require('prop-types').func.isRequired), (0, _defineProperty3.default)(_require$shape, 'getAttribute', require('prop-types').func.isRequired), (0, _defineProperty3.default)(_require$shape, 'hasAttribute', require('prop-types').func.isRequired), (0, _defineProperty3.default)(_require$shape, 'href', require('prop-types').string.isRequired), (0, _defineProperty3.default)(_require$shape, 'id', require('prop-types').string.isRequired), (0, _defineProperty3.default)(_require$shape, 'innerHTML', require('prop-types').string.isRequired), (0, _defineProperty3.default)(_require$shape, 'nodeName', require('prop-types').string.isRequired), (0, _defineProperty3.default)(_require$shape, 'nodeType', require('prop-types').number.isRequired), (0, _defineProperty3.default)(_require$shape, 'parentElement', require('prop-types').any), (0, _defineProperty3.default)(_require$shape, 'removeAttribute', require('prop-types').func.isRequired), (0, _defineProperty3.default)(_require$shape, 'rows', require('prop-types').shape({
+    length: require('prop-types').number.isRequired
+  })), (0, _defineProperty3.default)(_require$shape, 'setAttribute', require('prop-types').func.isRequired), (0, _defineProperty3.default)(_require$shape, 'style', require('prop-types').shape({
+    fontWeight: require('prop-types').string.isRequired
+  }).isRequired), _require$shape))
 });
 if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginFlowReactPropTypes_proptype_ClientRectLike', {
   value: require('prop-types').shape({

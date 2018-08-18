@@ -14,7 +14,7 @@ import {convertToRaw, ContentState, Modifier, EditorState, Entity} from 'draft-j
 import {getEntityDataID} from './DocsTableModifiers';
 import {toggleHeaderBackground} from './DocsTableModifiers';
 
-import type {DocsTableEntityData,  ElementLike} from './Types';
+import type {DocsTableEntityData,  DocumentLike, ElementLike} from './Types';
 
 type SafeHTML = {
   html: string,
@@ -50,9 +50,10 @@ const ZERO_WIDTH_CHAR = '\u200B';
 function convertFromHTML(
   html: string,
   editorState?: ?EditorState,
+  domDocument?: ?DocumentLike,
 ): EditorState {
   // See https://github.com/HubSpot/draft-convert#convertfromhtml
-  const safeHTML = getSafeHTML(html);
+  const safeHTML = getSafeHTML(html, domDocument);
   const handlers = {
     htmlToBlock,
     htmlToEntity,
@@ -102,8 +103,11 @@ class FakeAtomicElement {
   }
 }
 
-function getSafeHTML(html: string): SafeHTML {
-  const body = getSafeBodyFromHTML(html);
+function getSafeHTML(
+  html: string,
+  domDocument?: ?DocumentLike,
+): SafeHTML {
+  const body = getSafeBodyFromHTML(html, domDocument);
   const unsafeNodes = new Map();
   let safeHTML = '';
 
@@ -449,7 +453,8 @@ function imageNodeToPlaceholder(img: Object): void {
     return;
   }
 
-  const node = document.createElement('ins');
+  const doc = img.ownerDocument;
+  const node = doc.createElement('ins');
   const decoratorData = {
     type: DocsDecoratorTypes.DOCS_IMAGE,
     mutability: 'IMMUTABLE',

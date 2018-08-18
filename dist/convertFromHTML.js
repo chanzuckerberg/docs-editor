@@ -74,6 +74,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var babelPluginFlowReactPropTypes_proptype_ElementLike = require('./Types').babelPluginFlowReactPropTypes_proptype_ElementLike || require('prop-types').any;
 
+var babelPluginFlowReactPropTypes_proptype_DocumentLike = require('./Types').babelPluginFlowReactPropTypes_proptype_DocumentLike || require('prop-types').any;
+
 var babelPluginFlowReactPropTypes_proptype_DocsTableEntityData = require('./Types').babelPluginFlowReactPropTypes_proptype_DocsTableEntityData || require('prop-types').any;
 
 // See https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight
@@ -102,9 +104,9 @@ var ZERO_WIDTH_CHAR = '\u200B';
 // https://github.com/facebook/draft-js/issues/787
 // https://github.com/HubSpot/draft-convert#convertfromhtml
 // https://zhuanlan.zhihu.com/p/24951621
-function convertFromHTML(html, editorState) {
+function convertFromHTML(html, editorState, domDocument) {
   // See https://github.com/HubSpot/draft-convert#convertfromhtml
-  var safeHTML = getSafeHTML(html);
+  var safeHTML = getSafeHTML(html, domDocument);
   var handlers = {
     htmlToBlock: htmlToBlock,
     htmlToEntity: htmlToEntity,
@@ -150,8 +152,8 @@ var FakeAtomicElement = function () {
   return FakeAtomicElement;
 }();
 
-function getSafeHTML(html) {
-  var body = (0, _getSafeBodyFromHTML2.default)(html);
+function getSafeHTML(html, domDocument) {
+  var body = (0, _getSafeBodyFromHTML2.default)(html, domDocument);
   var unsafeNodes = new _map2.default();
   var safeHTML = '';
 
@@ -444,7 +446,8 @@ function imageNodeToPlaceholder(img) {
     return;
   }
 
-  var node = document.createElement('ins');
+  var doc = img.ownerDocument;
+  var node = doc.createElement('ins');
   var decoratorData = {
     type: _DocsDecoratorTypes2.default.DOCS_IMAGE,
     mutability: 'IMMUTABLE',

@@ -15,12 +15,20 @@ type EventLike = {
 
 };
 
+export type DocumentLike = {
+  close: () => void,
+  getElementsByTagName: (tag: string) => Array<Element>,
+  open: () => void,
+  write: (html: string) => void,
+};
+
 export type BgStyle = 'dark';
 
 export type ElementLike = {
   appendChild: (child: ElementLike) => ElementLike,
   cells: ?HTMLCollectionLike,
   className: string,
+  dispatchEvent: (e: EventLike) => void,
   dispatchEvent: (e: EventLike) => void,
   getAttribute: (attr: string) => string,
   hasAttribute: (attr: string) => boolean,
