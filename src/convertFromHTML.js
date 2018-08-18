@@ -449,7 +449,8 @@ function imageNodeToPlaceholder(img: Object): void {
     return;
   }
 
-  const node = document.createElement('ins');
+  const doc = img.ownerDocument;
+  const node = doc.createElement('ins');
   const decoratorData = {
     type: DocsDecoratorTypes.DOCS_IMAGE,
     mutability: 'IMMUTABLE',
