@@ -1,5 +1,9 @@
 'use strict';
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _from = require('babel-runtime/core-js/array/from');
 
 var _from2 = _interopRequireDefault(_from);
@@ -460,4 +464,4 @@ function imageNodeToPlaceholder(img) {
   parentNode.removeChild(img);
 }
 
-module.exports = convertFromHTML;
+exports.default = convertFromHTML;

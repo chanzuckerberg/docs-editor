@@ -473,4 +473,4 @@ function imageNodeToPlaceholder(img: Object): void {
   parentNode.removeChild(img);
 }
 
-module.exports = convertFromHTML;
+export default convertFromHTML;

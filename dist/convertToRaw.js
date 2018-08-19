@@ -1,7 +1,13 @@
 'use strict';
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
 var _draftJs = require('draft-js');
 
-var _draftJs2 = _interopRequireDefault(_draftJs);
+function convertToRaw(content) {
+  return (0, _draftJs.convertToRaw)(content);
+}
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+exports.default = convertToRaw;
