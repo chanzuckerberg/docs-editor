@@ -6,12 +6,6 @@ Object.defineProperty(exports, "__esModule", {
 
 var _draftJs = require('draft-js');
 
-Object.defineProperty(exports, 'convertToRaw', {
-  enumerable: true,
-  get: function get() {
-    return _draftJs.convertToRaw;
-  }
-});
 Object.defineProperty(exports, 'EditorState', {
   enumerable: true,
   get: function get() {
@@ -97,6 +91,15 @@ Object.defineProperty(exports, 'isEditorStateEmpty', {
   enumerable: true,
   get: function get() {
     return _interopRequireDefault(_isEditorStateEmpty).default;
+  }
+});
+
+var _convertToRaw = require('./convertToRaw');
+
+Object.defineProperty(exports, 'convertToRaw', {
+  enumerable: true,
+  get: function get() {
+    return _interopRequireDefault(_convertToRaw).default;
   }
 });
 
