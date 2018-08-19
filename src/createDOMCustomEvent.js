@@ -4,8 +4,6 @@
 // Do not require any Component or Modifier in this file to avoid circular
 // dependiencies.
 
-const {CustomEvent} = window;
-
 function createDOMCustomEvent(
   type: string,
   bubbles: boolean,
@@ -15,7 +13,7 @@ function createDOMCustomEvent(
   if (detail === undefined) {
     detail = null;
   }
-  return new CustomEvent(type, {bubbles, cancelable, detail});
+  return new window.CustomEvent(type, {bubbles, cancelable, detail});
 }
 
 export default createDOMCustomEvent;

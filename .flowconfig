@@ -1,6 +1,6 @@
 [include]
 .*/src/.*
-.*/examples_src/.*
+.*/web_src/.*
 
 [ignore]
 .*/build/.*

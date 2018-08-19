@@ -27,10 +27,11 @@ var isDev = env.NODE_ENV === "development";
 
 var options = {
   entry: {
-    examples: path.join(__dirname, "examples_src", "examples.js"),
+    index: path.join(__dirname, "web_src", "index.js"),
+    html_to_json_runtime: path.join(__dirname, "web_src", "html_to_json_runtime.js"),
   },
   output: {
-    path: path.join(__dirname, "examples"),
+    path: path.join(__dirname, "web_app"),
     filename: "[name].bundle.js"
   },
   module: {
@@ -88,16 +89,22 @@ var options = {
   },
   plugins: [
     new FlowWebpackPlugin(),
-    // clean the examples folder
-    new CleanWebpackPlugin(["examples"]),
+    // clean the web folder
+    new CleanWebpackPlugin(["web_app"]),
     // expose and write the allowed env vars on the compiled bundle
     new webpack.DefinePlugin({
       "process.env.NODE_ENV": JSON.stringify(env.NODE_ENV)
     }),
     new HtmlWebpackPlugin({
-      template: path.join(__dirname, "examples_src", "examples.html"),
+      template: path.join(__dirname, "web_src", "index.html"),
       filename: "index.html",
-      chunks: ["examples"],
+      chunks: ["index"],
+      inlineSource: isDev ? '$^' : '.(js|css)$'
+    }),
+    new HtmlWebpackPlugin({
+      template: path.join(__dirname, "web_src", "html_to_json_runtime.html"),
+      filename: "html_to_json_runtime.html",
+      chunks: ["html_to_json_runtime"],
       inlineSource: isDev ? '$^' : '.(js|css)$'
     }),
     new HtmlWebpackInlineSourcePlugin(),

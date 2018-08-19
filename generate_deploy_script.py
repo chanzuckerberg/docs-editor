@@ -58,7 +58,7 @@ def main():
   namespace = str(package_json['name'] + '-' + package_json['version'] + '-' + package_json['subversion'])
   namespace = re.sub(r'[-\.]+', '_', namespace)
 
-  for html_path in glob.glob('examples/*.html'):
+  for html_path in glob.glob('web_app/*.html'):
     build_html_app(html_path, namespace)
 
   print '#' * 80

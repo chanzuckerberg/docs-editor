@@ -15,7 +15,7 @@ import nullthrows from 'nullthrows';
 import uniqueID from './uniqueID';
 import {ContentState, Entity} from 'draft-js';
 
-import './DocsDecoratorEntityDataContainer.css';
+// import './DocsDecoratorEntityDataContainer.css';
 
 import type {ElementLike} from './Types';
 

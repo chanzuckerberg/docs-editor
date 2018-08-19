@@ -86,9 +86,9 @@ var _uniqueID2 = _interopRequireDefault(_uniqueID);
 
 var _draftJs = require('draft-js');
 
-require('./DocsDecoratorEntityDataContainer.css');
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// import './DocsDecoratorEntityDataContainer.css';
 
 var babelPluginFlowReactPropTypes_proptype_ElementLike = require('./Types').babelPluginFlowReactPropTypes_proptype_ElementLike || require('prop-types').any;
 
