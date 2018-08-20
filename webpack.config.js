@@ -28,7 +28,6 @@ var isDev = env.NODE_ENV === "development";
 var options = {
   entry: {
     index: path.join(__dirname, "web_src", "index.js"),
-    html_to_json_runtime: path.join(__dirname, "web_src", "html_to_json_runtime.js"),
   },
   output: {
     path: path.join(__dirname, "web_app"),
@@ -99,12 +98,6 @@ var options = {
       template: path.join(__dirname, "web_src", "index.html"),
       filename: "index.html",
       chunks: ["index"],
-      inlineSource: isDev ? '$^' : '.(js|css)$'
-    }),
-    new HtmlWebpackPlugin({
-      template: path.join(__dirname, "web_src", "html_to_json_runtime.html"),
-      filename: "html_to_json_runtime.html",
-      chunks: ["html_to_json_runtime"],
       inlineSource: isDev ? '$^' : '.(js|css)$'
     }),
     new HtmlWebpackInlineSourcePlugin(),
