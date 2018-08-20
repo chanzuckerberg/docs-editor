@@ -48,25 +48,29 @@ var _Timer = require('./Timer');
 
 var _Timer2 = _interopRequireDefault(_Timer);
 
+var _convertFromRaw = require('./convertFromRaw');
+
+var _convertFromRaw2 = _interopRequireDefault(_convertFromRaw);
+
+var _convertToRaw = require('./convertToRaw');
+
+var _convertToRaw2 = _interopRequireDefault(_convertToRaw);
+
 var _classnames = require('classnames');
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
-var _convertFromRaw = require('./convertFromRaw');
+var _uniqueID = require('./uniqueID');
 
-var _convertFromRaw2 = _interopRequireDefault(_convertFromRaw);
+var _uniqueID2 = _interopRequireDefault(_uniqueID);
 
 var _withDocsContext = require('./withDocsContext');
 
 var _withDocsContext2 = _interopRequireDefault(_withDocsContext);
 
-var _DocsTableModifiers = require('./DocsTableModifiers');
-
 var _draftJs = require('draft-js');
 
-var _uniqueID = require('./uniqueID');
-
-var _uniqueID2 = _interopRequireDefault(_uniqueID);
+var _DocsTableModifiers = require('./DocsTableModifiers');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -117,8 +121,7 @@ var DocsTableCell = function (_React$PureComponent) {
           rowIndex = _this$props.rowIndex;
       var localEditorState = _this.state.localEditorState;
 
-      var contentState = localEditorState.getCurrentContent();
-      var rawContentState = (0, _draftJs.convertToRaw)(contentState);
+      var rawContentState = (0, _convertToRaw2.default)(localEditorState);
       rawContentState[_DocsTableModifiers.LOCAL_CHANGE_ID] = (0, _uniqueID2.default)();
       _this._localRawContentState = rawContentState;
       onChange(rowIndex, cellIndex, rawContentState);

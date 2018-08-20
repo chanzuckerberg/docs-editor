@@ -40,13 +40,13 @@ var _DocsEventTypes = require('./DocsEventTypes');
 
 var _DocsEventTypes2 = _interopRequireDefault(_DocsEventTypes);
 
-var _DocsTextInputEditor = require('./DocsTextInputEditor');
-
-var _DocsTextInputEditor2 = _interopRequireDefault(_DocsTextInputEditor);
-
 var _DocsIcon = require('./DocsIcon');
 
 var _DocsIcon2 = _interopRequireDefault(_DocsIcon);
+
+var _DocsTextInputEditor = require('./DocsTextInputEditor');
+
+var _DocsTextInputEditor2 = _interopRequireDefault(_DocsTextInputEditor);
 
 var _react = require('react');
 
@@ -60,27 +60,31 @@ var _Timer = require('./Timer');
 
 var _Timer2 = _interopRequireDefault(_Timer);
 
-var _classnames = require('classnames');
-
-var _classnames2 = _interopRequireDefault(_classnames);
-
 var _convertFromRaw = require('./convertFromRaw');
 
 var _convertFromRaw2 = _interopRequireDefault(_convertFromRaw);
 
+var _convertToRaw = require('./convertToRaw');
+
+var _convertToRaw2 = _interopRequireDefault(_convertToRaw);
+
+var _classnames = require('classnames');
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
 var _showModalDialog = require('./showModalDialog');
 
 var _showModalDialog2 = _interopRequireDefault(_showModalDialog);
+
+var _uniqueID = require('./uniqueID');
+
+var _uniqueID2 = _interopRequireDefault(_uniqueID);
 
 var _withDocsContext = require('./withDocsContext');
 
 var _withDocsContext2 = _interopRequireDefault(_withDocsContext);
 
 var _draftJs = require('draft-js');
-
-var _uniqueID = require('./uniqueID');
-
-var _uniqueID2 = _interopRequireDefault(_uniqueID);
 
 var _DocsModifiers = require('./DocsModifiers');
 
@@ -221,8 +225,6 @@ var DocsExpandable = function (_React$PureComponent) {
         return;
       }
       var localEditorState = _this.state.localEditorState;
-
-      var contenState = localEditorState.getCurrentContent();
       var _this$props$blockProp2 = _this.props.blockProps,
           editorState = _this$props$blockProp2.editorState,
           onChange = _this$props$blockProp2.onChange,
@@ -232,7 +234,7 @@ var DocsExpandable = function (_React$PureComponent) {
       var entityData = entity.getData();
       var localChangeID = (0, _uniqueID2.default)();
       var newEntityData = (0, _extends4.default)({}, entityData, (0, _defineProperty3.default)({
-        body: (0, _draftJs.convertToRaw)(contenState),
+        body: (0, _convertToRaw2.default)(localEditorState),
         show: _this.state.expanded
       }, LOCAL_CHANGE_ID, localChangeID));
       var newEditorState = (0, _DocsModifiers.updateEntityData)(editorState, entityKey, newEntityData);

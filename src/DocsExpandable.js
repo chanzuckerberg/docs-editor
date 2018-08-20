@@ -3,17 +3,18 @@
 import DocsBaseEditor from './DocsBaseEditor';
 import DocsDataAttributes from './DocsDataAttributes';
 import DocsEventTypes from './DocsEventTypes';
-import DocsTextInputEditor from './DocsTextInputEditor';
 import DocsIcon from './DocsIcon';
+import DocsTextInputEditor from './DocsTextInputEditor';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Timer from './Timer';
-import cx from 'classnames';
 import convertFromRaw from './convertFromRaw';
+import convertToRaw from './convertToRaw';
+import cx from 'classnames';
 import showModalDialog from './showModalDialog';
-import withDocsContext from './withDocsContext';
-import {convertToRaw, ContentBlock, EditorState, Entity} from 'draft-js';
 import uniqueID from './uniqueID';
+import withDocsContext from './withDocsContext';
+import {ContentBlock, EditorState, Entity} from 'draft-js';
 import {updateEntityData} from './DocsModifiers';
 import {updateLabel} from './DocsExpandableModifiers';
 
@@ -304,13 +305,12 @@ class DocsExpandable extends React.PureComponent {
       return;
     }
     const {localEditorState} = this.state;
-    const contenState = localEditorState.getCurrentContent();
     const {editorState, onChange, entity, entityKey} = this.props.blockProps;
     const entityData = entity.getData();
     const localChangeID = uniqueID();
     const newEntityData = {
       ...entityData,
-      body: convertToRaw(contenState),
+      body: convertToRaw(localEditorState),
       show: this.state.expanded,
       [LOCAL_CHANGE_ID]: localChangeID,
     };

@@ -5,12 +5,13 @@ import DocsDataAttributes from './DocsDataAttributes';
 import DocsTableCellResizeHandle from './DocsTableCellResizeHandle';
 import React from 'react';
 import Timer from './Timer';
-import cx from 'classnames';
 import convertFromRaw from './convertFromRaw';
-import withDocsContext from './withDocsContext';
-import {LOCAL_CHANGE_ID} from './DocsTableModifiers';
-import {convertToRaw, EditorState} from 'draft-js';
+import convertToRaw from './convertToRaw';
+import cx from 'classnames';
 import uniqueID from './uniqueID';
+import withDocsContext from './withDocsContext';
+import {EditorState} from 'draft-js';
+import {LOCAL_CHANGE_ID} from './DocsTableModifiers';
 
 type Props = {
   bgStyle: ?string,
@@ -158,8 +159,7 @@ class DocsTableCell extends React.PureComponent {
     }
     const {cellIndex, onChange, rowIndex} = this.props;
     const {localEditorState} = this.state;
-    const contentState = localEditorState.getCurrentContent();
-    const rawContentState = convertToRaw(contentState);
+    const rawContentState = convertToRaw(localEditorState);
     rawContentState[LOCAL_CHANGE_ID] = uniqueID();
     this._localRawContentState = rawContentState;
     onChange(rowIndex, cellIndex, rawContentState);

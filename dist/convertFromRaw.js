@@ -12,7 +12,7 @@ var _draftJs = require('draft-js');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function convertFromRawWithDocsDecorator(rawContentState, editorState) {
+function convertFromRaw(rawContentState, editorState) {
   var decorator = _DocsDecorator2.default.get();
   if (rawContentState !== null && (typeof rawContentState === 'undefined' ? 'undefined' : (0, _typeof3.default)(rawContentState)) === 'object') {
     var contentState = void 0;
@@ -29,4 +29,4 @@ function convertFromRawWithDocsDecorator(rawContentState, editorState) {
   return _draftJs.EditorState.createEmpty(decorator);
 }
 
-module.exports = convertFromRawWithDocsDecorator;
+module.exports = convertFromRaw;

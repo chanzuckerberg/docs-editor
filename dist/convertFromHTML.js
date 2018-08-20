@@ -56,6 +56,10 @@ var _convertFromRaw = require('./convertFromRaw');
 
 var _convertFromRaw2 = _interopRequireDefault(_convertFromRaw);
 
+var _convertToRaw = require('./convertToRaw');
+
+var _convertToRaw2 = _interopRequireDefault(_convertToRaw);
+
 var _getSafeBodyFromHTML = require('./getSafeBodyFromHTML');
 
 var _getSafeBodyFromHTML2 = _interopRequireDefault(_getSafeBodyFromHTML);
@@ -68,9 +72,9 @@ var _uniqueID = require('./uniqueID');
 
 var _uniqueID2 = _interopRequireDefault(_uniqueID);
 
-var _draftConvert = require('draft-convert');
-
 var _draftJs = require('draft-js');
+
+var _draftConvert = require('draft-convert');
 
 var _DocsTableModifiers = require('./DocsTableModifiers');
 
@@ -418,7 +422,7 @@ function createDocsTableEntityDataFromElement(safeHTML, table) {
       }
       var cellEditorState = convertFromHTML(_html, emptyEditorState);
       var id = (0, _DocsTableModifiers.getEntityDataID)(rr, cc);
-      data[id] = (0, _draftJs.convertToRaw)(cellEditorState.getCurrentContent());
+      data[id] = (0, _convertToRaw2.default)(cellEditorState);
       cc++;
     }
     rr++;

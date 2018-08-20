@@ -163,7 +163,7 @@ class DemoApp extends React.PureComponent<any, any, any> {
 
   _dump = (callback?: ?Function): void => {
     const {editorState} = this.state;
-    const raw = convertToRaw(editorState.getCurrentContent());
+    const raw = convertToRaw(editorState);
     const json = JSON.stringify(raw, null, 2);
     const fn = typeof callback === 'function' ? callback : noop;
     this.setState({

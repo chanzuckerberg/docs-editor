@@ -6,11 +6,12 @@ import DocsDecorator from './DocsDecorator';
 import DocsDecoratorTypes from './DocsDecoratorTypes';
 import asElement from './asElement';
 import convertFromRaw from './convertFromRaw';
+import convertToRaw from './convertToRaw';
 import getSafeBodyFromHTML from './getSafeBodyFromHTML';
 import invariant from 'invariant';
 import uniqueID from './uniqueID';
+import {ContentState, Modifier, EditorState, Entity} from 'draft-js';
 import {convertFromHTML as draftConvertFromHTML} from 'draft-convert';
-import {convertToRaw, ContentState, Modifier, EditorState, Entity} from 'draft-js';
 import {getEntityDataID} from './DocsTableModifiers';
 import {toggleHeaderBackground} from './DocsTableModifiers';
 
@@ -423,7 +424,7 @@ function createDocsTableEntityDataFromElement(
       }
       const cellEditorState = convertFromHTML(html, emptyEditorState);
       const id = getEntityDataID(rr, cc);
-      data[id] = convertToRaw(cellEditorState.getCurrentContent());
+      data[id] = convertToRaw(cellEditorState);
       cc++;
     }
     rr++;
