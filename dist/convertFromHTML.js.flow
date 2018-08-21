@@ -65,18 +65,11 @@ function convertFromHTML(
     const fn: any = handlers[key];
     handlers[key] = fn.bind(null, safeHTML);
   });
-  const convertedContentState = draftConvertFromHTML(handlers)(safeHTML.html);
-  const currentEditorState = editorState || createEmptyEditorState();
-  const newContentState = Modifier.replaceWithFragment(
-    currentEditorState.getCurrentContent(),
-    currentEditorState.getSelection(),
-    convertedContentState.blockMap,
-  );
-  return EditorState.push(
-    currentEditorState,
-    newContentState,
-    'insert-fragment',
-  );
+  const contentState = draftConvertFromHTML(handlers)(safeHTML.html);
+  const decorator = DocsDecorator.get();
+  return editorState ?
+    EditorState.push(editorState, contentState) :
+    EditorState.createWithContent(contentState, decorator);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

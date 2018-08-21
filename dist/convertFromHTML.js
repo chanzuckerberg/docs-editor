@@ -125,10 +125,9 @@ function convertFromHTML(html, editorState, domDocument) {
     var fn = handlers[key];
     handlers[key] = fn.bind(null, safeHTML);
   });
-  var convertedContentState = (0, _draftConvert.convertFromHTML)(handlers)(safeHTML.html);
-  var currentEditorState = editorState || createEmptyEditorState();
-  var newContentState = _draftJs.Modifier.replaceWithFragment(currentEditorState.getCurrentContent(), currentEditorState.getSelection(), convertedContentState.blockMap);
-  return _draftJs.EditorState.push(currentEditorState, newContentState, 'insert-fragment');
+  var contentState = (0, _draftConvert.convertFromHTML)(handlers)(safeHTML.html);
+  var decorator = _DocsDecorator2.default.get();
+  return editorState ? _draftJs.EditorState.push(editorState, contentState) : _draftJs.EditorState.createWithContent(contentState, decorator);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
