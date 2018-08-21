@@ -63,11 +63,15 @@ const LOCAL_STORAGE_KEY = 'education-doc-editor-examples';
 function getInitialState(): Object {
   const docsContext = DEFAULT_CONTEXT.merge({canEdit: true});
   let editorState;
-  let json = '';
+  let debugValue = '';
   try {
-    json = window.localStorage.getItem(LOCAL_STORAGE_KEY);
-    const raw = JSON.parse(json);
-    editorState = convertFromRaw(raw);
+    debugValue = window.localStorage.getItem(LOCAL_STORAGE_KEY) || '';
+    if (/^\{"/.test(debugValue)) {
+      const raw = JSON.parse(debugValue);
+      editorState = convertFromRaw(raw);
+    } else if (debugValue) {
+      editorState = convertFromHTML(debugValue);
+    }
   } catch (ex) {
     editorState = DEFAULT_EDITOR_STATE;
   }
@@ -76,7 +80,7 @@ function getInitialState(): Object {
     docsContext,
     editorState,
     initialEditorState: editorState,
-    json,
+    debugValue,
   };
 }
 
@@ -95,7 +99,7 @@ class DemoApp extends React.PureComponent<any, any, any> {
   }
 
   render(): React.Element<any> {
-    const {docsContext, editorState, json, debugKey} = this.state;
+    const {docsContext, editorState, debugValue, debugKey} = this.state;
     return (
       <div id="app">
         <div className="main-column">
@@ -123,7 +127,7 @@ class DemoApp extends React.PureComponent<any, any, any> {
             </ButtonGroup>
           </div>
           <textarea
-            defaultValue={json}
+            defaultValue={debugValue}
             id={debugKey}
             key={debugKey}
           />
@@ -134,12 +138,16 @@ class DemoApp extends React.PureComponent<any, any, any> {
 
   applyJSON = (raw: Object): void => {
     const {editorState} = this.state;
-    this.setState({editorState: convertFromRaw(raw, editorState)});
+    this.setState({
+      debugValue: '',
+      editorState: convertFromRaw(raw, editorState),
+    });
   };
 
   applyHTML = (html: string): void => {
     const {editorState} = this.state;
     this.setState({
+      debugValue: html,
       editorState: convertFromHTML(html, editorState),
     });
   };
@@ -150,7 +158,7 @@ class DemoApp extends React.PureComponent<any, any, any> {
 
   _importHTML = (): void => {
     const {debugKey} = this.state;
-    const el:any = document.getElementById(debugKey);
+    const el: any = document.getElementById(debugKey);
     if (!el) {
       return;
     }
@@ -159,7 +167,7 @@ class DemoApp extends React.PureComponent<any, any, any> {
 
   _importJSON = (): void => {
     const {debugKey} = this.state;
-    const el:any = document.getElementById(debugKey);
+    const el: any = document.getElementById(debugKey);
     if (el) {
       try {
         const json = el.value.trim();
@@ -181,23 +189,29 @@ class DemoApp extends React.PureComponent<any, any, any> {
   _dump = (callback?: ?Function): void => {
     const {editorState} = this.state;
     const raw = convertToRaw(editorState);
-    const json = JSON.stringify(raw, null, 2);
+    const debugValue = JSON.stringify(raw, null, 2);
     const fn = typeof callback === 'function' ? callback : noop;
     this.setState({
-      json,
+      debugValue,
       debugKey: uniqueID(),
     }, fn);
   };
 
   _save = (): void => {
-    this._dump(() => {
-      const {json} = this.state;
-      window.localStorage.setItem(LOCAL_STORAGE_KEY, json);
-    });
+    const {debugKey} = this.state;
+    const el: any = document.getElementById(debugKey);
+    if (el) {
+      window.localStorage.setItem(LOCAL_STORAGE_KEY, el.value);
+    };
   };
 
   _clear = (): void => {
-    this.setState({json: '', debugKey: uniqueID()});
+    const {debugKey} = this.state;
+    const el: any = document.getElementById(debugKey);
+    if (el) {
+      el.value = '';
+    }
+    this.setState({debugValue: '', debugKey: uniqueID()});
     window.localStorage.clear();
   };
 }

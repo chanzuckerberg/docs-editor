@@ -60,9 +60,9 @@ var _convertToRaw = require('./convertToRaw');
 
 var _convertToRaw2 = _interopRequireDefault(_convertToRaw);
 
-var _getSafeBodyFromHTML = require('./getSafeBodyFromHTML');
+var _getSafeDocumentElementFromHTML = require('./getSafeDocumentElementFromHTML');
 
-var _getSafeBodyFromHTML2 = _interopRequireDefault(_getSafeBodyFromHTML);
+var _getSafeDocumentElementFromHTML2 = _interopRequireDefault(_getSafeDocumentElementFromHTML);
 
 var _invariant = require('invariant');
 
@@ -160,7 +160,7 @@ var FakeAtomicElement = function () {
 }();
 
 function getSafeHTML(html, domDocument) {
-  var body = (0, _getSafeBodyFromHTML2.default)(html, domDocument);
+  var body = (0, _getSafeDocumentElementFromHTML2.default)(html, domDocument);
   var unsafeNodes = new _map2.default();
   var safeHTML = '';
 
