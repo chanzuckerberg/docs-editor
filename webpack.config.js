@@ -12,7 +12,6 @@ var webpack = require("webpack"),
 
 // load the secrets
 var alias = {
-  "docs-editor": path.resolve(__dirname, "src/index.js"),
 };
 
 var secretsPath = path.join(__dirname, ("secrets." + env.NODE_ENV + ".js"));
@@ -28,6 +27,7 @@ var isDev = env.NODE_ENV === "development";
 var options = {
   entry: {
     index: path.join(__dirname, "web_src", "index.js"),
+    web_runtime: path.join(__dirname, "web_src", "web_runtime.js"),
   },
   output: {
     path: path.join(__dirname, "web_app"),

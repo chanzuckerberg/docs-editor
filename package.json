@@ -5,7 +5,7 @@
   "description": "rich text editor for education purpose",
   "main": "dist/index.js",
   "scripts": {
-    "build_deploy": "node utils/build_deploy.js",
+    "build_bin": "node utils/build_bin.js",
     "flow": "flow",
     "start": "node utils/webserver.js"
   },

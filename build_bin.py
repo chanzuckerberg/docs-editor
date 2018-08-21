@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import json
@@ -43,16 +44,19 @@ def build_html_app(html_path, namespace):
   # We don't wanna host the fonts. Use CDN instead.
   # See https://github.com/Khan/KaTeX
   html_text= re.sub(r'fonts\/KaTeX_', 'https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/fonts/KaTeX_', html_text)
-  html_path = 'deploy/' + output_html_file_name
+  html_path = 'bin/' + output_html_file_name
   write_text(html_path, html_text)
 
 def main():
   os.system('clear')
   print '-' * 80
   os.system('killall -9 node')
-  os.system('NODE_ENV=production npm run build_deploy')
-  os.system('rm -fr deploy')
-  os.system('mkdir deploy')
+  os.system('NODE_ENV=production npm run build_bin')
+  os.system('rm -fr bin')
+  os.system('mkdir bin')
+
+  os.system('cp web_app/web_runtime.bundle.js bin/web_runtime.js')
+
   package_json_text = read_text('./package.json')
   package_json = json.loads(package_json_text)
   namespace = str(package_json['name'] + '-' + package_json['version'] + '-' + package_json['subversion'])
@@ -71,9 +75,8 @@ def main():
     '',
   ]
 
-  for deploy_path in  glob.glob('deploy/*.*'):
+  for deploy_path in  glob.glob('bin/*.html'):
     file_name = deploy_path.split('/').pop()
-
     cmd = '# http://cdn.summitlearning.org/assets/' + file_name + '\n'
     cmd = cmd + 'aws s3 cp ' + deploy_path + ' '
     cmd = cmd + 's3://opt-static-resources/assets/' + file_name + ' --grants '
@@ -82,9 +85,8 @@ def main():
 
   print '\n'.join(cmds)
   print '#' * 80
-  write_text('deploy_to_s3.sh', '\n'.join(cmds))
+  write_text('bin/deploy_to_s3.sh', '\n'.join(cmds))
 
   print 'done'
-  print 'You may execute the command:'
-  print 'sh deploy_to_s3.sh'
+
 main()

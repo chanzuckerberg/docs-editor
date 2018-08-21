@@ -1,4 +1,3 @@
+.DS_Store
 web_app
-deploy
-deploy_to_s3.sh
 node_modules
