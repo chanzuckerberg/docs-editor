@@ -7,7 +7,7 @@ import DocsDecoratorTypes from './DocsDecoratorTypes';
 import asElement from './asElement';
 import convertFromRaw from './convertFromRaw';
 import convertToRaw from './convertToRaw';
-import getSafeBodyFromHTML from './getSafeBodyFromHTML';
+import getSafeDocumentElementFromHTML from './getSafeDocumentElementFromHTML';
 import invariant from 'invariant';
 import uniqueID from './uniqueID';
 import {ContentState, Modifier, EditorState, Entity} from 'draft-js';
@@ -101,7 +101,7 @@ function getSafeHTML(
   html: string,
   domDocument?: ?DocumentLike,
 ): SafeHTML {
-  const body = getSafeBodyFromHTML(html, domDocument);
+  const body = getSafeDocumentElementFromHTML(html, domDocument);
   const unsafeNodes = new Map();
   let safeHTML = '';
 
