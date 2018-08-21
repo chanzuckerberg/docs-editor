@@ -87,6 +87,13 @@ function noop(): void {
 class DemoApp extends React.PureComponent<any, any, any> {
   state = getInitialState();
 
+  componentDidMount() {
+    window.docsEditor = {
+      applyJSON: this.applyJSON,
+      applyHTML: this.applyHTML,
+    };
+  }
+
   render(): React.Element<any> {
     const {docsContext, editorState, json, debugKey} = this.state;
     return (
@@ -125,29 +132,39 @@ class DemoApp extends React.PureComponent<any, any, any> {
     );
   }
 
+  applyJSON = (raw: Object): void => {
+    const {editorState} = this.state;
+    this.setState({editorState: convertFromRaw(raw, editorState)});
+  };
+
+  applyHTML = (html: string): void => {
+    const {editorState} = this.state;
+    this.setState({
+      editorState: convertFromHTML(html, editorState),
+    });
+  };
+
   _onChange = (editorState: Object): void => {
     this.setState({editorState});
   };
 
   _importHTML = (): void => {
-    const {debugKey, editorState} = this.state;
+    const {debugKey} = this.state;
     const el:any = document.getElementById(debugKey);
     if (!el) {
       return;
     }
-    this.setState({
-      editorState: convertFromHTML(el.value, editorState),
-    });
+    this.applyHTML(el.value);
   };
 
   _importJSON = (): void => {
-    const {debugKey, editorState} = this.state;
+    const {debugKey} = this.state;
     const el:any = document.getElementById(debugKey);
     if (el) {
       try {
         const json = el.value.trim();
         const raw = JSON.parse(json);
-        this.setState({editorState: convertFromRaw(raw, editorState)});
+        this.applyJSON(raw);
       } catch (ex) {
         el.value = ex.message;
       }

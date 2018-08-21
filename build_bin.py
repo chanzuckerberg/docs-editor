@@ -46,6 +46,7 @@ def build_html_app(html_path, namespace):
   html_text= re.sub(r'fonts\/KaTeX_', 'https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/fonts/KaTeX_', html_text)
   html_path = 'bin/' + output_html_file_name
   write_text(html_path, html_text)
+  write_text('bin/' + file_name + '_latest.html', html_text)
 
 def main():
   os.system('clear')
