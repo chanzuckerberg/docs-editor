@@ -1,5 +1,5 @@
-import convertToRaw from './convertToRaw';
-import convertFromHTML from './convertFromHTML';
+import convertToRaw from '../src/convertToRaw';
+import convertFromHTML from '../src/convertFromHTML';
 
 const docsEditorRuntime = {
   convertFromHTML,
