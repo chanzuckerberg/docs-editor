@@ -264,10 +264,14 @@ class DocsImageEditor extends React.PureComponent {
   };
 
   _confirm = () => {
-    const {onConfirm} = this.props;
+    const {onConfirm, entityData} = this.props;
     const {data, validatedImage} = this.state;
     if (validatedImage) {
-      onConfirm(data);
+      onConfirm({
+        ...data,
+        height: entityData.height || data.height,
+        width: entityData.width || data.width,
+      });
     }
   };
 

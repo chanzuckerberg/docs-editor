@@ -66,7 +66,7 @@ function getInitialState(): Object {
   let debugValue = '';
   try {
     debugValue = window.localStorage.getItem(LOCAL_STORAGE_KEY) || '';
-    if (/^\{"/.test(debugValue)) {
+    if (/^\{/.test(debugValue)) {
       const raw = JSON.parse(debugValue);
       editorState = convertFromRaw(raw);
     } else if (debugValue) {

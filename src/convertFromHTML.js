@@ -7,7 +7,7 @@ import DocsDecoratorTypes from './DocsDecoratorTypes';
 import asElement from './asElement';
 import convertFromRaw from './convertFromRaw';
 import convertToRaw from './convertToRaw';
-import getSafeDocumentElementFromHTML from './getSafeDocumentElementFromHTML';
+import getSafeHTML from './getSafeHTML';
 import invariant from 'invariant';
 import uniqueID from './uniqueID';
 import {ContentState, Modifier, EditorState, Entity} from 'draft-js';
@@ -15,7 +15,7 @@ import {convertFromHTML as draftConvertFromHTML} from 'draft-convert';
 import {getEntityDataID} from './DocsTableModifiers';
 import {toggleHeaderBackground} from './DocsTableModifiers';
 
-import type {DocsTableEntityData,  DocumentLike, ElementLike} from './Types';
+import type {DocsTableEntityData, DocsImageEntityData, DocumentLike, ElementLike} from './Types';
 
 type SafeHTML = {
   html: string,
@@ -97,54 +97,6 @@ class FakeAtomicElement {
   }
 }
 
-function getSafeHTML(
-  html: string,
-  domDocument?: ?DocumentLike,
-): SafeHTML {
-  const body = getSafeDocumentElementFromHTML(html, domDocument);
-  const unsafeNodes = new Map();
-  let safeHTML = '';
-
-  if (body) {
-    // The provided chidlren nodes inside the atomic block should never be
-    // rendered. Instead, the atomic block should only render with its entity
-    // data. Therefore, move the children nodes into the quarantine pool
-    // otherwise these chidlren wil be rendered as extra block after the atomic
-    // block.
-    const quarantine = (node) => {
-      const id = uniqueID();
-      node.id = id;
-      unsafeNodes.set(id, node.cloneNode(true));
-      node.innerHTML = ZERO_WIDTH_CHAR;
-    };
-
-    const atomicNodes = body.querySelectorAll(
-      'figure[' + DocsDataAttributes.ATOMIC_BLOCK_DATA + ']',
-    );
-    Array.from(atomicNodes).forEach(quarantine);
-
-    const tableNodes = body.querySelectorAll('table');
-    Array.from(tableNodes).forEach(quarantine);
-
-    const mathNodes = body.querySelectorAll(
-      'span[' +
-      DocsDataAttributes.DECORATOR_TYPE + '="' +
-      DocsDecoratorTypes.DOCS_MATH +
-      '"]',
-    );
-    Array.from(mathNodes).forEach(quarantine);
-
-    const imgNodes =  body.querySelectorAll('img');
-    Array.from(imgNodes).forEach(imageNodeToPlaceholder);
-    safeHTML = body.innerHTML;
-  }
-
-  return {
-    html: safeHTML,
-    unsafeNodes,
-  };
-}
-
 function htmlToStyle(
   safeHTML: SafeHTML,
   nodeName: string,
@@ -157,6 +109,7 @@ function htmlToStyle(
   const el = asElement(node);
   let newStyle = currentStyle;
   if (nodeName === 'figure') {
+    // This could be an atomic node.
     const {className} = el;
     if (className) {
       const classNames = className.split(/\s+/g);
@@ -430,41 +383,6 @@ function createDocsTableEntityDataFromElement(
   return entityData;
 }
 
-// img does not have characters data, thus DraftJS wo't be able to
-// parse its entity data. The workaround is to replace it with an
-// empty element that can be converted to DocsImage later.
-function imageNodeToPlaceholder(img: Object): void {
-  const {parentNode, src} = img;
-  if (!parentNode || !src) {
-    return;
-  }
 
-  if (img.getAttribute(DocsDataAttributes.ELEMENT)) {
-    // The image is rendered by <DocsSafeImage /> which contains its meta
-    // data at its containing <span /> element. We can skip this <img />
-    // element.
-    parentNode.removeChild(img);
-    return;
-  }
-
-  const doc = img.ownerDocument;
-  const node = doc.createElement('ins');
-  const decoratorData = {
-    type: DocsDecoratorTypes.DOCS_IMAGE,
-    mutability: 'IMMUTABLE',
-    data: {url: src},
-  };
-  node.setAttribute(
-    DocsDataAttributes.DECORATOR_DATA,
-    JSON.stringify(decoratorData),
-  );
-  node.setAttribute(
-    DocsDataAttributes.DECORATOR_TYPE,
-    DocsDecoratorTypes.DOCS_IMAGE,
-  );
-  node.innerHTML = ZERO_WIDTH_CHAR;
-  parentNode.insertBefore(node, img);
-  parentNode.removeChild(img);
-}
 
 export default convertFromHTML;

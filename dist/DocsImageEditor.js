@@ -189,13 +189,18 @@ var DocsImageEditor = function (_React$PureComponent) {
         })
       });
     }, _this._confirm = function () {
-      var onConfirm = _this.props.onConfirm;
+      var _this$props = _this.props,
+          onConfirm = _this$props.onConfirm,
+          entityData = _this$props.entityData;
       var _this$state = _this.state,
           data = _this$state.data,
           validatedImage = _this$state.validatedImage;
 
       if (validatedImage) {
-        onConfirm(data);
+        onConfirm((0, _extends3.default)({}, data, {
+          height: entityData.height || data.height,
+          width: entityData.width || data.width
+        }));
       }
     }, _this._cancel = function () {
       var onCancel = _this.props.onCancel;

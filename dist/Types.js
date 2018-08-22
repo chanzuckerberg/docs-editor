@@ -10,11 +10,17 @@ var _draftJs = require('draft-js');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// e.g. {'color': 'red'}
+if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginFlowReactPropTypes_proptype_CSSStyleDeclarationLike', {
+  value: require('prop-types').shape({})
+});
 if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginFlowReactPropTypes_proptype_DocumentLike', {
   value: require('prop-types').shape({
     close: require('prop-types').func.isRequired,
     getElementsByTagName: require('prop-types').func.isRequired,
     open: require('prop-types').func.isRequired,
+    querySelectorAll: require('prop-types').func.isRequired,
+    styleSheets: require('prop-types').any.isRequired,
     write: require('prop-types').func.isRequired
   })
 });
@@ -28,9 +34,7 @@ if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginF
     dispatchEvent: require('prop-types').func.isRequired
   }, (0, _defineProperty3.default)(_require$shape, 'dispatchEvent', require('prop-types').func.isRequired), (0, _defineProperty3.default)(_require$shape, 'getAttribute', require('prop-types').func.isRequired), (0, _defineProperty3.default)(_require$shape, 'hasAttribute', require('prop-types').func.isRequired), (0, _defineProperty3.default)(_require$shape, 'href', require('prop-types').string.isRequired), (0, _defineProperty3.default)(_require$shape, 'id', require('prop-types').string.isRequired), (0, _defineProperty3.default)(_require$shape, 'innerHTML', require('prop-types').string.isRequired), (0, _defineProperty3.default)(_require$shape, 'nodeName', require('prop-types').string.isRequired), (0, _defineProperty3.default)(_require$shape, 'nodeType', require('prop-types').number.isRequired), (0, _defineProperty3.default)(_require$shape, 'parentElement', require('prop-types').any), (0, _defineProperty3.default)(_require$shape, 'removeAttribute', require('prop-types').func.isRequired), (0, _defineProperty3.default)(_require$shape, 'rows', require('prop-types').shape({
     length: require('prop-types').number.isRequired
-  })), (0, _defineProperty3.default)(_require$shape, 'setAttribute', require('prop-types').func.isRequired), (0, _defineProperty3.default)(_require$shape, 'style', require('prop-types').shape({
-    fontWeight: require('prop-types').string.isRequired
-  }).isRequired), _require$shape))
+  })), (0, _defineProperty3.default)(_require$shape, 'setAttribute', require('prop-types').func.isRequired), (0, _defineProperty3.default)(_require$shape, 'style', require('prop-types').shape({}).isRequired), _require$shape))
 });
 if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginFlowReactPropTypes_proptype_ClientRectLike', {
   value: require('prop-types').shape({

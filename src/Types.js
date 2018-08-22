@@ -7,18 +7,28 @@ type HTMLCollectionLike = {
   length: number,
 };
 
-type CSSStyleDeclarationLike = {
-  fontWeight: string,
-};
+
 
 type EventLike = {
 
 };
 
+type ArrayLike<T> = {
+  length: number,
+  forEach: (T, number) => void,
+};
+
+// e.g. {'color': 'red'}
+export type CSSStyleDeclarationLike = {
+  [string]: string,
+};
+
 export type DocumentLike = {
   close: () => void,
-  getElementsByTagName: (tag: string) => Array<Element>,
+  getElementsByTagName: (tag: string) => ArrayLike<Element>,
   open: () => void,
+  querySelectorAll: (selector: string) => ArrayLike<ElementLike>,
+  styleSheets: any,
   write: (html: string) => void,
 };
 

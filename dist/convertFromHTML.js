@@ -60,9 +60,9 @@ var _convertToRaw = require('./convertToRaw');
 
 var _convertToRaw2 = _interopRequireDefault(_convertToRaw);
 
-var _getSafeDocumentElementFromHTML = require('./getSafeDocumentElementFromHTML');
+var _getSafeHTML = require('./getSafeHTML');
 
-var _getSafeDocumentElementFromHTML2 = _interopRequireDefault(_getSafeDocumentElementFromHTML);
+var _getSafeHTML2 = _interopRequireDefault(_getSafeHTML);
 
 var _invariant = require('invariant');
 
@@ -83,6 +83,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var babelPluginFlowReactPropTypes_proptype_ElementLike = require('./Types').babelPluginFlowReactPropTypes_proptype_ElementLike || require('prop-types').any;
 
 var babelPluginFlowReactPropTypes_proptype_DocumentLike = require('./Types').babelPluginFlowReactPropTypes_proptype_DocumentLike || require('prop-types').any;
+
+var babelPluginFlowReactPropTypes_proptype_DocsImageEntityData = require('./Types').babelPluginFlowReactPropTypes_proptype_DocsImageEntityData || require('prop-types').any;
 
 var babelPluginFlowReactPropTypes_proptype_DocsTableEntityData = require('./Types').babelPluginFlowReactPropTypes_proptype_DocsTableEntityData || require('prop-types').any;
 
@@ -114,7 +116,7 @@ var ZERO_WIDTH_CHAR = '\u200B';
 // https://zhuanlan.zhihu.com/p/24951621
 function convertFromHTML(html, editorState, domDocument) {
   // See https://github.com/HubSpot/draft-convert#convertfromhtml
-  var safeHTML = getSafeHTML(html, domDocument);
+  var safeHTML = (0, _getSafeHTML2.default)(html, domDocument);
   var handlers = {
     htmlToBlock: htmlToBlock,
     htmlToEntity: htmlToEntity,
@@ -159,44 +161,6 @@ var FakeAtomicElement = function () {
   return FakeAtomicElement;
 }();
 
-function getSafeHTML(html, domDocument) {
-  var body = (0, _getSafeDocumentElementFromHTML2.default)(html, domDocument);
-  var unsafeNodes = new _map2.default();
-  var safeHTML = '';
-
-  if (body) {
-    // The provided chidlren nodes inside the atomic block should never be
-    // rendered. Instead, the atomic block should only render with its entity
-    // data. Therefore, move the children nodes into the quarantine pool
-    // otherwise these chidlren wil be rendered as extra block after the atomic
-    // block.
-    var quarantine = function quarantine(node) {
-      var id = (0, _uniqueID2.default)();
-      node.id = id;
-      unsafeNodes.set(id, node.cloneNode(true));
-      node.innerHTML = ZERO_WIDTH_CHAR;
-    };
-
-    var atomicNodes = body.querySelectorAll('figure[' + _DocsDataAttributes2.default.ATOMIC_BLOCK_DATA + ']');
-    (0, _from2.default)(atomicNodes).forEach(quarantine);
-
-    var tableNodes = body.querySelectorAll('table');
-    (0, _from2.default)(tableNodes).forEach(quarantine);
-
-    var mathNodes = body.querySelectorAll('span[' + _DocsDataAttributes2.default.DECORATOR_TYPE + '="' + _DocsDecoratorTypes2.default.DOCS_MATH + '"]');
-    (0, _from2.default)(mathNodes).forEach(quarantine);
-
-    var imgNodes = body.querySelectorAll('img');
-    (0, _from2.default)(imgNodes).forEach(imageNodeToPlaceholder);
-    safeHTML = body.innerHTML;
-  }
-
-  return {
-    html: safeHTML,
-    unsafeNodes: unsafeNodes
-  };
-}
-
 function htmlToStyle(safeHTML, nodeName, node, currentStyle) {
   if (node.nodeType !== NODE_TYPE_ELEMENT) {
     return currentStyle;
@@ -204,6 +168,7 @@ function htmlToStyle(safeHTML, nodeName, node, currentStyle) {
   var el = (0, _asElement2.default)(node);
   var newStyle = currentStyle;
   if (nodeName === 'figure') {
+    // This could be an atomic node.
     var className = el.className;
 
     if (className) {
@@ -432,39 +397,6 @@ function createDocsTableEntityDataFromElement(safeHTML, table) {
   }
 
   return entityData;
-}
-
-// img does not have characters data, thus DraftJS wo't be able to
-// parse its entity data. The workaround is to replace it with an
-// empty element that can be converted to DocsImage later.
-function imageNodeToPlaceholder(img) {
-  var parentNode = img.parentNode,
-      src = img.src;
-
-  if (!parentNode || !src) {
-    return;
-  }
-
-  if (img.getAttribute(_DocsDataAttributes2.default.ELEMENT)) {
-    // The image is rendered by <DocsSafeImage /> which contains its meta
-    // data at its containing <span /> element. We can skip this <img />
-    // element.
-    parentNode.removeChild(img);
-    return;
-  }
-
-  var doc = img.ownerDocument;
-  var node = doc.createElement('ins');
-  var decoratorData = {
-    type: _DocsDecoratorTypes2.default.DOCS_IMAGE,
-    mutability: 'IMMUTABLE',
-    data: { url: src }
-  };
-  node.setAttribute(_DocsDataAttributes2.default.DECORATOR_DATA, (0, _stringify2.default)(decoratorData));
-  node.setAttribute(_DocsDataAttributes2.default.DECORATOR_TYPE, _DocsDecoratorTypes2.default.DOCS_IMAGE);
-  node.innerHTML = ZERO_WIDTH_CHAR;
-  parentNode.insertBefore(node, img);
-  parentNode.removeChild(img);
 }
 
 exports.default = convertFromHTML;
