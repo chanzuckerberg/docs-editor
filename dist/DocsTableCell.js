@@ -174,12 +174,14 @@ var DocsTableCell = function (_React$PureComponent) {
           paddingSize = _props.paddingSize;
 
       var editorID = this._editorID;
-      var className = (0, _classnames2.default)({
+
+      // @$FlowFixMe: supress the computed key assignment.
+      var className = (0, _classnames2.default)((0, _defineProperty3.default)({
         'docs-table-cell': true,
         'docs-table-cell-highlighted': highlighted,
         'docs-table-cell-with-bg-style': !!bgStyle,
         'docs-table-cell-with-padding-large': paddingSize === 'large'
-      });
+      }, bgStyle, !!bgStyle));
 
       var leftHandle = canEdit && resizable && cellIndex > 0 && rowIndex >= 0 ? _react2.default.createElement(_DocsTableCellResizeHandle2.default, {
         key: 'r1',

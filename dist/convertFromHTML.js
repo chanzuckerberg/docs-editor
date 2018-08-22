@@ -36,6 +36,10 @@ var _DocsBlockTypes = require('./DocsBlockTypes');
 
 var _DocsBlockTypes2 = _interopRequireDefault(_DocsBlockTypes);
 
+var _DocsCustomStyleSheet = require('./DocsCustomStyleSheet');
+
+var _DocsCustomStyleSheet2 = _interopRequireDefault(_DocsCustomStyleSheet);
+
 var _DocsDataAttributes = require('./DocsDataAttributes');
 
 var _DocsDataAttributes2 = _interopRequireDefault(_DocsDataAttributes);
@@ -52,13 +56,9 @@ var _asElement = require('./asElement');
 
 var _asElement2 = _interopRequireDefault(_asElement);
 
-var _convertFromRaw = require('./convertFromRaw');
+var _createDocsTableEntityDataFromElement = require('./createDocsTableEntityDataFromElement');
 
-var _convertFromRaw2 = _interopRequireDefault(_convertFromRaw);
-
-var _convertToRaw = require('./convertToRaw');
-
-var _convertToRaw2 = _interopRequireDefault(_convertToRaw);
+var _createDocsTableEntityDataFromElement2 = _interopRequireDefault(_createDocsTableEntityDataFromElement);
 
 var _getSafeHTML = require('./getSafeHTML');
 
@@ -72,11 +72,13 @@ var _uniqueID = require('./uniqueID');
 
 var _uniqueID2 = _interopRequireDefault(_uniqueID);
 
+var _getCSSRules = require('./getCSSRules');
+
 var _draftJs = require('draft-js');
 
-var _draftConvert = require('draft-convert');
+var _immutable = require('immutable');
 
-var _DocsTableModifiers = require('./DocsTableModifiers');
+var _draftConvert = require('draft-convert');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -89,10 +91,15 @@ var babelPluginFlowReactPropTypes_proptype_DocsImageEntityData = require('./Type
 var babelPluginFlowReactPropTypes_proptype_DocsTableEntityData = require('./Types').babelPluginFlowReactPropTypes_proptype_DocsTableEntityData || require('prop-types').any;
 
 // See https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight
+var babelPluginFlowReactPropTypes_proptype_SafeHTML = require('./getSafeHTML').babelPluginFlowReactPropTypes_proptype_SafeHTML || require('prop-types').any;
+
 var CSS_BOLD_MIN_NUMERIC_VALUE = 500;
 var CSS_BOLD_VALUES = new _set2.default(['bold', 'bolder']);
 var CSS_NOT_BOLD_VALUES = new _set2.default(['light', 'lighter', 'normal']);
 var CSS_BOLD_MIN_NUMERIC_VALUE_PATTERN = /^\d+$/;
+
+// Name of the outermost element used by atomic component.
+var ATOMIC_ELEMENT_NODE_NAME = 'figure';
 
 // See https://draftjs.org/docs/advanced-topics-inline-styles.html
 var STYLE_BOLD = 'BOLD';
@@ -162,24 +169,26 @@ var FakeAtomicElement = function () {
 }();
 
 function htmlToStyle(safeHTML, nodeName, node, currentStyle) {
+  // See https://www.npmjs.com/package/draft-convert#convertfromhtml
+  // See https://draftjs.org/docs/advanced-topics-inline-styles.html
+  // console.log(currentStyle, node);
   if (node.nodeType !== NODE_TYPE_ELEMENT) {
+    // Plain characters.
     return currentStyle;
   }
   var el = (0, _asElement2.default)(node);
-  var newStyle = currentStyle;
-  if (nodeName === 'figure') {
-    // This could be an atomic node.
-    var className = el.className;
+  var classList = el.classList;
 
-    if (className) {
-      var classNames = className.split(/\s+/g);
-      newStyle = currentStyle.withMutations(function (style) {
-        classNames.forEach(function (className) {
-          style.add(className);
-        });
+  var newStyle = currentStyle;
+  if (nodeName === ATOMIC_ELEMENT_NODE_NAME && classList) {
+    // Copy className from atomic node.
+    newStyle = currentStyle.withMutations(function (style) {
+      classList.forEach(function (className, ii) {
+        style.add(className);
       });
-    }
+    });
   }
+
   // When content is copied from google doc, its HTML may use a tag
   // like `<b style="font-weight: normal">...</b>` which should not make the
   // text bold. This block handles such case.
@@ -195,6 +204,41 @@ function htmlToStyle(safeHTML, nodeName, node, currentStyle) {
       newStyle = parseInt(fontWeight, 10) >= CSS_BOLD_MIN_NUMERIC_VALUE ? newStyle.add(STYLE_BOLD) : newStyle.remove(STYLE_BOLD);
     }
   }
+
+  if (classList && classList.length) {
+    // Add the custom styles based on the priority oorder of the mapped
+    // custom classNames.
+    var cssRules = safeHTML.cssRules;
+
+    var soryBy = _getCSSRules.CSS_SELECTOR_PRIORITY;
+    var styleMaps = (0, _from2.default)(classList).map(function (className) {
+      return cssRules.get('.' + String(className));
+    }).filter(Boolean).sort(function (a, b) {
+      return a.get(soryBy) >= b.get(soryBy) ? 1 : -1;
+    });
+
+    newStyle = currentStyle.withMutations(function (style) {
+      var stylesToAdd = null;
+      styleMaps.forEach(function (styleMap) {
+        styleMap.forEach(function (styleValue, styleName) {
+          var customClassName = _DocsCustomStyleSheet2.default.getClassName(styleName, styleValue);
+          if (customClassName) {
+            stylesToAdd = stylesToAdd || {};
+            // For any given `styleName` (e.g. text-align), the current
+            // `customClassName` always has higher priority and it will
+            // overwrite the old one.
+            stylesToAdd[styleName] = customClassName;
+          }
+        });
+      });
+      if (stylesToAdd) {
+        (0, _keys2.default)(stylesToAdd).forEach(function (styleName) {
+          style.add(String(stylesToAdd && stylesToAdd[styleName]));
+        });
+      }
+    });
+  }
+
   return newStyle;
 }
 
@@ -204,7 +248,7 @@ function htmlToEntity(safeHTML, nodeName, node, createEntity) {
   }
   var el = (0, _asElement2.default)(node);
   switch (nodeName) {
-    case 'figure':
+    case ATOMIC_ELEMENT_NODE_NAME:
       return htmlToAtomicBlockEntity(safeHTML, nodeName, el, createEntity);
 
     case 'table':
@@ -278,7 +322,7 @@ function htmlToBlock(safeHTML, nodeName, node) {
 }
 
 function htmlToAtomicBlock(safeHTML, nodeName, node) {
-  if (nodeName !== 'figure') {
+  if (nodeName !== ATOMIC_ELEMENT_NODE_NAME) {
     return null;
   }
   var element = (0, _asElement2.default)(node);
@@ -315,88 +359,13 @@ function normalizeNodeForTable(safeHTML, nodeName, node) {
     return null;
   }
 
-  var entityData = createDocsTableEntityDataFromElement(safeHTML, element);
+  var entityData = (0, _createDocsTableEntityDataFromElement2.default)(safeHTML, element, convertFromHTML);
   var data = {
     blockType: _DocsBlockTypes2.default.DOCS_TABLE,
     entityData: entityData
   };
   var atomicNode = new FakeAtomicElement(data);
   return atomicNode;
-}
-
-function createEmptyEditorState() {
-  var decorator = _DocsDecorator2.default.get();
-  var emptyEditorState = _draftJs.EditorState.createEmpty(decorator);
-  return emptyEditorState;
-}
-
-function createDocsTableEntityDataFromElement(safeHTML, table) {
-  (0, _invariant2.default)(table.nodeName === 'TABLE', 'must be a table');
-  var entityData = {
-    rowsCount: 0,
-    colsCount: 0
-  };
-
-  // The children of `table` should have been quarantined. We need to access
-  // the children from the quarantine pool.
-  var el = (0, _asElement2.default)(safeHTML.unsafeNodes.get((0, _asElement2.default)(table).id));
-
-  // TODO: What about having multiple <tbody />, <thead /> and <col />
-  // colsSpan, rowsSpan...etc?
-  var rows = el.rows;
-
-
-  if (!rows || !rows[0] || !rows[0].cells || rows[0].cells.length === 0) {
-    return entityData;
-  }
-
-  var emptyEditorState = createEmptyEditorState();
-
-  var data = entityData;
-  var rowsCount = rows ? rows.length : 0;
-  var colsCount = (0, _from2.default)(rows).reduce(function (max, row) {
-    if (row && row.cells) {
-      var len = row.cells.length;
-      return len > max ? len : max;
-    }
-    return max;
-  }, 0);
-
-  data.rowsCount = rowsCount;
-  data.colsCount = colsCount;
-  var rr = 0;
-  var useHeader = false;
-  while (rr < rowsCount) {
-    var cc = 0;
-    while (cc < colsCount) {
-      // row could be empty, if "rowSpan={n}" is set.
-      // cell could be  empty, if "colsSpan={n}" is set.
-      var _html = '';
-      var row = rows[rr];
-      if (row) {
-        var cells = row.cells;
-
-        var cell = cells ? cells[cc] : null;
-        if (cell) {
-          _html = cell.innerHTML;
-          if (rr === 0 && cell.nodeName === 'TH') {
-            useHeader = true;
-          }
-        }
-      }
-      var cellEditorState = convertFromHTML(_html, emptyEditorState);
-      var id = (0, _DocsTableModifiers.getEntityDataID)(rr, cc);
-      data[id] = (0, _convertToRaw2.default)(cellEditorState);
-      cc++;
-    }
-    rr++;
-  }
-
-  if (rowsCount > 1 || useHeader) {
-    entityData = (0, _DocsTableModifiers.toggleHeaderBackground)(entityData);
-  }
-
-  return entityData;
 }
 
 exports.default = convertFromHTML;

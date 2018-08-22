@@ -24,6 +24,7 @@ function insertRow(
 ): DocsTableEntityData {
   const {rowsCount, colsCount} = entityData;
   const newEntityData = {
+    ...entityData,
     rowsCount: rowsCount + 1,
     colsCount,
   };
@@ -110,6 +111,7 @@ function deleteColumn(
   }
   entityData = JSON.parse(JSON.stringify(entityData));
   const newEntityData = {
+    ...entityData,
     rowsCount,
     colsCount: colsCount - 1,
     colWidths: null,
@@ -147,7 +149,6 @@ function deleteColumn(
       newColWidths = undefined;
     }
   }
-  // $FlowFixMe
   newEntityData.colWidths = newColWidths;
   return newEntityData;
 }
@@ -159,6 +160,7 @@ function insertColumn(
 ): DocsTableEntityData {
   const {rowsCount, colsCount} = entityData;
   const newEntityData = {
+    ...entityData,
     colWidths: null,
     colsCount: colsCount + 1,
     rowsCount,
@@ -194,7 +196,7 @@ function insertColumn(
     newColWidths[colIndex] = newWidth;
     newColWidths.splice(colIndex, 0, newWidth);
   }
-  // $FlowFixMe
+
   newEntityData.colWidths = newColWidths;
   return newEntityData;
 }
@@ -228,12 +230,17 @@ function toggleIndexColumnBackground(
 
 function toggleHeaderBackground(
   entityData: DocsTableEntityData,
+  forceEnabled?: ?boolean,
 ): DocsTableEntityData {
   const key = DocsTableEntityDataKeys.TOP_ROW_BG_STYLE;
-  const value = !entityData[key];
+  const value = forceEnabled || !entityData[key];
+  const bgStyle = value ? 'dark' : undefined;
+  if (entityData[key] === bgStyle) {
+    return entityData;
+  }
   return {
     ...entityData,
-    [key]: value ? 'dark' : undefined,
+    [key]: bgStyle,
   };
 }
 

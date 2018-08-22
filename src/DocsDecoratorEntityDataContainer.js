@@ -68,6 +68,7 @@ class DocsDecoratorEntityDataContainer extends React.PureComponent {
       'docs-decorator-container-align-left': align === 'left',
       'docs-decorator-container-align-right': align === 'right',
       'docs-decorator-container-align-center': align === 'center',
+      'docs-decorator-container-align-none': align === 'none',
     });
 
     const attrs = {

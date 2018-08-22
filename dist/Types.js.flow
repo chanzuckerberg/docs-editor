@@ -15,7 +15,7 @@ type EventLike = {
 
 type ArrayLike<T> = {
   length: number,
-  forEach: (T, number) => void,
+  forEach: ((T, number) => void) => void,
 };
 
 // e.g. {'color': 'red'}
@@ -37,8 +37,9 @@ export type BgStyle = 'dark';
 export type ElementLike = {
   appendChild: (child: ElementLike) => ElementLike,
   cells: ?HTMLCollectionLike,
+  cellIndex: ?number,
+  classList: ?ArrayLike<string>,
   className: string,
-  dispatchEvent: (e: EventLike) => void,
   dispatchEvent: (e: EventLike) => void,
   getAttribute: (attr: string) => string,
   hasAttribute: (attr: string) => boolean,
@@ -47,8 +48,10 @@ export type ElementLike = {
   innerHTML: string,
   nodeName: string,
   nodeType: number,
+  ownerDocument: DocumentLike,
   parentElement: ?ElementLike,
   removeAttribute: (attr: string) => void,
+  rowIndex: ?number,
   rows: ?HTMLCollectionLike,
   setAttribute: (attr: string, value: string) => void,
   style: CSSStyleDeclarationLike,
@@ -102,6 +105,7 @@ export type DocsAnnotationEtityData = {
 };
 
 export type DocsTableEntityData = {
+  cellBgStyles?: ?{[cellId: string]: string},
   colWidths?: ?Array<number>,
   colsCount: number,
   leftColBgStyle?: ?string,

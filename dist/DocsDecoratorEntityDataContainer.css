@@ -16,7 +16,12 @@
   margin-left: 16px;
 }
 
-.docs-decorator-container[data-docs-decorator-type="DOCS_IMAGE"],
+.docs-decorator-container[data-docs-decorator-type="DOCS_IMAGE"] {
+  clear: both;
+  display: inline-block;
+  margin: 16px 0;
+}
+
 .docs-decorator-container-align-center[data-docs-decorator-type="DOCS_IMAGE"] {
   clear: both;
   display: flex;

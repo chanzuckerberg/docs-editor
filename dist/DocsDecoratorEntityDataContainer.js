@@ -184,7 +184,8 @@ var DocsDecoratorEntityDataContainer = function (_React$PureComponent) {
         'docs-decorator-container': true,
         'docs-decorator-container-align-left': align === 'left',
         'docs-decorator-container-align-right': align === 'right',
-        'docs-decorator-container-align-center': align === 'center'
+        'docs-decorator-container-align-center': align === 'center',
+        'docs-decorator-container-align-none': align === 'none'
       });
 
       var attrs = (_attrs = {}, (0, _defineProperty3.default)(_attrs, _DocsDataAttributes2.default.DECORATOR_TYPE, this._decoratorType), (0, _defineProperty3.default)(_attrs, _DocsDataAttributes2.default.ELEMENT, true), _attrs);

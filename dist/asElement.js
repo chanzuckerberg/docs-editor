@@ -12,8 +12,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var babelPluginFlowReactPropTypes_proptype_ElementLike = require('./Types').babelPluginFlowReactPropTypes_proptype_ElementLike || require('prop-types').any;
 
-var babelPluginFlowReactPropTypes_proptype_ClientRectLike = require('./Types').babelPluginFlowReactPropTypes_proptype_ClientRectLike || require('prop-types').any;
-
 function asElement(node) {
   (0, _invariant2.default)(node && node.nodeType === 1, 'invalid element');
   var el = node;

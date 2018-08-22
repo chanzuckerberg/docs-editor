@@ -4,13 +4,13 @@ var _defineProperty2 = require('babel-runtime/helpers/defineProperty');
 
 var _defineProperty3 = _interopRequireDefault(_defineProperty2);
 
-var _extends4 = require('babel-runtime/helpers/extends');
-
-var _extends5 = _interopRequireDefault(_extends4);
-
 var _stringify = require('babel-runtime/core-js/json/stringify');
 
 var _stringify2 = _interopRequireDefault(_stringify);
+
+var _extends4 = require('babel-runtime/helpers/extends');
+
+var _extends5 = _interopRequireDefault(_extends4);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -36,10 +36,10 @@ function insertRow(entityData, rowIndex, before) {
       rowsCount = _entityData.rowsCount,
       colsCount = _entityData.colsCount;
 
-  var newEntityData = {
+  var newEntityData = (0, _extends5.default)({}, entityData, {
     rowsCount: rowsCount + 1,
     colsCount: colsCount
-  };
+  });
   var rr = 0;
   entityData = JSON.parse((0, _stringify2.default)(entityData));
   var jj = before ? rowIndex : rowIndex + 1;
@@ -111,11 +111,11 @@ function deleteColumn(entityData, rowIndex, colIndex) {
     return entityData;
   }
   entityData = JSON.parse((0, _stringify2.default)(entityData));
-  var newEntityData = {
+  var newEntityData = (0, _extends5.default)({}, entityData, {
     rowsCount: rowsCount,
     colsCount: colsCount - 1,
     colWidths: null
-  };
+  });
   var kk = newEntityData.colsCount;
   var rr = 0;
   while (rr < rowsCount) {
@@ -151,7 +151,6 @@ function deleteColumn(entityData, rowIndex, colIndex) {
       newColWidths = undefined;
     }
   }
-  // $FlowFixMe
   newEntityData.colWidths = newColWidths;
   return newEntityData;
 }
@@ -161,11 +160,11 @@ function insertColumn(entityData, colIndex, before) {
       rowsCount = _entityData4.rowsCount,
       colsCount = _entityData4.colsCount;
 
-  var newEntityData = {
+  var newEntityData = (0, _extends5.default)({}, entityData, {
     colWidths: null,
     colsCount: colsCount + 1,
     rowsCount: rowsCount
-  };
+  });
   var rr = 0;
   entityData = JSON.parse((0, _stringify2.default)(entityData));
 
@@ -199,7 +198,7 @@ function insertColumn(entityData, colIndex, before) {
     newColWidths[colIndex] = newWidth;
     newColWidths.splice(colIndex, 0, newWidth);
   }
-  // $FlowFixMe
+
   newEntityData.colWidths = newColWidths;
   return newEntityData;
 }
@@ -220,10 +219,14 @@ function toggleIndexColumnBackground(entityData) {
   });
 }
 
-function toggleHeaderBackground(entityData) {
+function toggleHeaderBackground(entityData, forceEnabled) {
   var key = DocsTableEntityDataKeys.TOP_ROW_BG_STYLE;
-  var value = !entityData[key];
-  return (0, _extends5.default)({}, entityData, (0, _defineProperty3.default)({}, key, value ? 'dark' : undefined));
+  var value = forceEnabled || !entityData[key];
+  var bgStyle = value ? 'dark' : undefined;
+  if (entityData[key] === bgStyle) {
+    return entityData;
+  }
+  return (0, _extends5.default)({}, entityData, (0, _defineProperty3.default)({}, key, bgStyle));
 }
 
 function toggleBorders(entityData) {

@@ -73,8 +73,8 @@
   z-index: 1;
 }
 
-.docs-table-cell-with-bg-style,
-.docs-table-row-header .docs-table-cell {
+.docs-table-cell-with-bg-style.dark,
+.docs-table-row-header .docs-table-cell.dark {
   background: #efefef;
 }
 

@@ -78,11 +78,14 @@ class DocsTableCell extends React.PureComponent {
       onColumnResizeEnd, width, bgStyle, paddingSize,
     } = this.props;
     const editorID = this._editorID;
+
+    // @$FlowFixMe: supress the computed key assignment.
     const className = cx({
       'docs-table-cell': true,
       'docs-table-cell-highlighted': highlighted,
       'docs-table-cell-with-bg-style': !!bgStyle,
       'docs-table-cell-with-padding-large': paddingSize === 'large',
+      [bgStyle]: !!bgStyle,
     });
 
     const leftHandle =

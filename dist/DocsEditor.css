@@ -1,6 +1,11 @@
 /* DocsEditor */
 .docs-editor {
   position: relative;
+  text-align: center;
+}
+
+.docs-editor .public-DraftStyleDefault-ltr {
+  text-align: inherit;
 }
 
 .docs-editor .public-DraftEditor-content {
@@ -81,4 +86,8 @@
   text-align: center;
   vertical-align: middle;
   width: 32px;
+}
+
+.docs-style-font-size-26pt {
+  font-size: 26pt;
 }

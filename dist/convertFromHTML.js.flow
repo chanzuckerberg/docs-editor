@@ -1,32 +1,31 @@
 // @flow
 
 import DocsBlockTypes from './DocsBlockTypes';
+import DocsCustomStyleSheet from './DocsCustomStyleSheet';
 import DocsDataAttributes from './DocsDataAttributes';
 import DocsDecorator from './DocsDecorator';
 import DocsDecoratorTypes from './DocsDecoratorTypes';
 import asElement from './asElement';
-import convertFromRaw from './convertFromRaw';
-import convertToRaw from './convertToRaw';
+import createDocsTableEntityDataFromElement from './createDocsTableEntityDataFromElement';
 import getSafeHTML from './getSafeHTML';
 import invariant from 'invariant';
 import uniqueID from './uniqueID';
+import {CSS_SELECTOR_PRIORITY, CSS_SELECTOR_TEXT} from './getCSSRules';
 import {ContentState, Modifier, EditorState, Entity} from 'draft-js';
+import {OrderedSet} from 'immutable';
 import {convertFromHTML as draftConvertFromHTML} from 'draft-convert';
-import {getEntityDataID} from './DocsTableModifiers';
-import {toggleHeaderBackground} from './DocsTableModifiers';
 
 import type {DocsTableEntityData, DocsImageEntityData, DocumentLike, ElementLike} from './Types';
-
-type SafeHTML = {
-  html: string,
-  unsafeNodes: Map<string, Node>,
-};
+import type {SafeHTML} from './getSafeHTML';
 
 // See https://developer.mozilla.org/en-US/docs/Web/CSS/font-weight
 const CSS_BOLD_MIN_NUMERIC_VALUE = 500;
 const CSS_BOLD_VALUES = new Set(['bold', 'bolder']);
 const CSS_NOT_BOLD_VALUES = new Set(['light', 'lighter', 'normal']);
 const CSS_BOLD_MIN_NUMERIC_VALUE_PATTERN = /^\d+$/;
+
+// Name of the outermost element used by atomic component.
+const ATOMIC_ELEMENT_NODE_NAME = 'figure';
 
 // See https://draftjs.org/docs/advanced-topics-inline-styles.html
 const STYLE_BOLD = 'BOLD';
@@ -101,25 +100,27 @@ function htmlToStyle(
   safeHTML: SafeHTML,
   nodeName: string,
   node: Node | ElementLike,
-  currentStyle: Object,
+  currentStyle: OrderedSet<string>,
 ): Object {
+  // See https://www.npmjs.com/package/draft-convert#convertfromhtml
+  // See https://draftjs.org/docs/advanced-topics-inline-styles.html
+  // console.log(currentStyle, node);
   if (node.nodeType !== NODE_TYPE_ELEMENT) {
+    // Plain characters.
     return currentStyle;
   }
   const el = asElement(node);
+  const {classList} = el;
   let newStyle = currentStyle;
-  if (nodeName === 'figure') {
-    // This could be an atomic node.
-    const {className} = el;
-    if (className) {
-      const classNames = className.split(/\s+/g);
-      newStyle = currentStyle.withMutations((style) => {
-        classNames.forEach(className => {
-          style.add(className);
-        });
+  if (nodeName === ATOMIC_ELEMENT_NODE_NAME && classList) {
+    // Copy className from atomic node.
+    newStyle = currentStyle.withMutations((style) => {
+      classList.forEach((className, ii) => {
+        style.add(className);
       });
-    }
+    });
   }
+
   // When content is copied from google doc, its HTML may use a tag
   // like `<b style="font-weight: normal">...</b>` which should not make the
   // text bold. This block handles such case.
@@ -137,6 +138,41 @@ function htmlToStyle(
         newStyle.remove(STYLE_BOLD);
     }
   }
+
+
+  if (classList && classList.length) {
+    // Add the custom styles based on the priority oorder of the mapped
+    // custom classNames.
+    const {cssRules} = safeHTML;
+    const soryBy = CSS_SELECTOR_PRIORITY;
+    const styleMaps = Array.from(classList)
+      .map(className => cssRules.get(`.${String(className)}`))
+      .filter(Boolean)
+      .sort((a, b) => a.get(soryBy) >= b.get(soryBy) ? 1 : -1);
+
+    newStyle = currentStyle.withMutations((style) => {
+      let stylesToAdd = null;
+      styleMaps.forEach(styleMap => {
+        styleMap.forEach((styleValue, styleName) => {
+          const customClassName =
+            DocsCustomStyleSheet.getClassName(styleName, styleValue);
+           if (customClassName) {
+             stylesToAdd = stylesToAdd || {};
+             // For any given `styleName` (e.g. text-align), the current
+             // `customClassName` always has higher priority and it will
+             // overwrite the old one.
+             stylesToAdd[styleName] = customClassName;
+           }
+        });
+      });
+      if (stylesToAdd) {
+        Object.keys(stylesToAdd).forEach(styleName => {
+          style.add(String(stylesToAdd && stylesToAdd[styleName]));
+        });
+      }
+    });
+  }
+
   return newStyle;
 }
 
@@ -151,7 +187,7 @@ function htmlToEntity(
   }
   let el = asElement(node);
   switch (nodeName) {
-    case 'figure':
+    case ATOMIC_ELEMENT_NODE_NAME:
       return htmlToAtomicBlockEntity(safeHTML, nodeName, el, createEntity);
 
     case 'table':
@@ -252,7 +288,7 @@ function htmlToAtomicBlock(
   nodeName: string,
   node: Node | ElementLike,
 ): ?Object {
-  if (nodeName !== 'figure') {
+  if (nodeName !== ATOMIC_ELEMENT_NODE_NAME) {
     return null;
   }
   const element = asElement(node);
@@ -290,97 +326,17 @@ function normalizeNodeForTable(
     return null;
   }
 
-  const entityData = createDocsTableEntityDataFromElement(safeHTML, element);
+  const entityData = createDocsTableEntityDataFromElement(
+    safeHTML,
+    element,
+    convertFromHTML
+  );
   const data = {
     blockType: DocsBlockTypes.DOCS_TABLE,
     entityData,
   };
   const atomicNode: any = new FakeAtomicElement(data);
   return atomicNode;
-}
-
-function createEmptyEditorState(): EditorState {
-  const decorator = DocsDecorator.get();
-  const emptyEditorState = EditorState.createEmpty(decorator);
-  return emptyEditorState;
-}
-
-function createDocsTableEntityDataFromElement(
-  safeHTML: SafeHTML,
-  table: ElementLike,
-): DocsTableEntityData {
-  invariant(table.nodeName === 'TABLE', 'must be a table');
-  let entityData = {
-    rowsCount: 0,
-    colsCount: 0,
-  };
-
-  // The children of `table` should have been quarantined. We need to access
-  // the children from the quarantine pool.
-  const el = asElement(safeHTML.unsafeNodes.get(asElement(table).id));
-
-  // TODO: What about having multiple <tbody />, <thead /> and <col />
-  // colsSpan, rowsSpan...etc?
-  const {rows} = el;
-
-  if (
-    !rows ||
-    !rows[0] ||
-    !rows[0].cells ||
-    rows[0].cells.length === 0
-  ) {
-    return entityData;
-  }
-
-  const emptyEditorState = createEmptyEditorState();
-
-  const data: any = entityData;
-  const rowsCount = rows ? rows.length : 0;
-  const colsCount = Array.from(rows).reduce(
-    (max, row) => {
-      if (row && row.cells) {
-        const len = row.cells.length;
-        return len > max ? len : max;
-      }
-      return max;
-    },
-    0,
-  );
-
-  data.rowsCount = rowsCount;
-  data.colsCount = colsCount;
-  let rr = 0;
-  let useHeader = false;
-  while (rr < rowsCount) {
-    let cc = 0;
-    while (cc < colsCount) {
-      // row could be empty, if "rowSpan={n}" is set.
-      // cell could be  empty, if "colsSpan={n}" is set.
-      let html = '';
-      const row = rows[rr];
-      if (row) {
-        const {cells} = row;
-        const cell = cells ? cells[cc] : null;
-        if (cell) {
-          html = cell.innerHTML;
-          if (rr === 0 && cell.nodeName === 'TH') {
-            useHeader = true;
-          }
-        }
-      }
-      const cellEditorState = convertFromHTML(html, emptyEditorState);
-      const id = getEntityDataID(rr, cc);
-      data[id] = convertToRaw(cellEditorState);
-      cc++;
-    }
-    rr++;
-  }
-
-  if (rowsCount > 1 || useHeader) {
-    entityData = toggleHeaderBackground(entityData);
-  }
-
-  return entityData;
 }
 
 

@@ -53,12 +53,12 @@ const SPECS = [
     prop: 'align',
     value: 'center',
   },
-  // {
-  //   action: DocsActionTypes.IMAGE_ALIGN_NONE,
-  //   label: 'Align None',
-  //   prop: 'align',
-  //   value: false,
-  // },
+  {
+    action: DocsActionTypes.IMAGE_ALIGN_NONE,
+    label: 'Default',
+    prop: 'align',
+    value: 'default',
+  },
   {
     divider: true,
   },
@@ -121,9 +121,9 @@ class DocsImageEditor extends React.PureComponent {
 
       if (typeof value === 'boolean') {
         active = !!data[prop];
-      } else if (prop === 'align' && value === 'center') {
+      } else if (prop === 'align' && value === 'default') {
         const val = data[prop];
-        active = (val === value) || !val;
+        active = val === null || val === undefined;
       } else {
         active = data[prop] === value;
       }
@@ -244,7 +244,7 @@ class DocsImageEditor extends React.PureComponent {
         break;
 
       case DocsActionTypes.IMAGE_ALIGN_NONE:
-        align = '';
+        align = undefined;
         break;
 
       case DocsActionTypes.IMAGE_TOGGLE_FRAME:

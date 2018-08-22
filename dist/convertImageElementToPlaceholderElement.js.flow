@@ -35,9 +35,9 @@ function convertImageElementToPlaceholderElement(img: Object): void {
 
   const entityData: DocsImageEntityData = {
     url: src,
+    align: getElementAlignment(imgEl),
     height: getElementDimension(imgEl, 'height'),
     width: getElementDimension(imgEl, 'width'),
-    align: getElementAlignment(imgEl) || 'left',
   };
 
   const decoratorData = {

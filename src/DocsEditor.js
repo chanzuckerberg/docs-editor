@@ -3,6 +3,7 @@
 import DocsBaseEditor from './DocsBaseEditor';
 import DocsConfig from './DocsConfig';
 import DocsContext from './DocsContext';
+import DocsCustomStyleSheet from './DocsCustomStyleSheet';
 import DocsDataAttributes from './DocsDataAttributes';
 import DocsEditorContentOverflowControl from './DocsEditorContentOverflowControl';
 import DocsEditorFocusManager from './DocsEditorFocusManager';
@@ -16,10 +17,10 @@ import Timer from './Timer';
 import asElement from './asElement';
 import convertFromRaw from './convertFromRaw';
 import cx from 'classnames';
-import withDocsContext from './withDocsContext';
 import invariant from 'invariant';
 import noop from './noop';
 import uniqueID from './uniqueID';
+import withDocsContext from './withDocsContext';
 import {EditorState} from 'draft-js';
 
 import './DocsEditor.css';
@@ -151,6 +152,7 @@ class DocsEditor extends React.PureComponent {
         style={style}
         className={mainClassName}
         ref={this._onElementRef}>
+        <DocsCustomStyleSheet />
         <div className="docs-editor-frameset">
           <div className="docs-editor-frame-head">
             {header}

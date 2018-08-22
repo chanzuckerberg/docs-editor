@@ -61,9 +61,9 @@ function convertImageElementToPlaceholderElement(img) {
 
   var entityData = {
     url: src,
+    align: (0, _getElementAlignment2.default)(imgEl),
     height: (0, _getElementDimension2.default)(imgEl, 'height'),
-    width: (0, _getElementDimension2.default)(imgEl, 'width'),
-    align: (0, _getElementAlignment2.default)(imgEl) || 'left'
+    width: (0, _getElementDimension2.default)(imgEl, 'width')
   };
 
   var decoratorData = {

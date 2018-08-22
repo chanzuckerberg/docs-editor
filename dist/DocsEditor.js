@@ -40,6 +40,10 @@ var _DocsContext = require('./DocsContext');
 
 var _DocsContext2 = _interopRequireDefault(_DocsContext);
 
+var _DocsCustomStyleSheet = require('./DocsCustomStyleSheet');
+
+var _DocsCustomStyleSheet2 = _interopRequireDefault(_DocsCustomStyleSheet);
+
 var _DocsDataAttributes = require('./DocsDataAttributes');
 
 var _DocsDataAttributes2 = _interopRequireDefault(_DocsDataAttributes);
@@ -92,10 +96,6 @@ var _classnames = require('classnames');
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
-var _withDocsContext = require('./withDocsContext');
-
-var _withDocsContext2 = _interopRequireDefault(_withDocsContext);
-
 var _invariant = require('invariant');
 
 var _invariant2 = _interopRequireDefault(_invariant);
@@ -107,6 +107,10 @@ var _noop2 = _interopRequireDefault(_noop);
 var _uniqueID = require('./uniqueID');
 
 var _uniqueID2 = _interopRequireDefault(_uniqueID);
+
+var _withDocsContext = require('./withDocsContext');
+
+var _withDocsContext2 = _interopRequireDefault(_withDocsContext);
 
 var _draftJs = require('draft-js');
 
@@ -274,6 +278,7 @@ var DocsEditor = function (_React$PureComponent) {
           style: style,
           className: mainClassName,
           ref: this._onElementRef }),
+        _react2.default.createElement(_DocsCustomStyleSheet2.default, null),
         _react2.default.createElement(
           'div',
           { className: 'docs-editor-frameset' },

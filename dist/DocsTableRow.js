@@ -130,8 +130,12 @@ var DocsTableRow = function (_React$PureComponent) {
         var id = (0, _DocsTableModifiers.getEntityDataID)(rr, cc);
         var rawContentState = entityData[id];
         var highlighted = canEdit && rr === editorRowIndex && cc === editorCellIndex;
+        var bgStyle = cc === 0 ? entityData.leftColBgStyle : null;
+        if (entityData.cellBgStyles && entityData.cellBgStyles[id]) {
+          bgStyle = entityData.cellBgStyles[id];
+        }
         cells.push(_react2.default.createElement(_DocsTableCell2.default, {
-          bgStyle: cc === 0 ? entityData.leftColBgStyle : null,
+          bgStyle: bgStyle,
           cellIndex: cc,
           colsCount: colsCount,
           highlighted: highlighted,

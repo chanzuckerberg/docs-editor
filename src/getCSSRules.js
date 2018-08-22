@@ -1,45 +1,65 @@
 // @flow
 
-import type {DocumentLike, CSSStyleDeclarationLike} from './Types';
+import {OrderedMap} from 'immutable';
+
+import type {DocumentLike} from './Types';
 
 // e.g. '.my-class-name': {'color': 'red'}
-export type CSSRules = Map<string, CSSStyleDeclarationLike>;
+export type CSSRules = OrderedMap<string, OrderedMap<string, string>>;
+
+export const CSS_SELECTOR_PRIORITY = '-docs-css-selector-priority';
+export const CSS_SELECTOR_TEXT = '-docs-css-selector-text';
+
+const EMPTY_MAP = new OrderedMap();
+
 
 function getCSSRules(domDocument: ?DocumentLike): CSSRules {
-  if (!domDocument) {
-    return new Map();
-  }
-
-  const result = new Map();
-  Array.from(domDocument.querySelectorAll('style')).forEach((el: any) => {
-    const sheet = el.sheet;
-    if (!sheet) {
+  return EMPTY_MAP.withMutations((mutableCSSRules) => {
+    if (!domDocument) {
       return;
     }
-    const cssRules = sheet.cssRules;
-    if (!cssRules) {
-      return;
-    }
+    Array.from(domDocument.querySelectorAll('style')).forEach((el: any) => {
+      const sheet = el.sheet;
+      if (!sheet) {
+        // TODO: Find out why the browser does not support this.
+        return;
+      }
 
-    Array.from(cssRules).forEach(rule => {
-      const selectorText = String(rule.selectorText || '');
-      if (!selectorText) {
-        // This could be `CSSImportRule.` created by @import().
+      const cssRules = sheet.cssRules;
+      if (!cssRules) {
+        // TODO: Find out why the browser does not support this.
         return;
       }
-      const styleMap = rule.styleMap;
-      if (!styleMap) {
-        return;
-      }
-      const rules = result.get(selectorText) || {};
-      rule.styleMap.forEach((cssStyleValue, key) => {
-        // e.g. rules['color'] = 'red'.
-        rules[String(key)] = String(cssStyleValue);
+
+      Array.from(cssRules).forEach((rule, cssRuleIndex) => {
+        const selectorText = String(rule.selectorText || '');
+        if (!selectorText) {
+          // This could be `CSSImportRule.` created by @import().
+          return;
+        }
+
+        if (!rule.styleMap) {
+          // TODO: Find out why the browser does not support this.
+          return;
+        }
+
+        let styleMap = mutableCSSRules.get(selectorText) || EMPTY_MAP;
+        styleMap = styleMap.withMutations(mutableStyleMap => {
+          rule.styleMap.forEach((cssStyleValue, key) => {
+            // e.g. rules['color'] = 'red'.
+            mutableStyleMap.set(String(key), String(cssStyleValue));
+          });
+          // We need to remember the order of css selector so we could compare
+          // its priority later.
+          mutableStyleMap.set(CSS_SELECTOR_PRIORITY, cssRuleIndex);
+          mutableStyleMap.set(CSS_SELECTOR_TEXT, selectorText);
+        });
+        if (styleMap.size > 0) {
+          mutableCSSRules.set(selectorText, styleMap);
+        }
       });
-      result.set(selectorText, rules);
     });
   });
-  return result;
 }
 
 export default getCSSRules;
