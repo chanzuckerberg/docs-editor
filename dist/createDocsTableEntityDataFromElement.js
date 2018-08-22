@@ -70,7 +70,7 @@ function setDocsTableEntityDataFromCell(safeHTML, row, cell, convertFromHTML, en
   }
 
   // The table-cell might have a className that can be mapped to the custom
-  // background color. Find out hwat that className is. 
+  // background color. Find out what that className is.
   classList.forEach(function (cellClassName) {
     var selector = '.' + cellClassName;
     var rules = safeHTML.cssRules.get(selector);
@@ -150,30 +150,5 @@ function createDocsTableEntityDataFromElement(safeHTML, table, convertFromHTML) 
 
   return entityData;
 }
-
-/*
-const {classList} = cell;
-if (classList && classList.length) {
-  classList.forEach(cellClassName => {
-    const selector = `.${cellClassName}`;
-    const rules = safeHTML.cssRules.get(selector);
-    if (rules) {
-      rules.forEach((styleValue, styleName) => {
-        if (styleName === DocsCustomStyleSheet.BACKGROUND_COLOR) {
-          const customClassName =
-            DocsCustomStyleSheet.getClassName(styleName, styleValue);
-        }
-        const customClassName =
-          DocsCustomStyleSheet.getClassName(styleName, styleValue);
-
-        if (customClassName || styleName === 'background-color') {
-          // debugger;
-        }
-      });
-    }
-    console.log(cellClassName, cell);
-  });
-}
-*/
 
 exports.default = createDocsTableEntityDataFromElement;
