@@ -1,7 +1,7 @@
 // @flow
 
 import createPaletteColors from './createPaletteColors';
-import decamelize from 'decamelize';
+import hyphenize from './hyphenize';
 import numberRange from './numberRange';
 
 type StyleMapType = {
@@ -52,7 +52,7 @@ function injectCSSIntoDocument(styleMap: StyleMapType): void {
     cssTexts.push(`.${styleName} {`);
     const rules = styleMap[styleName];
     Object.keys(rules).forEach(attr => {
-       cssTexts.push(`${decamelize(attr, '-')}: ${rules[attr]};`);
+       cssTexts.push(`${hyphenize(attr, '-')}: ${rules[attr]};`);
     });
     cssTexts.push('}');
   });

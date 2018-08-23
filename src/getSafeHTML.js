@@ -3,7 +3,7 @@
 import DocsDataAttributes from './DocsDataAttributes';
 import DocsDecoratorTypes from './DocsDecoratorTypes';
 import asElement from './asElement';
-import camelCase from 'camelcase';
+import camelize from './camelize';
 import convertImageElementToPlaceholderElement from './convertImageElementToPlaceholderElement';
 import getCSSRules from './getCSSRules';
 import getSafeDocumentElementFromHTML from './getSafeDocumentElementFromHTML';
@@ -51,7 +51,7 @@ function mergeInlineStylesToElement(cssRules: CSSRules, el: any): void {
       ) {
         return;
       }
-      const attr = camelCase(styleName);
+      const attr = camelize(styleName);
       if (style[attr]) {
         // Already has inline-style.
         return;

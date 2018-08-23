@@ -28,9 +28,9 @@ var _asElement = require('./asElement');
 
 var _asElement2 = _interopRequireDefault(_asElement);
 
-var _camelcase = require('camelcase');
+var _camelize = require('./camelize');
 
-var _camelcase2 = _interopRequireDefault(_camelcase);
+var _camelize2 = _interopRequireDefault(_camelize);
 
 var _convertImageElementToPlaceholderElement = require('./convertImageElementToPlaceholderElement');
 
@@ -89,7 +89,7 @@ function mergeInlineStylesToElement(cssRules, el) {
       if (styleName === _getCSSRules.CSS_SELECTOR_TEXT || styleName === _getCSSRules.CSS_SELECTOR_PRIORITY) {
         return;
       }
-      var attr = (0, _camelcase2.default)(styleName);
+      var attr = (0, _camelize2.default)(styleName);
       if (style[attr]) {
         // Already has inline-style.
         return;

@@ -16,9 +16,9 @@ var _createPaletteColors = require('./createPaletteColors');
 
 var _createPaletteColors2 = _interopRequireDefault(_createPaletteColors);
 
-var _decamelize = require('decamelize');
+var _hyphenize = require('./hyphenize');
 
-var _decamelize2 = _interopRequireDefault(_decamelize);
+var _hyphenize2 = _interopRequireDefault(_hyphenize);
 
 var _numberRange = require('./numberRange');
 
@@ -60,7 +60,7 @@ function injectCSSIntoDocument(styleMap) {
     cssTexts.push('.' + styleName + ' {');
     var rules = styleMap[styleName];
     (0, _keys2.default)(rules).forEach(function (attr) {
-      cssTexts.push((0, _decamelize2.default)(attr, '-') + ': ' + rules[attr] + ';');
+      cssTexts.push((0, _hyphenize2.default)(attr, '-') + ': ' + rules[attr] + ';');
     });
     cssTexts.push('}');
   });
