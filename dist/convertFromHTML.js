@@ -177,6 +177,7 @@ function htmlToStyle(safeHTML, nodeName, node, currentStyle) {
     return currentStyle;
   }
   var el = (0, _asElement2.default)(node);
+
   var classList = el.classList;
 
   var newStyle = currentStyle;
@@ -221,7 +222,7 @@ function htmlToStyle(safeHTML, nodeName, node, currentStyle) {
       var stylesToAdd = null;
       styleMaps.forEach(function (styleMap) {
         styleMap.forEach(function (styleValue, styleName) {
-          var customClassName = _DocsCustomStyleSheet2.default.getClassName(styleName, styleValue);
+          var customClassName = _DocsCustomStyleSheet2.default.getClassNameForStyle(styleName, styleValue);
           if (customClassName) {
             stylesToAdd = stylesToAdd || {};
             // For any given `styleName` (e.g. text-align), the current
@@ -236,6 +237,16 @@ function htmlToStyle(safeHTML, nodeName, node, currentStyle) {
           style.add(String(stylesToAdd && stylesToAdd[styleName]));
         });
       }
+    });
+
+    // Also, we need to add back the className that might haved been added
+    // by DocsCustomStyleSheet before when HTML is pasted from another editor.
+    newStyle = newStyle.withMutations(function (style) {
+      classList.forEach(function (className) {
+        if (_DocsCustomStyleSheet2.default.isClassNameSupported(className)) {
+          style.add(className);
+        }
+      });
     });
   }
 

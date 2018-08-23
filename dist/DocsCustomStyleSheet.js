@@ -62,13 +62,14 @@ var _immutable = require('immutable');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var CLASS_NAME_PREFIX = 'DocsCustomStyleSheet';
+var CLASS_NAME_PREFIX = 'DocsCustomStyleSheet_';
+var CLASS_NAME_PREFIX_PATTERN = /^DocsCustomStyleSheet_/;
 
 var BACKGROUND_COLOR = 'background-color';
 var BACKGROUND_COLOR_VALUES = (0, _createPaletteColors2.default)(90, 90);
 
 var FONT_SIZE = 'font-size';
-var FONT_SIZE_VALUES = (0, _numberRange2.default)(16, 80).map(function (n) {
+var FONT_SIZE_VALUES = (0, _numberRange2.default)(4, 80, 1).map(function (n) {
   return n + 'pt';
 });
 
@@ -84,7 +85,7 @@ var SUPPORTED_STYLES = (_SUPPORTED_STYLES = {}, (0, _defineProperty3.default)(_S
   return c.hsl().string();
 }))), (0, _defineProperty3.default)(_SUPPORTED_STYLES, FONT_SIZE, new _set2.default(FONT_SIZE_VALUES)), (0, _defineProperty3.default)(_SUPPORTED_STYLES, LINE_HEIGHT, new _set2.default(LINE_HEIGHT_VALUES)), (0, _defineProperty3.default)(_SUPPORTED_STYLES, TEXT_ALIGN, new _set2.default(TEXT_ALIGN_VALUES)), _SUPPORTED_STYLES);
 
-var STYLE_ELEMENT_ID = 'DocsCustomStyleSheet';
+var STYLE_ELEMENT_ID = 'DocsCustomStyleSheet_';
 
 function buildClassName(styleName, styleValue) {
   // Invalid characters will be replaced with `_`.
@@ -92,7 +93,23 @@ function buildClassName(styleName, styleValue) {
   return CLASS_NAME_PREFIX + '-' + styleName + '-' + suffix;
 }
 
-function getClassName(styleName, styleValue) {
+function buildCSSText(styleName, styleValue) {
+  var className = buildClassName(styleName, styleValue);
+  return '.' + className + '.' + className + ' {' + styleName + ': ' + styleValue + ' ;}';
+}
+
+function getCSSTexts() {
+  var cssTexts = [];
+  (0, _keys2.default)(SUPPORTED_STYLES).forEach(function (styleName) {
+    var styleValues = SUPPORTED_STYLES[styleName];
+    styleValues.forEach(function (styleValue) {
+      cssTexts.push(buildCSSText(styleName, styleValue));
+    });
+  });
+  return cssTexts.join('\n');
+}
+
+function getClassNameForStyle(styleName, styleValue) {
   var styleValues = SUPPORTED_STYLES[styleName];
   if (!styleValues) {
     return null;
@@ -112,16 +129,8 @@ function getClassName(styleName, styleValue) {
   return null;
 }
 
-function getCSSTexts() {
-  var cssTexts = [];
-  (0, _keys2.default)(SUPPORTED_STYLES).forEach(function (styleName) {
-    var styleValues = SUPPORTED_STYLES[styleName];
-    styleValues.forEach(function (styleValue) {
-      var className = buildClassName(styleName, styleValue);
-      cssTexts.push('.' + className + ' {' + styleName + ': ' + styleValue + ';}');
-    });
-  });
-  return cssTexts.join('\n');
+function isClassNameSupported(className) {
+  return CLASS_NAME_PREFIX_PATTERN.test(className);
 }
 
 var DocsCustomStyleSheet = function (_React$PureComponent) {
@@ -155,5 +164,6 @@ var DocsCustomStyleSheet = function (_React$PureComponent) {
 }(_react2.default.PureComponent);
 
 DocsCustomStyleSheet.BACKGROUND_COLOR = BACKGROUND_COLOR;
-DocsCustomStyleSheet.getClassName = getClassName;
+DocsCustomStyleSheet.getClassNameForStyle = getClassNameForStyle;
+DocsCustomStyleSheet.isClassNameSupported = isClassNameSupported;
 exports.default = DocsCustomStyleSheet;

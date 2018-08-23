@@ -7,13 +7,14 @@ import getNearestColor from './getNearestColor';
 import numberRange from './numberRange';
 import {OrderedMap} from 'immutable';
 
-const CLASS_NAME_PREFIX = 'DocsCustomStyleSheet';
+const CLASS_NAME_PREFIX = 'DocsCustomStyleSheet_';
+const CLASS_NAME_PREFIX_PATTERN = /^DocsCustomStyleSheet_/;
 
 const BACKGROUND_COLOR = 'background-color';
 const BACKGROUND_COLOR_VALUES = createPaletteColors(90, 90);
 
 const FONT_SIZE = 'font-size';
-const FONT_SIZE_VALUES = numberRange(16, 80).map(n => n + 'pt');
+const FONT_SIZE_VALUES = numberRange(4, 80, 1).map(n => n + 'pt');
 
 const LINE_HEIGHT = 'line-height';
 const LINE_HEIGHT_VALUES = numberRange(1.10, 3, 0.05).map(n => String(n));
@@ -28,7 +29,7 @@ const SUPPORTED_STYLES = {
   [TEXT_ALIGN]: new Set(TEXT_ALIGN_VALUES),
 };
 
-const STYLE_ELEMENT_ID = 'DocsCustomStyleSheet';
+const STYLE_ELEMENT_ID = 'DocsCustomStyleSheet_';
 
 function buildClassName(styleName: string, styleValue: string): string {
   // Invalid characters will be replaced with `_`.
@@ -36,8 +37,23 @@ function buildClassName(styleName: string, styleValue: string): string {
   return `${CLASS_NAME_PREFIX}-${styleName}-${suffix}`;
 }
 
+function buildCSSText(styleName: string, styleValue: string): string {
+  const className = buildClassName(styleName, styleValue);
+  return `.${className}.${className} {${styleName}: ${styleValue} ;}`;
+}
 
-function getClassName(styleName: string, styleValue: string): ?string {
+function getCSSTexts(): string {
+  const cssTexts = [];
+  Object.keys(SUPPORTED_STYLES).forEach(styleName => {
+    const styleValues = SUPPORTED_STYLES[styleName];
+    styleValues.forEach(styleValue => {
+      cssTexts.push(buildCSSText(styleName, styleValue));
+    });
+  });
+  return cssTexts.join('\n');
+}
+
+function getClassNameForStyle(styleName: string, styleValue: string): ?string {
   const styleValues = SUPPORTED_STYLES[styleName];
   if (!styleValues) {
     return null;
@@ -61,23 +77,17 @@ function getClassName(styleName: string, styleValue: string): ?string {
   return null;
 }
 
-function getCSSTexts(): string {
-  const cssTexts = [];
-  Object.keys(SUPPORTED_STYLES).forEach(styleName => {
-    const styleValues = SUPPORTED_STYLES[styleName];
-    styleValues.forEach(styleValue => {
-      const className = buildClassName(styleName, styleValue);
-      cssTexts.push(`.${className} {${styleName}: ${styleValue};}`);
-    });
-  });
-  return cssTexts.join('\n');
+function isClassNameSupported(className: string): boolean {
+  return CLASS_NAME_PREFIX_PATTERN.test(className);
 }
 
 class DocsCustomStyleSheet extends React.PureComponent {
 
   static BACKGROUND_COLOR = BACKGROUND_COLOR;
 
-  static getClassName = getClassName;
+  static getClassNameForStyle = getClassNameForStyle;
+
+  static isClassNameSupported = isClassNameSupported;
 
   componentWillMount(): void {
     const id = STYLE_ELEMENT_ID;

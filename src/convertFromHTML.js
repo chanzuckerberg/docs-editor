@@ -110,6 +110,7 @@ function htmlToStyle(
     return currentStyle;
   }
   const el = asElement(node);
+
   const {classList} = el;
   let newStyle = currentStyle;
   if (nodeName === ATOMIC_ELEMENT_NODE_NAME && classList) {
@@ -139,7 +140,6 @@ function htmlToStyle(
     }
   }
 
-
   if (classList && classList.length) {
     // Add the custom styles based on the priority oorder of the mapped
     // custom classNames.
@@ -155,7 +155,7 @@ function htmlToStyle(
       styleMaps.forEach(styleMap => {
         styleMap.forEach((styleValue, styleName) => {
           const customClassName =
-            DocsCustomStyleSheet.getClassName(styleName, styleValue);
+            DocsCustomStyleSheet.getClassNameForStyle(styleName, styleValue);
            if (customClassName) {
              stylesToAdd = stylesToAdd || {};
              // For any given `styleName` (e.g. text-align), the current
@@ -170,6 +170,16 @@ function htmlToStyle(
           style.add(String(stylesToAdd && stylesToAdd[styleName]));
         });
       }
+    });
+
+    // Also, we need to add back the className that might haved been added
+    // by DocsCustomStyleSheet before when HTML is pasted from another editor.
+    newStyle = newStyle.withMutations((style) => {
+      classList.forEach(className => {
+        if (DocsCustomStyleSheet.isClassNameSupported(className)) {
+          style.add(className);
+        }
+      });
     });
   }
 
@@ -338,7 +348,5 @@ function normalizeNodeForTable(
   const atomicNode: any = new FakeAtomicElement(data);
   return atomicNode;
 }
-
-
 
 export default convertFromHTML;
