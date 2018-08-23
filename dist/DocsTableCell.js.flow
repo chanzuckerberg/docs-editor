@@ -14,7 +14,8 @@ import {EditorState} from 'draft-js';
 import {LOCAL_CHANGE_ID} from './DocsTableModifiers';
 
 type Props = {
-  bgStyle: ?string,
+  bgColor?: ?string,
+  bgStyle?: ?string,
   cellIndex: number,
   colsCount: number,
   highlighted: boolean,
@@ -75,17 +76,15 @@ class DocsTableCell extends React.PureComponent {
 
     const {
       cellIndex, rowIndex, highlighted, resizable, colsCount,
-      onColumnResizeEnd, width, bgStyle, paddingSize,
+      onColumnResizeEnd, width, bgStyle, paddingSize, bgColor,
     } = this.props;
     const editorID = this._editorID;
 
-    // @$FlowFixMe: supress the computed key assignment.
     const className = cx({
       'docs-table-cell': true,
       'docs-table-cell-highlighted': highlighted,
       'docs-table-cell-with-bg-style': !!bgStyle,
       'docs-table-cell-with-padding-large': paddingSize === 'large',
-      [bgStyle]: !!bgStyle,
     });
 
     const leftHandle =
@@ -109,6 +108,13 @@ class DocsTableCell extends React.PureComponent {
     let style = null;
     if (rowIndex === 0 && typeof width === 'number' && !isNaN(width)) {
       style = {width: (width * 100) + '%'};
+    }
+
+    if (bgColor) {
+      style = {
+        ...style,
+        backgroundColor: bgColor,
+      };
     }
 
     const attrs = {

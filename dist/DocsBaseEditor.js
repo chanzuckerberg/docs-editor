@@ -36,6 +36,10 @@ var _DocsClipboardManager = require('./DocsClipboardManager');
 
 var _DocsClipboardManager2 = _interopRequireDefault(_DocsClipboardManager);
 
+var _DocsCustomStyleMap = require('./DocsCustomStyleMap');
+
+var _DocsCustomStyleMap2 = _interopRequireDefault(_DocsCustomStyleMap);
+
 var _DocsEditorBlockRenderer = require('./DocsEditorBlockRenderer');
 
 var _DocsEditorBlockRenderer2 = _interopRequireDefault(_DocsEditorBlockRenderer);
@@ -60,14 +64,6 @@ var _classnames = require('classnames');
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
-var _withDocsContext = require('./withDocsContext');
-
-var _withDocsContext2 = _interopRequireDefault(_withDocsContext);
-
-var _draftJs = require('draft-js');
-
-var _DocsModifiers = require('./DocsModifiers');
-
 var _splitTextIntoTextBlocks = require('./splitTextIntoTextBlocks');
 
 var _splitTextIntoTextBlocks2 = _interopRequireDefault(_splitTextIntoTextBlocks);
@@ -87,6 +83,14 @@ var _uniqueID2 = _interopRequireDefault(_uniqueID);
 var _warn = require('./warn');
 
 var _warn2 = _interopRequireDefault(_warn);
+
+var _withDocsContext = require('./withDocsContext');
+
+var _withDocsContext2 = _interopRequireDefault(_withDocsContext);
+
+var _draftJs = require('draft-js');
+
+var _DocsModifiers = require('./DocsModifiers');
 
 require('./DocsBaseEditor.css');
 
@@ -314,6 +318,7 @@ var DocsBaseEditor = function (_React$PureComponent) {
           'data-docs-editor-for': this._id,
           id: this._id },
         _react2.default.createElement(DraftEditorPatched, (0, _extends3.default)({}, props, {
+          customStyleMap: _DocsCustomStyleMap2.default,
           editorState: (0, _DocsModifiers.ensureAtomicBlocksAreSelectable)(editorState),
           onChange: this._onChange,
           readOnly: readOnly,

@@ -1,12 +1,12 @@
 'use strict';
 
-var _extends2 = require('babel-runtime/helpers/extends');
-
-var _extends3 = _interopRequireDefault(_extends2);
-
 var _defineProperty2 = require('babel-runtime/helpers/defineProperty');
 
 var _defineProperty3 = _interopRequireDefault(_defineProperty2);
+
+var _extends2 = require('babel-runtime/helpers/extends');
+
+var _extends3 = _interopRequireDefault(_extends2);
 
 var _getPrototypeOf = require('babel-runtime/core-js/object/get-prototype-of');
 
@@ -171,17 +171,17 @@ var DocsTableCell = function (_React$PureComponent) {
           onColumnResizeEnd = _props.onColumnResizeEnd,
           width = _props.width,
           bgStyle = _props.bgStyle,
-          paddingSize = _props.paddingSize;
+          paddingSize = _props.paddingSize,
+          bgColor = _props.bgColor;
 
       var editorID = this._editorID;
 
-      // @$FlowFixMe: supress the computed key assignment.
-      var className = (0, _classnames2.default)((0, _defineProperty3.default)({
+      var className = (0, _classnames2.default)({
         'docs-table-cell': true,
         'docs-table-cell-highlighted': highlighted,
         'docs-table-cell-with-bg-style': !!bgStyle,
         'docs-table-cell-with-padding-large': paddingSize === 'large'
-      }, bgStyle, !!bgStyle));
+      });
 
       var leftHandle = canEdit && resizable && cellIndex > 0 && rowIndex >= 0 ? _react2.default.createElement(_DocsTableCellResizeHandle2.default, {
         key: 'r1',
@@ -198,6 +198,12 @@ var DocsTableCell = function (_React$PureComponent) {
       var style = null;
       if (rowIndex === 0 && typeof width === 'number' && !isNaN(width)) {
         style = { width: width * 100 + '%' };
+      }
+
+      if (bgColor) {
+        style = (0, _extends3.default)({}, style, {
+          backgroundColor: bgColor
+        });
       }
 
       var attrs = (_attrs = {}, (0, _defineProperty3.default)(_attrs, _DocsDataAttributes2.default.EDITOR_FOR, editorID), (0, _defineProperty3.default)(_attrs, _DocsDataAttributes2.default.ELEMENT, true), (0, _defineProperty3.default)(_attrs, _DocsDataAttributes2.default.TABLE_CELL, true), _attrs);

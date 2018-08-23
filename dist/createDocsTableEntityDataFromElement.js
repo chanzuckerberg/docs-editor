@@ -8,9 +8,9 @@ var _from = require('babel-runtime/core-js/array/from');
 
 var _from2 = _interopRequireDefault(_from);
 
-var _DocsCustomStyleSheet = require('./DocsCustomStyleSheet');
+var _color = require('color');
 
-var _DocsCustomStyleSheet2 = _interopRequireDefault(_DocsCustomStyleSheet);
+var _color2 = _interopRequireDefault(_color);
 
 var _asElement = require('./asElement');
 
@@ -76,13 +76,10 @@ function setDocsTableEntityDataFromCell(safeHTML, row, cell, convertFromHTML, en
     var rules = safeHTML.cssRules.get(selector);
     if (rules) {
       rules.forEach(function (styleValue, styleName) {
-        if (styleName === _DocsCustomStyleSheet2.default.BACKGROUND_COLOR) {
-          var customClassName = _DocsCustomStyleSheet2.default.getClassNameForStyle(styleName, styleValue);
-          if (customClassName) {
-            var cellBgStyles = newEntityData.cellBgStyles || {};
-            cellBgStyles[id] = customClassName;
-            newEntityData.cellBgStyles = cellBgStyles;
-          }
+        if (styleName === 'background-color') {
+          var cellBgColors = newEntityData.cellBgColors || {};
+          cellBgColors[id] = (0, _color2.default)(styleValue).hex();
+          newEntityData.cellBgColors = cellBgColors;
         }
       });
     }

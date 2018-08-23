@@ -1,6 +1,6 @@
 // @flow
 
-import DocsCustomStyleSheet from './DocsCustomStyleSheet';
+import Color from 'color';
 import asElement from './asElement';
 import asNumber from './asNumber';
 import convertToRaw from './convertToRaw';
@@ -49,14 +49,10 @@ function setDocsTableEntityDataFromCell(
     const rules = safeHTML.cssRules.get(selector);
     if (rules) {
       rules.forEach((styleValue, styleName) => {
-        if (styleName === DocsCustomStyleSheet.BACKGROUND_COLOR) {
-          const customClassName =
-            DocsCustomStyleSheet.getClassNameForStyle(styleName, styleValue);
-          if (customClassName) {
-            const cellBgStyles = newEntityData.cellBgStyles || {};
-            cellBgStyles[id] = customClassName;
-            newEntityData.cellBgStyles = cellBgStyles;
-          }
+        if (styleName === 'background-color') {
+          const cellBgColors = newEntityData.cellBgColors || {};
+          cellBgColors[id] = Color(styleValue).hex();
+          newEntityData.cellBgColors = cellBgColors;
         }
       });
     }

@@ -3,10 +3,12 @@
 import DocsDataAttributes from './DocsDataAttributes';
 import DocsDecoratorTypes from './DocsDecoratorTypes';
 import asElement from './asElement';
+import camelCase from 'camelcase';
 import convertImageElementToPlaceholderElement from './convertImageElementToPlaceholderElement';
 import getCSSRules from './getCSSRules';
 import getSafeDocumentElementFromHTML from './getSafeDocumentElementFromHTML';
 import uniqueID from './uniqueID';
+import {CSS_SELECTOR_TEXT, CSS_SELECTOR_PRIORITY} from './getCSSRules';
 
 import type {DocumentLike} from './Types';
 import type {CSSRules} from './getCSSRules';
@@ -18,6 +20,49 @@ export type SafeHTML = {
 };
 
 const ZERO_WIDTH_CHAR = '\u200B';
+
+function mergeInlineStylesToElement(cssRules: CSSRules, el: any): void {
+  const {classList, style} = el;
+  if (!style || !classList || !classList.length) {
+    // `el.style` could be `null` if `el` is `<math />`.
+    return;
+  }
+  // We need to sort the linked styles based on their orders in CSSRules,
+  // So later rules can overwrite previous one.
+  const sortKey = CSS_SELECTOR_PRIORITY;
+  const styleMaps = Array
+    .from(classList)
+    .map(className => {
+      const selector = `.${className}`;
+      return cssRules.get(selector);
+    })
+    .filter(Boolean)
+    .sort((a, b) => {
+      return a.get(sortKey) >= b.get(sortKey) ? 1 : -1;
+    });
+
+
+  let styleNew = null;
+  styleMaps.forEach(styleMap => {
+    styleMap.forEach((styleValue, styleName) => {
+      if (
+        styleName === CSS_SELECTOR_TEXT ||
+        styleName === CSS_SELECTOR_PRIORITY
+      ) {
+        return;
+      }
+      const attr = camelCase(styleName);
+      if (style[attr]) {
+        // Already has inline-style.
+        return;
+      }
+      styleNew = styleNew || {};
+      styleNew[attr] = styleValue;
+    });
+  });
+
+  styleNew && Object.assign(style, styleNew);
+}
 
 function getSafeHTML(
   html: string,
@@ -61,6 +106,12 @@ function getSafeHTML(
     const imgNodes =  body.querySelectorAll('img');
     Array.from(imgNodes).forEach(convertImageElementToPlaceholderElement);
 
+    // Apply all linked CSS styles to element.
+    Array.
+      from(body.querySelectorAll('[class]')).
+      forEach(mergeInlineStylesToElement.bind(null, cssRules));
+
+
     safeHTML = body.innerHTML;
   }
 
@@ -70,5 +121,7 @@ function getSafeHTML(
     unsafeNodes,
   };
 }
+
+
 
 export default getSafeHTML;

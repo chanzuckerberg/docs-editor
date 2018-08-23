@@ -1,21 +1,21 @@
 // @flow
 
 import DocsClipboardManager from './DocsClipboardManager';
+import DocsCustomStyleMap from './DocsCustomStyleMap';
 import DocsEditorBlockRenderer from './DocsEditorBlockRenderer';
 import DocsEditorFocusManager from './DocsEditorFocusManager';
 import React from 'react';
 import Timer from './Timer';
 import _ from 'underscore';
 import cx from 'classnames';
-import withDocsContext from './withDocsContext';
-import {getDefaultKeyBinding, ContentBlock, Editor, EditorState, RichUtils} from 'draft-js';
-import {pasteHTML, ensureAtomicBlocksAreSelectable} from './DocsModifiers';
 import splitTextIntoTextBlocks from './splitTextIntoTextBlocks';
 import tryBlur from './tryBlur';
 import tryFocus from './tryFocus';
 import uniqueID from './uniqueID';
 import warn from './warn';
-
+import withDocsContext from './withDocsContext';
+import {getDefaultKeyBinding, ContentBlock, Editor, EditorState, RichUtils} from 'draft-js';
+import {pasteHTML, ensureAtomicBlocksAreSelectable} from './DocsModifiers';
 
 import './DocsBaseEditor.css';
 
@@ -124,6 +124,7 @@ class DocsBaseEditor extends React.PureComponent {
         id={this._id}>
         <DraftEditorPatched
           {...props}
+          customStyleMap={DocsCustomStyleMap}
           editorState={ensureAtomicBlocksAreSelectable(editorState)}
           onChange={this._onChange}
           readOnly={readOnly}

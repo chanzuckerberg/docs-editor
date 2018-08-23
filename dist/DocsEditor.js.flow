@@ -3,7 +3,7 @@
 import DocsBaseEditor from './DocsBaseEditor';
 import DocsConfig from './DocsConfig';
 import DocsContext from './DocsContext';
-import DocsCustomStyleSheet from './DocsCustomStyleSheet';
+import DocsCustomStyleMap from './DocsCustomStyleMap';
 import DocsDataAttributes from './DocsDataAttributes';
 import DocsEditorContentOverflowControl from './DocsEditorContentOverflowControl';
 import DocsEditorFocusManager from './DocsEditorFocusManager';
@@ -73,6 +73,10 @@ class DocsEditor extends React.PureComponent {
     contentOverflowHidden: true,
     key: uniqueID(),
   };
+
+  componentWillMount(): void {
+    window.requestAnimationFrame(DocsCustomStyleMap.injectCSSIntoDocument);
+  }
 
   componentWillReceiveProps(nextProps: Props): void {
     if (nextProps.docsContext !== this.props.docsContext) {
@@ -152,7 +156,6 @@ class DocsEditor extends React.PureComponent {
         style={style}
         className={mainClassName}
         ref={this._onElementRef}>
-        <DocsCustomStyleSheet />
         <div className="docs-editor-frameset">
           <div className="docs-editor-frame-head">
             {header}

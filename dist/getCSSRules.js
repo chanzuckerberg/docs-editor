@@ -16,8 +16,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // e.g. '.my-class-name': {'color': 'red'}
 var babelPluginFlowReactPropTypes_proptype_DocumentLike = require('./Types').babelPluginFlowReactPropTypes_proptype_DocumentLike || require('prop-types').any;
 
-var CSS_SELECTOR_PRIORITY = exports.CSS_SELECTOR_PRIORITY = '-docs-css-selector-priority';
-var CSS_SELECTOR_TEXT = exports.CSS_SELECTOR_TEXT = '-docs-css-selector-text';
+var CSS_SELECTOR_PRIORITY = exports.CSS_SELECTOR_PRIORITY = '--docs-css-selector-priority';
+var CSS_SELECTOR_TEXT = exports.CSS_SELECTOR_TEXT = '--docs-css-selector-text';
 
 var EMPTY_MAP = new _immutable.OrderedMap();
 

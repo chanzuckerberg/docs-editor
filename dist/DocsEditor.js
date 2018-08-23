@@ -40,9 +40,9 @@ var _DocsContext = require('./DocsContext');
 
 var _DocsContext2 = _interopRequireDefault(_DocsContext);
 
-var _DocsCustomStyleSheet = require('./DocsCustomStyleSheet');
+var _DocsCustomStyleMap = require('./DocsCustomStyleMap');
 
-var _DocsCustomStyleSheet2 = _interopRequireDefault(_DocsCustomStyleSheet);
+var _DocsCustomStyleMap2 = _interopRequireDefault(_DocsCustomStyleMap);
 
 var _DocsDataAttributes = require('./DocsDataAttributes');
 
@@ -203,6 +203,11 @@ var DocsEditor = function (_React$PureComponent) {
   }
 
   (0, _createClass3.default)(DocsEditor, [{
+    key: 'componentWillMount',
+    value: function componentWillMount() {
+      window.requestAnimationFrame(_DocsCustomStyleMap2.default.injectCSSIntoDocument);
+    }
+  }, {
     key: 'componentWillReceiveProps',
     value: function componentWillReceiveProps(nextProps) {
       if (nextProps.docsContext !== this.props.docsContext) {
@@ -278,7 +283,6 @@ var DocsEditor = function (_React$PureComponent) {
           style: style,
           className: mainClassName,
           ref: this._onElementRef }),
-        _react2.default.createElement(_DocsCustomStyleSheet2.default, null),
         _react2.default.createElement(
           'div',
           { className: 'docs-editor-frameset' },

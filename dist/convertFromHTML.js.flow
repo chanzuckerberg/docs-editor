@@ -1,7 +1,7 @@
 // @flow
 
 import DocsBlockTypes from './DocsBlockTypes';
-import DocsCustomStyleSheet from './DocsCustomStyleSheet';
+import DocsCustomStyleMap from './DocsCustomStyleMap';
 import DocsDataAttributes from './DocsDataAttributes';
 import DocsDecorator from './DocsDecorator';
 import DocsDecoratorTypes from './DocsDecoratorTypes';
@@ -102,88 +102,63 @@ function htmlToStyle(
   node: Node | ElementLike,
   currentStyle: OrderedSet<string>,
 ): Object {
-  // See https://www.npmjs.com/package/draft-convert#convertfromhtml
-  // See https://draftjs.org/docs/advanced-topics-inline-styles.html
-  // console.log(currentStyle, node);
+  let nextStyle = currentStyle;
   if (node.nodeType !== NODE_TYPE_ELEMENT) {
     // Plain characters.
-    return currentStyle;
+    return nextStyle;
   }
-  const el = asElement(node);
 
-  const {classList} = el;
-  let newStyle = currentStyle;
-  if (nodeName === ATOMIC_ELEMENT_NODE_NAME && classList) {
+  const el = asElement(node);
+  const {classList, style} = el;
+  if (nodeName === ATOMIC_ELEMENT_NODE_NAME && classList && classList.length) {
     // Copy className from atomic node.
-    newStyle = currentStyle.withMutations((style) => {
+    nextStyle = nextStyle.withMutations((style) => {
       classList.forEach((className, ii) => {
         style.add(className);
       });
     });
   }
 
-  // When content is copied from google doc, its HTML may use a tag
-  // like `<b style="font-weight: normal">...</b>` which should not make the
-  // text bold. This block handles such case.
-  // See related issue: https://github.com/facebook/draft-js/issues/481
   // `el.style` could be `null` if `el` is `<math />`.
-  const fontWeight = el.style ? el.style.fontWeight : null;
-  if (fontWeight) {
-    if (CSS_BOLD_VALUES.has(fontWeight)) {
-      newStyle = newStyle.add(STYLE_BOLD);
-    } else if (CSS_NOT_BOLD_VALUES.has(fontWeight)) {
-      newStyle = newStyle.remove(STYLE_BOLD);
-    } else if (CSS_BOLD_MIN_NUMERIC_VALUE_PATTERN.test(fontWeight)) {
-      newStyle = parseInt(fontWeight, 10) >= CSS_BOLD_MIN_NUMERIC_VALUE ?
-        newStyle.add(STYLE_BOLD) :
-        newStyle.remove(STYLE_BOLD);
+  const {fontSize, lineHeight, textAlign, fontWeight} = style || {};
+  if (fontSize) {
+    const styleName = `FONT_SIZE_${fontSize}`;
+    if (styleName in DocsCustomStyleMap) {
+      nextStyle = nextStyle.add(styleName);
     }
   }
 
-  if (classList && classList.length) {
-    // Add the custom styles based on the priority oorder of the mapped
-    // custom classNames.
-    const {cssRules} = safeHTML;
-    const soryBy = CSS_SELECTOR_PRIORITY;
-    const styleMaps = Array.from(classList)
-      .map(className => cssRules.get(`.${String(className)}`))
-      .filter(Boolean)
-      .sort((a, b) => a.get(soryBy) >= b.get(soryBy) ? 1 : -1);
-
-    newStyle = currentStyle.withMutations((style) => {
-      let stylesToAdd = null;
-      styleMaps.forEach(styleMap => {
-        styleMap.forEach((styleValue, styleName) => {
-          const customClassName =
-            DocsCustomStyleSheet.getClassNameForStyle(styleName, styleValue);
-           if (customClassName) {
-             stylesToAdd = stylesToAdd || {};
-             // For any given `styleName` (e.g. text-align), the current
-             // `customClassName` always has higher priority and it will
-             // overwrite the old one.
-             stylesToAdd[styleName] = customClassName;
-           }
-        });
-      });
-      if (stylesToAdd) {
-        Object.keys(stylesToAdd).forEach(styleName => {
-          style.add(String(stylesToAdd && stylesToAdd[styleName]));
-        });
-      }
-    });
-
-    // Also, we need to add back the className that might haved been added
-    // by DocsCustomStyleSheet before when HTML is pasted from another editor.
-    newStyle = newStyle.withMutations((style) => {
-      classList.forEach(className => {
-        if (DocsCustomStyleSheet.isClassNameSupported(className)) {
-          style.add(className);
-        }
-      });
-    });
+  if (lineHeight) {
+    const styleName = `LINE_HEIGHT_${lineHeight}`;
+    if (styleName in DocsCustomStyleMap) {
+      nextStyle = nextStyle.add(styleName);
+    }
   }
 
-  return newStyle;
+  if (textAlign) {
+    const styleName = `TEXT_ALIGN_${textAlign}`;
+    if (styleName in DocsCustomStyleMap) {
+      nextStyle = nextStyle.add(styleName);
+    }
+  }
+
+  if (fontWeight) {
+    // When content is copied from google doc, its HTML may use a tag
+    // like `<b style="font-weight: normal">...</b>` which should not make the
+    // text bold. This block handles such case.
+    // See related issue: https://github.com/facebook/draft-js/issues/481
+    if (CSS_BOLD_VALUES.has(fontWeight)) {
+      nextStyle = nextStyle.add(STYLE_BOLD);
+    } else if (CSS_NOT_BOLD_VALUES.has(fontWeight)) {
+      nextStyle = nextStyle.remove(STYLE_BOLD);
+    } else if (CSS_BOLD_MIN_NUMERIC_VALUE_PATTERN.test(fontWeight)) {
+      nextStyle = parseInt(fontWeight, 10) >= CSS_BOLD_MIN_NUMERIC_VALUE ?
+        nextStyle.add(STYLE_BOLD) :
+        nextStyle.remove(STYLE_BOLD);
+    }
+  }
+
+  return nextStyle;
 }
 
 function htmlToEntity(
