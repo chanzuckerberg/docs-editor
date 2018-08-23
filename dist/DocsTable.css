@@ -1,0 +1,113 @@
+.docs-table-main {
+  clear: both;
+  margin: 8px auto;
+  padding: 0;
+  position: relative;
+  width: 100%;
+}
+
+.docs-table {
+  background: #222;
+  border: none;
+  border-collapse: separate;
+  /*
+   * This 1.5 px is needed to ensure that the border is thick enough to be
+   * visible at hi-res screen (e.g. Macbook Pro)
+   */
+  border-spacing: 1.5px;
+  display: table;
+  position: relative;
+  table-layout: fixed;
+  white-space: normal;
+  width: 100%;
+  z-index: 1;
+}
+
+.docs-table-main-no-borders > .docs-table {
+  background: #fff;
+}
+
+.docs-table-main-active {
+  background: #f0f0f0;
+  border-radius: 5px;
+}
+
+.docs-table-main-no-borders.docs-table-main-active > .docs-table {
+  background: #f0f0f0;
+  border-collapse: separate;
+}
+
+.docs-table-toolbar {
+  background: #f0f0f0;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  left: 0;
+  opacity: 1;
+  padding: 8px;
+  position: absolute;
+  top: -42px;
+  transition: opacity 120ms ease;
+  transition-delay: 300ms;
+}
+
+.docs-table-toolbar-disabled {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.docs-table-body {
+  display: table-body;
+}
+
+.docs-table-row {
+  display: table-row;
+}
+
+.docs-table-cell {
+  background: #fff;
+  border-width: 0;
+  box-sizing: border-box;
+  display: table-cell;
+  position: relative;
+  vertical-align: top;
+  z-index: 1;
+}
+
+.docs-table-cell-with-bg-style.dark,
+.docs-table-row-header .docs-table-cell.dark {
+  background: #efefef;
+}
+
+.docs-table-cell-highlighted {
+  box-shadow: 0 0 0 1px #222, 0 2px 2px rgba(27,39,51,0.3);
+  position: relative;
+  z-index: 2;
+}
+
+/* Meh, this is ugly. */
+.docs-table-cell > .docs-base-editor > .DraftEditor-root > .DraftEditor-editorContainer > .public-DraftEditor-content {
+  min-height: 2em;
+  padding: 8px;
+}
+
+/* Meh, this is ugly. */
+.docs-table-cell-with-padding-large > .docs-base-editor > .DraftEditor-root > .DraftEditor-editorContainer > .public-DraftEditor-content {
+  padding: 32px;
+}
+
+.docs-table-cell-resize-handle {
+  bottom: 0;
+  cursor: col-resize;
+  position: absolute;
+  top: 0;
+  width: 5px;
+  z-index: 3;
+}
+
+.docs-table-cell-resize-handle-left {
+  left: 0;
+}
+
+.docs-table-cell-resize-handle-right {
+  right: 0;
+}

@@ -1,0 +1,42 @@
+.docs-expandable-main {
+  padding: 4px 0;
+}
+
+.docs-expandable-toggle {
+  color: #6e7dc3;
+  cursor: pointer;
+  display: inline-block;
+  text-decoration: none;
+  user-select: none;
+}
+
+.docs-expandable-toggle-icon {
+  cursor: pointer;
+  margin: 0 8px;
+}
+
+.docs-expandable-body {
+  border-bottom: solid 1px transparent;
+  box-sizing: border-box;
+  height: 0;
+  margin:0 0 15px 0;
+  opacity: 0;
+  overflow: hidden;
+  padding: 8px 0 0 0;
+  transition: opacity 250ms ease-out;
+}
+
+.docs-expandable-expanded > .docs-expandable-body {
+  background: #fff;
+  border-bottom: dotted 1px #dedede;
+  display: block;
+  height: auto;
+  margin-bottom: 7px;
+  opacity: 1;
+  overflow: visible;
+  padding-bottom: 8px;
+}
+
+.docs-expandable-expanded > .docs-expandable-body > .docs-editor {
+  margin: 0;
+}
