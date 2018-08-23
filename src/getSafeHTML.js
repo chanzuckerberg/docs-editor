@@ -92,6 +92,11 @@ function getSafeHTML(
     );
     Array.from(atomicNodes).forEach(quarantine);
 
+    // Apply all linked CSS styles to element.
+    Array.
+      from(body.querySelectorAll('[class]')).
+      forEach(mergeInlineStylesToElement.bind(null, cssRules));
+
     const tableNodes = body.querySelectorAll('table');
     Array.from(tableNodes).forEach(quarantine);
 
@@ -105,12 +110,6 @@ function getSafeHTML(
 
     const imgNodes =  body.querySelectorAll('img');
     Array.from(imgNodes).forEach(convertImageElementToPlaceholderElement);
-
-    // Apply all linked CSS styles to element.
-    Array.
-      from(body.querySelectorAll('[class]')).
-      forEach(mergeInlineStylesToElement.bind(null, cssRules));
-
 
     safeHTML = body.innerHTML;
   }

@@ -1,5 +1,6 @@
 // @flow
 
+import Color from 'color';
 import DocsBlockTypes from './DocsBlockTypes';
 import DocsCustomStyleMap from './DocsCustomStyleMap';
 import DocsDataAttributes from './DocsDataAttributes';
@@ -120,29 +121,29 @@ function htmlToStyle(
   }
 
   // `el.style` could be `null` if `el` is `<math />`.
-  const {fontSize, lineHeight, textAlign, fontWeight} = style || {};
-  if (fontSize) {
-    const styleName = `FONT_SIZE_${fontSize}`;
-    if (styleName in DocsCustomStyleMap) {
-      nextStyle = nextStyle.add(styleName);
-    }
+  if (style) {
+    const customStyleHandlers = {
+      backgroundColor: DocsCustomStyleMap.forBackgroundColor,
+      fontSize: DocsCustomStyleMap.forFontSize,
+      lineHeight: DocsCustomStyleMap.forLineHeight,
+      textAlign: DocsCustomStyleMap.forTextAlign,
+    };
+
+    Object.keys(customStyleHandlers).forEach(attr => {
+      const styleValue = style[attr];
+      if (!styleValue) {
+        return;
+      }
+      const fn = customStyleHandlers[attr];
+      const styleName = fn(styleValue);
+      if (styleName) {
+        nextStyle = nextStyle.add(styleName);
+      }
+    });
   }
 
-  if (lineHeight) {
-    const styleName = `LINE_HEIGHT_${lineHeight}`;
-    if (styleName in DocsCustomStyleMap) {
-      nextStyle = nextStyle.add(styleName);
-    }
-  }
-
-  if (textAlign) {
-    const styleName = `TEXT_ALIGN_${textAlign}`;
-    if (styleName in DocsCustomStyleMap) {
-      nextStyle = nextStyle.add(styleName);
-    }
-  }
-
-  if (fontWeight) {
+  if (style && style.fontWeight) {
+    const {fontWeight} = style;
     // When content is copied from google doc, its HTML may use a tag
     // like `<b style="font-weight: normal">...</b>` which should not make the
     // text bold. This block handles such case.
