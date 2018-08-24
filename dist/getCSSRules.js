@@ -55,15 +55,15 @@ function getCSSRules(domDocument) {
         }
 
         var styleMap = mutableCSSRules.get(selectorText) || EMPTY_MAP;
-        styleMap = styleMap.withMutations(function (mutableStyleMap) {
+        styleMap = styleMap.withMutations(function (nextStyleMap) {
           rule.styleMap.forEach(function (cssStyleValue, key) {
             // e.g. rules['color'] = 'red'.
-            mutableStyleMap.set(String(key), String(cssStyleValue));
+            nextStyleMap.set(String(key), String(cssStyleValue));
           });
           // We need to remember the order of css selector so we could compare
           // its priority later.
-          mutableStyleMap.set(CSS_SELECTOR_PRIORITY, cssRuleIndex);
-          mutableStyleMap.set(CSS_SELECTOR_TEXT, selectorText);
+          nextStyleMap.set(CSS_SELECTOR_PRIORITY, cssRuleIndex);
+          nextStyleMap.set(CSS_SELECTOR_TEXT, selectorText);
         });
         if (styleMap.size > 0) {
           mutableCSSRules.set(selectorText, styleMap);

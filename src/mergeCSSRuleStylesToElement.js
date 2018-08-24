@@ -7,9 +7,6 @@ import {OrderedMap} from 'immutable';
 import type {DocumentLike} from './Types';
 import type {CSSRules, StyleMap} from './getCSSRules';
 
-export const CSS_VARIABLE_CHILD_LIST_ITEM_BEFORE_CONTENT =
-  '--child-list-item-before-content';
-
 function sortCSSRuleStyleMap(
   one: StyleMap,
   two: StyleMap,
@@ -29,6 +26,7 @@ function mergeCSSRuleStylesToElement(cssRules: CSSRules, el: HTMLElement): void 
   // So later rules can overwrite previous one.
   const elStyle: Object = style;
   const nodeName = el.nodeName.toLowerCase();
+
   const sortedStyleMaps = Array
     .from(classList)
     .reduce((memo, className) => {
@@ -53,7 +51,7 @@ function mergeCSSRuleStylesToElement(cssRules: CSSRules, el: HTMLElement): void 
         if (children) {
           // Remove the wrapping `""`.
           content = content.replace(/(^")|("$)/g, '');
-          // Temporarity store the `content` as list-style-image.
+          // Temporarity stores the `content` as list-style-image.
           // We'll read it from `DocsCustomStyleMap.forListStyleImage()`
           // and `convertFromHTML()` later. Note that the fake url has to
           // look like a real url othewise browser will reject it.
@@ -82,9 +80,11 @@ function mergeCSSRuleStylesToElement(cssRules: CSSRules, el: HTMLElement): void 
         return;
       }
 
-      const attr = styleName === CSS_VARIABLE_CHILD_LIST_ITEM_BEFORE_CONTENT ?
-        styleName :
-        camelize(styleName);
+      if (styleName === 'background-color' && nodeName !== 'span') {
+        return;
+      }
+
+      const attr = camelize(styleName);
       if (elStyle[attr]) {
 
         // Already has inline-style.

@@ -16,55 +16,34 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // https://stackoverflow.com/questions/19782975/convert-rgb-color-to-the-nearest-color-in-palette-web-safe-color
 // TODO: Use binary search when palleteColors is sorted.
 
-function getNearestColorByHue(color, palleteColors) {
-  var hue = color.hue();
-  var delta = 1000;
-  var result = null;
-  for (var ii = 0, jj = palleteColors.length; ii < jj; ii++) {
-    var curr = palleteColors[ii];
-    var currDelta = Math.abs(curr.hue() - hue);
-    if (currDelta < delta) {
-      delta = currDelta;
-      result = curr;
-    }
-    if (delta === 0) {
-      break;
-    }
-  }
-  return result;
-}
-
-function getNearestColorByLightness(color, palleteColors) {
-  var lightness = color.lightness();
-  var delta = 1000;
-  var result = null;
-  for (var ii = 0, jj = palleteColors.length; ii < jj; ii++) {
-    var curr = palleteColors[ii];
-    var currDelta = Math.abs(curr.lightness() - lightness);
-    if (currDelta < delta) {
-      delta = currDelta;
-      result = curr;
-    }
-    if (delta === 0) {
-      break;
-    }
-  }
-  return result;
-}
-
-function isColorGrey(color) {
-  var rr = color.red();
-  var gg = color.green();
-  var bb = color.blue();
-  return rr == gg && gg == bb;
-}
-
 function getNearestColor(color, palleteColors) {
-  if (isColorGrey(color)) {
-    return getNearestColorByLightness(color, palleteColors);
-  } else {
-    return getNearestColorByHue(color, palleteColors);
+  var hue = color.hue();
+  var lightness = color.lightness();
+  var saturationv = color.saturationv();
+
+  var colorStr = color.string();
+  var hueDelta = 1000;
+  var lightnessDelta = 1000;
+  var saturationvDelta = 1000;
+  var result = null;
+  for (var ii = 0, jj = palleteColors.length; ii < jj; ii++) {
+    var curr = palleteColors[ii];
+    var hd = Math.abs(curr.hue() - hue);
+    var ld = Math.abs(curr.lightness() - lightness);
+    var sd = Math.abs(curr.saturationv() - saturationv);
+    if (hd < 20 && ld < 20 && sd < 20 && hd <= hueDelta && ld <= lightnessDelta && sd <= saturationvDelta) {
+      hueDelta = hd;
+      lightnessDelta = ld;
+      saturationvDelta = sd;
+      result = curr;
+    }
+
+    if (hd === 0 && ld === 0 && sd === 0) {
+      // Match exactly
+      return curr;
+    }
   }
+  return result;
 }
 
 exports.default = getNearestColor;

@@ -12,7 +12,6 @@ import getSafeHTML from './getSafeHTML';
 import invariant from 'invariant';
 import uniqueID from './uniqueID';
 import {CSS_SELECTOR_PRIORITY, CSS_SELECTOR_TEXT} from './getCSSRules';
-import {CSS_VARIABLE_CHILD_LIST_ITEM_BEFORE_CONTENT} from './mergeCSSRuleStylesToElement';
 import {ContentState, Modifier, EditorState, Entity} from 'draft-js';
 import {OrderedSet} from 'immutable';
 import {convertFromHTML as draftConvertFromHTML} from 'draft-convert';
@@ -104,25 +103,25 @@ function htmlToStyle(
   node: Node | ElementLike,
   currentStyle: OrderedSet<string>,
 ): Object {
-  let nextStyle = currentStyle;
-  if (node.nodeType !== NODE_TYPE_ELEMENT) {
-    // Plain characters.
-    return nextStyle;
-  }
-
-  const el = asElement(node);
-  const {classList, style} = el;
-  if (nodeName === ATOMIC_ELEMENT_NODE_NAME && classList && classList.length) {
-    // Copy className from atomic node.
-    nextStyle = nextStyle.withMutations((style) => {
+  return currentStyle.withMutations(nextStyle => {
+    if (node.nodeType !== NODE_TYPE_ELEMENT) {
+      // Plain characters.
+      return;
+    }
+    const el = asElement(node);
+    const {classList, style} = el;
+    if (nodeName === ATOMIC_ELEMENT_NODE_NAME && classList && classList.length) {
+      // Copy className from atomic node.
       classList.forEach((className, ii) => {
-        style.add(className);
+        nextStyle.add(className);
       });
-    });
-  }
+    }
 
-  // `el.style` could be `null` if `el` is `<math />`.
-  if (style) {
+    if (!style) {
+      // `el.style` could be `null` if `el` is `<math />`.
+      return;
+    }
+
     const customStyleHandlers = {
       backgroundColor: DocsCustomStyleMap.forBackgroundColor,
       color: DocsCustomStyleMap.forColor,
@@ -139,34 +138,30 @@ function htmlToStyle(
       if (!styleValue) {
         return;
       }
-
       const fn = customStyleHandlers[attr];
       const styleName = fn(styleValue);
-
       if (styleName) {
-        nextStyle = nextStyle.add(styleName);
+        nextStyle.add(styleName);
       }
     });
-  }
 
-  if (style && style.fontWeight) {
-    const {fontWeight} = style;
-    // When content is copied from google doc, its HTML may use a tag
-    // like `<b style="font-weight: normal">...</b>` which should not make the
-    // text bold. This block handles such case.
-    // See related issue: https://github.com/facebook/draft-js/issues/481
-    if (CSS_BOLD_VALUES.has(fontWeight)) {
-      nextStyle = nextStyle.add(STYLE_BOLD);
-    } else if (CSS_NOT_BOLD_VALUES.has(fontWeight)) {
-      nextStyle = nextStyle.remove(STYLE_BOLD);
-    } else if (CSS_BOLD_MIN_NUMERIC_VALUE_PATTERN.test(fontWeight)) {
-      nextStyle = parseInt(fontWeight, 10) >= CSS_BOLD_MIN_NUMERIC_VALUE ?
-        nextStyle.add(STYLE_BOLD) :
-        nextStyle.remove(STYLE_BOLD);
+    if (style.fontWeight) {
+      const {fontWeight} = style;
+      // When content is copied from google doc, its HTML may use a tag
+      // like `<b style="font-weight: normal">...</b>` which should not make the
+      // text bold. This block handles such case.
+      // See related issue: https://github.com/facebook/draft-js/issues/481
+      if (CSS_BOLD_VALUES.has(fontWeight)) {
+        nextStyle = nextStyle.add(STYLE_BOLD);
+      } else if (CSS_NOT_BOLD_VALUES.has(fontWeight)) {
+        nextStyle = nextStyle.remove(STYLE_BOLD);
+      } else if (CSS_BOLD_MIN_NUMERIC_VALUE_PATTERN.test(fontWeight)) {
+        nextStyle = parseInt(fontWeight, 10) >= CSS_BOLD_MIN_NUMERIC_VALUE ?
+          nextStyle.add(STYLE_BOLD) :
+          nextStyle.remove(STYLE_BOLD);
+      }
     }
-  }
-
-  return nextStyle;
+  });
 }
 
 function htmlToEntity(

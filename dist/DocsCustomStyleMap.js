@@ -20,6 +20,10 @@ var _createPaletteColors = require('./createPaletteColors');
 
 var _createPaletteColors2 = _interopRequireDefault(_createPaletteColors);
 
+var _createWebSafeColors = require('./createWebSafeColors');
+
+var _createWebSafeColors2 = _interopRequireDefault(_createWebSafeColors);
+
 var _getNearestColor = require('./getNearestColor');
 
 var _getNearestColor2 = _interopRequireDefault(_getNearestColor);
@@ -34,9 +38,17 @@ var _numberRange2 = _interopRequireDefault(_numberRange);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var STYLES_SHEET_ID = 'DocsCustomStyleMap';
+// Styles that can be safely added as inline-style (e.g. style="color: red")
+// to element directly.
+var InlineStyles = {};
 
+// Styles that should be linked a className that is added to the block element.
+// via className which will be stored at `inlineStyleRanges` for a block.
+var BlockStyles = {};
+
+var STYLES_SHEET_ID = 'DocsCustomStyleMap';
 var STYLE_KEY_PREFIX = 'DOCS_STYLE';
+var WEB_SAFE_COLORS = (0, _createWebSafeColors2.default)();
 
 // This files defined the supported Custom Styles.
 // These styles will be used by `convertFromHTML()`.
@@ -49,19 +61,21 @@ var STYLE_KEY_PREFIX = 'DOCS_STYLE';
 // might have save these keys into `contentState => inlineStyleRanges`.
 // =============================================================================
 
+// http://www.color-hex.com/216-web-safe-colors/
+
 // Background Color defaults to be brighter.
 var BACKGROUND_COLOR_KEY = STYLE_KEY_PREFIX + '_BACKGROUND_COLOR';
-var BACKGROUND_COLOR_VALUES = [(0, _color2.default)('#ffff00'), (0, _color2.default)('#4b4b96')].concat((0, _createPaletteColors2.default)(90, 90));
+var BACKGROUND_COLOR_VALUES = [(0, _color2.default)('#ffff00'), (0, _color2.default)('#4b4b96')].concat(WEB_SAFE_COLORS, (0, _createPaletteColors2.default)(90, 90));
 
 var FONT_SIZE_KEY = STYLE_KEY_PREFIX + '_FONT_SIZE';
 var FONT_SIZE_VALUES = (0, _numberRange2.default)(4, 86);
 
 // Text Color defaults to be darker.
 var COLOR_KEY = STYLE_KEY_PREFIX + '_COLOR';
-var COLOR_VALUES = [(0, _color2.default)('#222222'), (0, _color2.default)('#ffffff')].concat((0, _createPaletteColors2.default)(90, 20));
+var COLOR_VALUES = WEB_SAFE_COLORS.concat((0, _createPaletteColors2.default)(90, 20));
 
 var LINE_HEIGHT_KEY = STYLE_KEY_PREFIX + '_LINE_HEIGHT';
-var LINE_HEIGHT_VALUES = (0, _numberRange2.default)(0.8, 5, 0.1);
+var LINE_HEIGHT_VALUES = (0, _numberRange2.default)(0.8, 5, 0.05);
 
 var LIST_STYLE_IMAGE_KEY = STYLE_KEY_PREFIX + '_LIST_STYLE_IMAGE';
 var LIST_STYLE_IMAGE_VALUES = ['25a0', '25cb', '25cd', '25cf'];
@@ -77,15 +91,22 @@ var MARGIN_LEFT_VALUES = (0, _numberRange2.default)(12, 12 * 10, 12);
 var TEXT_ALIGN_KEY = STYLE_KEY_PREFIX + '_TEXT_ALIGN';
 var TEXT_ALIGN_VALUES = ['left', 'center', 'right'];
 
-function defineListStyleImage(styleMap, listStyleImage) {
-  var suffix = listStyleImage.toUpperCase();
-  var childSelector = '.public-DraftStyleDefault-block > span::before';
+function defineListStyleImage(styleMap, listStyleCharacterCode) {
+  var suffix = listStyleCharacterCode.toUpperCase();
+  var childSelector = '.public-DraftStyleDefault-block::before';
+  var padding = '1em';
 
-  // This className is just a placeholder, the actual style will be defined
-  // at `...::before` below.
-  styleMap[LIST_STYLE_IMAGE_KEY + '_' + suffix] = {};
-  styleMap[LIST_STYLE_IMAGE_KEY + '_' + suffix + ' > ' + childSelector] = {
-    'content': '"\\00' + listStyleImage + '  "'
+  styleMap[LIST_STYLE_IMAGE_KEY + '_' + suffix] = {
+    'paddingLeft': padding
+  };
+  styleMap[LIST_STYLE_IMAGE_KEY + '_' + suffix + '::before'] = {
+    'content': '"\\00' + listStyleCharacterCode + '  "',
+    'float': 'left',
+    'cssFloat': 'left',
+    'marginLeft': '-' + padding
+  };
+  styleMap[LIST_STYLE_IMAGE_KEY + '_' + suffix + '::after'] = {
+    'clear': 'both'
   };
 }
 
@@ -151,8 +172,15 @@ function injectCSSIntoDocument(styleMap) {
     return;
   }
   var cssTexts = [];
-  (0, _keys2.default)(styleMap).forEach(function (styleName) {
-    cssTexts.push('.' + styleName + ' {');
+  (0, _keys2.default)(styleMap).sort().forEach(function (styleName) {
+    if (InlineStyles[styleName]) {
+      // All inline styles should be merged into element (e.g. <span />)
+      // directly, but not for <td /> element which still need to reference
+      // the className injected.
+      cssTexts.push('td.' + styleName + ' {');
+    } else {
+      cssTexts.push('.' + styleName + ' {');
+    }
     var rules = styleMap[styleName];
     (0, _keys2.default)(rules).forEach(function (attr) {
       cssTexts.push((0, _hyphenize2.default)(attr) + ': ' + rules[attr] + ' !important;');
@@ -168,14 +196,20 @@ function injectCSSIntoDocument(styleMap) {
 }
 
 function forColor(styleMap, colorStr) {
+  if (colorStr === 'inherit') {
+    return null;
+  }
   var color = (0, _getNearestColor2.default)((0, _color2.default)(colorStr), COLOR_VALUES);
   var suffix = color ? color.hex().substr(1) : '';
   var key = COLOR_KEY + '_' + suffix;
   return styleMap[key] ? key : null;
 }
 
-function forBackgroundColor(styleMap, backgroundColor) {
-  var color = (0, _getNearestColor2.default)((0, _color2.default)(backgroundColor), BACKGROUND_COLOR_VALUES);
+function forBackgroundColor(styleMap, colorStr) {
+  if (colorStr === 'inherit') {
+    return null;
+  }
+  var color = (0, _getNearestColor2.default)((0, _color2.default)(colorStr), BACKGROUND_COLOR_VALUES);
   var suffix = color ? color.hex().substr(1) : '';
   var key = BACKGROUND_COLOR_KEY + '_' + suffix;
   return styleMap[key] ? key : null;
@@ -220,14 +254,6 @@ function forListStyleImage(styleMap, listStyleImage) {
   return styleMap[key] ? key : 'DOCS_STYLE_LIST_STYLE_IMAGE_25CB';
 }
 
-// Styles that can be safely added as inline-style (e.g. style="color: red")
-// to element directly.
-var InlineStyles = {};
-
-// Styles that should be linked a className that is added to the block element.
-// via className which will be stored at `inlineStyleRanges` for a block.
-var BlockStyles = {};
-
 BACKGROUND_COLOR_VALUES.forEach(defineBackgroundColorStyle.bind(null, InlineStyles));
 COLOR_VALUES.forEach(defineColorStyle.bind(null, InlineStyles));
 FONT_SIZE_VALUES.forEach(defineFontSizeStyle.bind(null, InlineStyles));
@@ -241,7 +267,7 @@ var AllStyles = (0, _extends3.default)({}, InlineStyles, BlockStyles);
 
 var DocsCustomStyleMap = (0, _extends3.default)({}, InlineStyles, {
   forColor: forColor.bind(null, AllStyles),
-  forBackgroundColor: forBackgroundColor.bind(null, AllStyles),
+  forBackgroundColor: forBackgroundColor.bind(null, InlineStyles),
   forFontSize: forFontSize.bind(null, AllStyles),
   forLineHeight: forLineHeight.bind(null, AllStyles),
   forListStyleImage: forListStyleImage.bind(null, AllStyles),

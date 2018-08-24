@@ -74,8 +74,6 @@ var _uniqueID2 = _interopRequireDefault(_uniqueID);
 
 var _getCSSRules = require('./getCSSRules');
 
-var _mergeCSSRuleStylesToElement = require('./mergeCSSRuleStylesToElement');
-
 var _draftJs = require('draft-js');
 
 var _immutable = require('immutable');
@@ -171,27 +169,27 @@ var FakeAtomicElement = function () {
 }();
 
 function htmlToStyle(safeHTML, nodeName, node, currentStyle) {
-  var nextStyle = currentStyle;
-  if (node.nodeType !== NODE_TYPE_ELEMENT) {
-    // Plain characters.
-    return nextStyle;
-  }
+  return currentStyle.withMutations(function (nextStyle) {
+    if (node.nodeType !== NODE_TYPE_ELEMENT) {
+      // Plain characters.
+      return;
+    }
+    var el = (0, _asElement2.default)(node);
+    var classList = el.classList,
+        style = el.style;
 
-  var el = (0, _asElement2.default)(node);
-  var classList = el.classList,
-      style = el.style;
-
-  if (nodeName === ATOMIC_ELEMENT_NODE_NAME && classList && classList.length) {
-    // Copy className from atomic node.
-    nextStyle = nextStyle.withMutations(function (style) {
+    if (nodeName === ATOMIC_ELEMENT_NODE_NAME && classList && classList.length) {
+      // Copy className from atomic node.
       classList.forEach(function (className, ii) {
-        style.add(className);
+        nextStyle.add(className);
       });
-    });
-  }
+    }
 
-  // `el.style` could be `null` if `el` is `<math />`.
-  if (style) {
+    if (!style) {
+      // `el.style` could be `null` if `el` is `<math />`.
+      return;
+    }
+
     var customStyleHandlers = {
       backgroundColor: _DocsCustomStyleMap2.default.forBackgroundColor,
       color: _DocsCustomStyleMap2.default.forColor,
@@ -208,33 +206,29 @@ function htmlToStyle(safeHTML, nodeName, node, currentStyle) {
       if (!styleValue) {
         return;
       }
-
       var fn = customStyleHandlers[attr];
       var styleName = fn(styleValue);
-
       if (styleName) {
-        nextStyle = nextStyle.add(styleName);
+        nextStyle.add(styleName);
       }
     });
-  }
 
-  if (style && style.fontWeight) {
-    var fontWeight = style.fontWeight;
-    // When content is copied from google doc, its HTML may use a tag
-    // like `<b style="font-weight: normal">...</b>` which should not make the
-    // text bold. This block handles such case.
-    // See related issue: https://github.com/facebook/draft-js/issues/481
+    if (style.fontWeight) {
+      var fontWeight = style.fontWeight;
+      // When content is copied from google doc, its HTML may use a tag
+      // like `<b style="font-weight: normal">...</b>` which should not make the
+      // text bold. This block handles such case.
+      // See related issue: https://github.com/facebook/draft-js/issues/481
 
-    if (CSS_BOLD_VALUES.has(fontWeight)) {
-      nextStyle = nextStyle.add(STYLE_BOLD);
-    } else if (CSS_NOT_BOLD_VALUES.has(fontWeight)) {
-      nextStyle = nextStyle.remove(STYLE_BOLD);
-    } else if (CSS_BOLD_MIN_NUMERIC_VALUE_PATTERN.test(fontWeight)) {
-      nextStyle = parseInt(fontWeight, 10) >= CSS_BOLD_MIN_NUMERIC_VALUE ? nextStyle.add(STYLE_BOLD) : nextStyle.remove(STYLE_BOLD);
+      if (CSS_BOLD_VALUES.has(fontWeight)) {
+        nextStyle = nextStyle.add(STYLE_BOLD);
+      } else if (CSS_NOT_BOLD_VALUES.has(fontWeight)) {
+        nextStyle = nextStyle.remove(STYLE_BOLD);
+      } else if (CSS_BOLD_MIN_NUMERIC_VALUE_PATTERN.test(fontWeight)) {
+        nextStyle = parseInt(fontWeight, 10) >= CSS_BOLD_MIN_NUMERIC_VALUE ? nextStyle.add(STYLE_BOLD) : nextStyle.remove(STYLE_BOLD);
+      }
     }
-  }
-
-  return nextStyle;
+  });
 }
 
 function htmlToEntity(safeHTML, nodeName, node, createEntity) {

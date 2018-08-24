@@ -3,7 +3,6 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.CSS_VARIABLE_CHILD_LIST_ITEM_BEFORE_CONTENT = undefined;
 
 var _assign = require('babel-runtime/core-js/object/assign');
 
@@ -29,8 +28,6 @@ var babelPluginFlowReactPropTypes_proptype_StyleMap = require('./getCSSRules').b
 
 var babelPluginFlowReactPropTypes_proptype_CSSRules = require('./getCSSRules').babelPluginFlowReactPropTypes_proptype_CSSRules || require('prop-types').any;
 
-var CSS_VARIABLE_CHILD_LIST_ITEM_BEFORE_CONTENT = exports.CSS_VARIABLE_CHILD_LIST_ITEM_BEFORE_CONTENT = '--child-list-item-before-content';
-
 function sortCSSRuleStyleMap(one, two) {
   var p1 = one.get(_getCSSRules.CSS_SELECTOR_PRIORITY);
   var p2 = two.get(_getCSSRules.CSS_SELECTOR_PRIORITY);
@@ -49,6 +46,7 @@ function mergeCSSRuleStylesToElement(cssRules, el) {
   // So later rules can overwrite previous one.
   var elStyle = style;
   var nodeName = el.nodeName.toLowerCase();
+
   var sortedStyleMaps = (0, _from2.default)(classList).reduce(function (memo, className) {
     // Try `.class-name`
     var styleMap = cssRules.get('.' + className);
@@ -71,7 +69,7 @@ function mergeCSSRuleStylesToElement(cssRules, el) {
       if (children) {
         // Remove the wrapping `""`.
         content = content.replace(/(^")|("$)/g, '');
-        // Temporarity store the `content` as list-style-image.
+        // Temporarity stores the `content` as list-style-image.
         // We'll read it from `DocsCustomStyleMap.forListStyleImage()`
         // and `convertFromHTML()` later. Note that the fake url has to
         // look like a real url othewise browser will reject it.
@@ -96,7 +94,11 @@ function mergeCSSRuleStylesToElement(cssRules, el) {
         return;
       }
 
-      var attr = styleName === CSS_VARIABLE_CHILD_LIST_ITEM_BEFORE_CONTENT ? styleName : (0, _camelize2.default)(styleName);
+      if (styleName === 'background-color' && nodeName !== 'span') {
+        return;
+      }
+
+      var attr = (0, _camelize2.default)(styleName);
       if (elStyle[attr]) {
 
         // Already has inline-style.

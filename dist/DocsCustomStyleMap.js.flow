@@ -2,6 +2,7 @@
 
 import Color from 'color';
 import createPaletteColors from './createPaletteColors';
+import createWebSafeColors from './createWebSafeColors';
 import getNearestColor from './getNearestColor';
 import hyphenize from './hyphenize';
 import numberRange from './numberRange';
@@ -12,8 +13,17 @@ type StyleMapType = {
   };
 };
 
+// Styles that can be safely added as inline-style (e.g. style="color: red")
+// to element directly.
+const InlineStyles:  StyleMapType = {};
+
+// Styles that should be linked a className that is added to the block element.
+// via className which will be stored at `inlineStyleRanges` for a block.
+const BlockStyles: StyleMapType = {};
+
 const STYLES_SHEET_ID = 'DocsCustomStyleMap';
 const STYLE_KEY_PREFIX = 'DOCS_STYLE';
+const WEB_SAFE_COLORS = createWebSafeColors();
 
 // This files defined the supported Custom Styles.
 // These styles will be used by `convertFromHTML()`.
@@ -26,25 +36,28 @@ const STYLE_KEY_PREFIX = 'DOCS_STYLE';
 // might have save these keys into `contentState => inlineStyleRanges`.
 // =============================================================================
 
+// http://www.color-hex.com/216-web-safe-colors/
+
 // Background Color defaults to be brighter.
 const BACKGROUND_COLOR_KEY = `${STYLE_KEY_PREFIX}_BACKGROUND_COLOR`;
 const BACKGROUND_COLOR_VALUES = [
   Color('#ffff00'),
   Color('#4b4b96'),
-].concat(createPaletteColors(90, 90));
+
+].concat(
+  WEB_SAFE_COLORS,
+  createPaletteColors(90, 90),
+);
 
 const FONT_SIZE_KEY = `${STYLE_KEY_PREFIX}_FONT_SIZE`;
 const FONT_SIZE_VALUES = numberRange(4, 86);
 
 // Text Color defaults to be darker.
 const COLOR_KEY = `${STYLE_KEY_PREFIX}_COLOR`;
-const COLOR_VALUES = [
-  Color('#222222'),
-  Color('#ffffff'),
-].concat(createPaletteColors(90, 20));
+const COLOR_VALUES = WEB_SAFE_COLORS.concat(createPaletteColors(90, 20));
 
 const LINE_HEIGHT_KEY = `${STYLE_KEY_PREFIX}_LINE_HEIGHT`;
-const LINE_HEIGHT_VALUES = numberRange(0.8, 5, 0.1);
+const LINE_HEIGHT_VALUES = numberRange(0.8, 5, 0.05);
 
 const LIST_STYLE_IMAGE_KEY = `${STYLE_KEY_PREFIX}_LIST_STYLE_IMAGE`;
 const LIST_STYLE_IMAGE_VALUES = ['25a0', '25cb', '25cd', '25cf'];
@@ -62,16 +75,23 @@ const TEXT_ALIGN_VALUES = ['left', 'center', 'right'];
 
 function defineListStyleImage(
   styleMap: StyleMapType,
-  listStyleImage: string,
+  listStyleCharacterCode: string,
 ): void {
-  const suffix = listStyleImage.toUpperCase();
-  const childSelector = '.public-DraftStyleDefault-block > span::before';
+  const suffix = listStyleCharacterCode.toUpperCase();
+  const childSelector = '.public-DraftStyleDefault-block::before';
+  const padding = '1em';
 
-  // This className is just a placeholder, the actual style will be defined
-  // at `...::before` below.
-  styleMap[`${LIST_STYLE_IMAGE_KEY}_${suffix}`] = {};
-  styleMap[`${LIST_STYLE_IMAGE_KEY}_${suffix} > ${childSelector}`] = {
-    'content': '"\\00' + listStyleImage + '  "',
+  styleMap[`${LIST_STYLE_IMAGE_KEY}_${suffix}`] = {
+    'paddingLeft': padding,
+  };
+  styleMap[`${LIST_STYLE_IMAGE_KEY}_${suffix}::before`] = {
+    'content': '"\\00' + listStyleCharacterCode + '  "',
+    'float': 'left',
+    'cssFloat': 'left',
+    'marginLeft': '-' + padding,
+  };
+  styleMap[`${LIST_STYLE_IMAGE_KEY}_${suffix}::after`] = {
+    'clear': 'both',
   };
 }
 
@@ -159,8 +179,15 @@ function injectCSSIntoDocument(styleMap: StyleMapType): void {
     return;
   }
   const cssTexts = [];
-  Object.keys(styleMap).forEach(styleName => {
-    cssTexts.push(`.${styleName} {`);
+  Object.keys(styleMap).sort().forEach(styleName => {
+    if (InlineStyles[styleName]) {
+      // All inline styles should be merged into element (e.g. <span />)
+      // directly, but not for <td /> element which still need to reference
+      // the className injected.
+      cssTexts.push(`td.${styleName} {`);
+    } else {
+      cssTexts.push(`.${styleName} {`);
+    }
     const rules = styleMap[styleName];
     Object.keys(rules).forEach(attr => {
        cssTexts.push(`${hyphenize(attr)}: ${rules[attr]} !important;`);
@@ -179,6 +206,9 @@ function forColor(
   styleMap: StyleMapType,
   colorStr: string,
 ): ?string {
+  if (colorStr === 'inherit') {
+    return null;
+  }
   const color = getNearestColor(
     Color(colorStr),
     COLOR_VALUES,
@@ -190,10 +220,13 @@ function forColor(
 
 function forBackgroundColor(
   styleMap: StyleMapType,
-  backgroundColor: string,
+  colorStr: string,
 ): ?string {
+  if (colorStr === 'inherit') {
+    return null;
+  }
   const color = getNearestColor(
-    Color(backgroundColor),
+    Color(colorStr),
     BACKGROUND_COLOR_VALUES,
   );
   const suffix = color ? color.hex().substr(1) : ''
@@ -258,14 +291,6 @@ function forListStyleImage(
   return styleMap[key] ? key : `DOCS_STYLE_LIST_STYLE_IMAGE_25CB`;
 }
 
-// Styles that can be safely added as inline-style (e.g. style="color: red")
-// to element directly.
-const InlineStyles = {};
-
-// Styles that should be linked a className that is added to the block element.
-// via className which will be stored at `inlineStyleRanges` for a block.
-const BlockStyles = {};
-
 BACKGROUND_COLOR_VALUES.forEach(defineBackgroundColorStyle.bind(null, InlineStyles));
 COLOR_VALUES.forEach(defineColorStyle.bind(null, InlineStyles));
 FONT_SIZE_VALUES.forEach(defineFontSizeStyle.bind(null, InlineStyles));
@@ -281,7 +306,7 @@ const DocsCustomStyleMap = {
   // This will be passed to the prop `customStyleMap` at <DocsBaseEditor />.
   ...InlineStyles,
   forColor: forColor.bind(null, AllStyles),
-  forBackgroundColor: forBackgroundColor.bind(null, AllStyles),
+  forBackgroundColor: forBackgroundColor.bind(null, InlineStyles),
   forFontSize: forFontSize.bind(null, AllStyles),
   forLineHeight: forLineHeight.bind(null, AllStyles),
   forListStyleImage: forListStyleImage.bind(null, AllStyles),
