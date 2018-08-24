@@ -17,6 +17,9 @@ const STYLE_KEY_PREFIX = 'DOCS_STYLE';
 
 // Supported Custom Styles.
 // These styles will be used at `convertFromHTML()`.
+// DO NOT RENAME THE KEY (e.g. "FONT_SIZE_KEY") because they will be saved
+// to the contentState.
+
 const BACKGROUND_COLOR_KEY = `${STYLE_KEY_PREFIX}_BACKGROUND_COLOR`;
 const BACKGROUND_COLOR_VALUES = [Color('#ffff00')].concat(createPaletteColors(90, 90));
 
@@ -26,6 +29,12 @@ const FONT_SIZE_VALUES = numberRange(4, 86);
 const LINE_HEIGHT_KEY = `${STYLE_KEY_PREFIX}_LINE_HEIGHT`;
 const LINE_HEIGHT_VALUES = numberRange(0.8, 5, 0.1);
 
+const LIST_STYLE_IMAGE_KEY = `${STYLE_KEY_PREFIX}_LIST_STYLE_IMAGE`;
+const LIST_STYLE_IMAGE_VALUES = ['25a0', '25cb', '25cd', '25cf'];
+
+const LIST_STYLE_TYPE_KEY = `${STYLE_KEY_PREFIX}_LIST_STYLE_TYPE`;
+const LIST_STYLE_TYPE_VALUES = ['none', 'disc'];
+
 // We support this cause google doc uses margin-left for indentation for <li />.
 const MARGIN_LEFT_KEY = `${STYLE_KEY_PREFIX}_TEXT_ALIGN`;
 const MARGIN_LEFT_VALUES = numberRange(12, 12 * 10, 12);
@@ -33,7 +42,20 @@ const MARGIN_LEFT_VALUES = numberRange(12, 12 * 10, 12);
 const TEXT_ALIGN_KEY = `${STYLE_KEY_PREFIX}_TEXT_ALIGN`;
 const TEXT_ALIGN_VALUES = ['left', 'center', 'right'];
 
-const StyleMap: StyleMapType = {};
+function defineListStyleImage(
+  styleMap: StyleMapType,
+  listStyleImage: string,
+): void {
+  const suffix = listStyleImage.toUpperCase();
+  const childSelector = '.public-DraftStyleDefault-block > span::before';
+
+  // This className is just a placeholder, the actual style will be defined
+  // at `...::before` below.
+  styleMap[`${LIST_STYLE_IMAGE_KEY}_${suffix}`] = {};
+  styleMap[`${LIST_STYLE_IMAGE_KEY}_${suffix} > ${childSelector}`] = {
+    'content': '"\\00' + listStyleImage + '  "',
+  };
+}
 
 function defineBackgroundColorStyle(
   styleMap: StyleMapType,
@@ -86,8 +108,18 @@ function defineTextAlignStyle(
   align: string,
 ): void {
   const suffix = align.toUpperCase();
-  styleMap[`TEXT_ALIGN_${suffix}`] = {
+  styleMap[`${TEXT_ALIGN_KEY}_${suffix}`] = {
     'textAlign': `${align}`,
+  };
+}
+
+function defineListStyleTypeStyle(
+  styleMap: StyleMapType,
+  listStyleType: string,
+): void {
+  const suffix = listStyleType.toUpperCase();
+  styleMap[`${LIST_STYLE_TYPE_KEY}_${suffix}`] = {
+    'listStyleType': `${listStyleType}`,
   };
 }
 
@@ -150,6 +182,15 @@ function forLineHeight(
   return styleMap[key] ? key : null;
 }
 
+function forListStyleType(
+  styleMap: StyleMapType,
+  listStyleType: string,
+): ?string {
+  const suffix = String(listStyleType).toUpperCase();
+  const key = `${LIST_STYLE_TYPE_KEY}_${suffix}`;
+  return styleMap[key] ? key : null;
+}
+
 function forMarginLeft(
   styleMap: StyleMapType,
   marginLeft: string,
@@ -159,20 +200,45 @@ function forMarginLeft(
   return styleMap[key] ? key : null;
 }
 
-BACKGROUND_COLOR_VALUES.forEach(defineBackgroundColorStyle.bind(null, StyleMap));
-FONT_SIZE_VALUES.forEach(defineFontSizeStyle.bind(null, StyleMap));
-LINE_HEIGHT_VALUES.forEach(defineLineHeightStyle.bind(null, StyleMap));
-MARGIN_LEFT_VALUES.forEach(defineMarginLeftStyle.bind(null, StyleMap));
-TEXT_ALIGN_VALUES.forEach(defineTextAlignStyle.bind(null, StyleMap));
+function forListStyleImage(
+  styleMap: StyleMapType,
+  listStyleImage: string,
+): ?string {
+  const url = listStyleImage.replace(/^url/, '').replace(/[\(\)\"\']/g, '')
+  const content = window.decodeURIComponent(url.replace(/-/g, '%'));
+  const suffix = content.charCodeAt(0).toString(16).toUpperCase();
+  const key = `${LIST_STYLE_IMAGE_KEY}_${suffix}`;
+  return styleMap[key] ? key : `DOCS_STYLE_LIST_STYLE_IMAGE_25CB`;
+}
+
+// Styles that can be safely added as inline-style (e.g. style="color: red")
+const InlineStyles = {};
+
+// Styles that should be linked a className that is added to the block element.
+const BlockStyles = {};
+
+BACKGROUND_COLOR_VALUES.forEach(defineBackgroundColorStyle.bind(null, InlineStyles));
+FONT_SIZE_VALUES.forEach(defineFontSizeStyle.bind(null, InlineStyles));
+LINE_HEIGHT_VALUES.forEach(defineLineHeightStyle.bind(null, BlockStyles));
+LIST_STYLE_IMAGE_VALUES.forEach(defineListStyleImage.bind(null, BlockStyles));
+LIST_STYLE_TYPE_VALUES.forEach(defineListStyleTypeStyle.bind(null, BlockStyles));
+MARGIN_LEFT_VALUES.forEach(defineMarginLeftStyle.bind(null, BlockStyles));
+TEXT_ALIGN_VALUES.forEach(defineTextAlignStyle.bind(null, BlockStyles));
+
+
+const AllStyles = {...InlineStyles, ...BlockStyles};
 
 const DocsCustomStyleMap = {
-  ...StyleMap,
-  forBackgroundColor: forBackgroundColor.bind(null, StyleMap),
-  forFontSize: forFontSize.bind(null, StyleMap),
-  forLineHeight: forLineHeight.bind(null, StyleMap),
-  forMarginLeft: forMarginLeft.bind(null, StyleMap),
-  forTextAlign: forTextAlign.bind(null, StyleMap),
-  injectCSSIntoDocument: injectCSSIntoDocument.bind(null, StyleMap),
+  // This will be passed to the prop `customStyleMap` at <DocsBaseEditor />.
+  ...InlineStyles,
+  forBackgroundColor: forBackgroundColor.bind(null, AllStyles),
+  forFontSize: forFontSize.bind(null, AllStyles),
+  forLineHeight: forLineHeight.bind(null, AllStyles),
+  forListStyleImage: forListStyleImage.bind(null, AllStyles),
+  forListStyleType: forListStyleType.bind(null, AllStyles),
+  forMarginLeft: forMarginLeft.bind(null, AllStyles),
+  forTextAlign: forTextAlign.bind(null, AllStyles),
+  injectCSSIntoDocument: injectCSSIntoDocument.bind(null, AllStyles),
 };
 
 // See

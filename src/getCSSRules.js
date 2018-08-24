@@ -4,17 +4,19 @@ import {OrderedMap} from 'immutable';
 
 import type {DocumentLike} from './Types';
 
+// e.g. {'text-align': 'center'}
+export type StyleMap = OrderedMap<string, string>;
+
 // e.g. '.my-class-name': {'color': 'red'}
-export type CSSRules = OrderedMap<string, OrderedMap<string, string>>;
+export type CSSRules = OrderedMap<string, StyleMap>;
 
 export const CSS_SELECTOR_PRIORITY = '--docs-css-selector-priority';
 export const CSS_SELECTOR_TEXT = '--docs-css-selector-text';
 
 const EMPTY_MAP = new OrderedMap();
 
-
 function getCSSRules(domDocument: ?DocumentLike): CSSRules {
-  return EMPTY_MAP.withMutations((mutableCSSRules) => {
+  const cssRules = EMPTY_MAP.withMutations((mutableCSSRules) => {
     if (!domDocument) {
       return;
     }
@@ -60,6 +62,7 @@ function getCSSRules(domDocument: ?DocumentLike): CSSRules {
       });
     });
   });
+  return cssRules;
 }
 
 export default getCSSRules;

@@ -54,3 +54,18 @@ body, html {
   resize: none;
   white-space: pre;
 }
+max-width: 468pt;
+.docs-editor-frame-head {
+  box-sizing: border-box;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.docs-editor-frame-body-scroll {
+  box-sizing: border-box;
+  padding: 72pt;
+}
+
+.WTF {
+  outline: solid 1px red;
+}

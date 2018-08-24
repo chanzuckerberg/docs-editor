@@ -74,6 +74,8 @@ var _uniqueID2 = _interopRequireDefault(_uniqueID);
 
 var _getCSSRules = require('./getCSSRules');
 
+var _mergeCSSRuleStylesToElement = require('./mergeCSSRuleStylesToElement');
+
 var _draftJs = require('draft-js');
 
 var _immutable = require('immutable');
@@ -194,6 +196,8 @@ function htmlToStyle(safeHTML, nodeName, node, currentStyle) {
       backgroundColor: _DocsCustomStyleMap2.default.forBackgroundColor,
       fontSize: _DocsCustomStyleMap2.default.forFontSize,
       lineHeight: _DocsCustomStyleMap2.default.forLineHeight,
+      listStyleImage: _DocsCustomStyleMap2.default.forListStyleImage,
+      listStyleType: _DocsCustomStyleMap2.default.forListStyleType,
       marginLeft: _DocsCustomStyleMap2.default.forMarginLeft,
       textAlign: _DocsCustomStyleMap2.default.forTextAlign
     };
@@ -203,8 +207,10 @@ function htmlToStyle(safeHTML, nodeName, node, currentStyle) {
       if (!styleValue) {
         return;
       }
+
       var fn = customStyleHandlers[attr];
       var styleName = fn(styleValue);
+
       if (styleName) {
         nextStyle = nextStyle.add(styleName);
       }

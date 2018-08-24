@@ -12,6 +12,7 @@ import getSafeHTML from './getSafeHTML';
 import invariant from 'invariant';
 import uniqueID from './uniqueID';
 import {CSS_SELECTOR_PRIORITY, CSS_SELECTOR_TEXT} from './getCSSRules';
+import {CSS_VARIABLE_CHILD_LIST_ITEM_BEFORE_CONTENT} from './mergeCSSRuleStylesToElement';
 import {ContentState, Modifier, EditorState, Entity} from 'draft-js';
 import {OrderedSet} from 'immutable';
 import {convertFromHTML as draftConvertFromHTML} from 'draft-convert';
@@ -126,6 +127,8 @@ function htmlToStyle(
       backgroundColor: DocsCustomStyleMap.forBackgroundColor,
       fontSize: DocsCustomStyleMap.forFontSize,
       lineHeight: DocsCustomStyleMap.forLineHeight,
+      listStyleImage: DocsCustomStyleMap.forListStyleImage,
+      listStyleType: DocsCustomStyleMap.forListStyleType,
       marginLeft: DocsCustomStyleMap.forMarginLeft,
       textAlign: DocsCustomStyleMap.forTextAlign,
     };
@@ -135,8 +138,10 @@ function htmlToStyle(
       if (!styleValue) {
         return;
       }
+
       const fn = customStyleHandlers[attr];
       const styleName = fn(styleValue);
+
       if (styleName) {
         nextStyle = nextStyle.add(styleName);
       }
