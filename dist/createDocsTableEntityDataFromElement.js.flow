@@ -32,13 +32,26 @@ function setDocsTableEntityDataFromCell(
   let newEntityData = entityData;
   const rowIndex = asNumber(row.rowIndex);
   const cellIndex = asNumber(cell.cellIndex);
-  const {classList, nodeName, innerHTML} = cell;
+  const {classList, nodeName, innerHTML, colSpan, rowSpan} = cell;
   if (rowIndex === 0 && nodeName === 'TH') {
-    newEntityData = toggleHeaderBackground(entityData, true);
+    newEntityData.topRowBgStyle = 'dark';
+    // newEntityData = toggleHeaderBackground(newEntityData, true);
   }
   const cellEditorState = convertFromHTML(innerHTML);
   const id = getEntityDataID(rowIndex, cellIndex);
   newEntityData[id] = convertToRaw(cellEditorState);
+
+  if (colSpan && colSpan > 1) {
+    const cellColSpans = newEntityData.cellColSpans || {};
+    cellColSpans[id] = colSpan;
+    newEntityData.cellColSpans = cellColSpans;
+  }
+
+  if (rowSpan && rowSpan > 1) {
+    const cellRowSpans = newEntityData.cellRowSpans || {};
+    cellRowSpans[id] = rowSpan;
+    newEntityData.cellRowSpans = cellRowSpans;
+  }
 
   if (!classList || !classList.length) {
     return newEntityData;
@@ -99,9 +112,12 @@ function createDocsTableEntityDataFromElement(
   convertFromHTML: convertFromHTML,
 ): DocsTableEntityData {
   invariant(table.nodeName === 'TABLE', 'must be a table');
-  const entityData: any = {
+  let entityData: any = {
     rowsCount: 0,
     colsCount: 0,
+    cellColSpans: {},
+    cellRowSpans: {},
+    cellBgStyles: {},
   };
 
   // The children of `table` should have been quarantined. We need to access
@@ -140,7 +156,12 @@ function createDocsTableEntityDataFromElement(
   while (rr < rowsCount) {
     const row =  rows[rr];
     if (row) {
-      setDocsTableEntityDataFromRow(safeHTML, row, convertFromHTML, entityData);
+      entityData = setDocsTableEntityDataFromRow(
+        safeHTML,
+        row,
+        convertFromHTML,
+        entityData,
+      );
     }
     rr++;
   }

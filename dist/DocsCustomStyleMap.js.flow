@@ -41,9 +41,7 @@ const WEB_SAFE_COLORS = createWebSafeColors();
 // Background Color defaults to be brighter.
 const BACKGROUND_COLOR_KEY = `${STYLE_KEY_PREFIX}_BACKGROUND_COLOR`;
 const BACKGROUND_COLOR_VALUES = [
-  Color('#ffff00'),
   Color('#4b4b96'),
-
 ].concat(
   WEB_SAFE_COLORS,
   createPaletteColors(90, 90),
@@ -57,7 +55,7 @@ const COLOR_KEY = `${STYLE_KEY_PREFIX}_COLOR`;
 const COLOR_VALUES = WEB_SAFE_COLORS.concat(createPaletteColors(90, 20));
 
 const LINE_HEIGHT_KEY = `${STYLE_KEY_PREFIX}_LINE_HEIGHT`;
-const LINE_HEIGHT_VALUES = numberRange(0.8, 5, 0.05);
+const LINE_HEIGHT_VALUES = numberRange(0.8, 3, 0.0);
 
 const LIST_STYLE_IMAGE_KEY = `${STYLE_KEY_PREFIX}_LIST_STYLE_IMAGE`;
 const LIST_STYLE_IMAGE_VALUES = ['25a0', '25cb', '25cd', '25cf'];
@@ -72,6 +70,10 @@ const MARGIN_LEFT_VALUES = numberRange(12, 12 * 10, 12);
 
 const TEXT_ALIGN_KEY = `${STYLE_KEY_PREFIX}_TEXT_ALIGN`;
 const TEXT_ALIGN_VALUES = ['left', 'center', 'right'];
+
+const TRANSPARENT_COLORS = new Set([
+  'default', 'transparent', 'rgba(0, 0, 0, 0)', 'inherit', 'none',
+]);
 
 function defineListStyleImage(
   styleMap: StyleMapType,
@@ -206,7 +208,8 @@ function forColor(
   styleMap: StyleMapType,
   colorStr: string,
 ): ?string {
-  if (colorStr === 'inherit') {
+
+  if (TRANSPARENT_COLORS.has(colorStr)) {
     return null;
   }
   const color = getNearestColor(
@@ -222,7 +225,7 @@ function forBackgroundColor(
   styleMap: StyleMapType,
   colorStr: string,
 ): ?string {
-  if (colorStr === 'inherit') {
+  if (TRANSPARENT_COLORS.has(colorStr)) {
     return null;
   }
   const color = getNearestColor(
@@ -248,7 +251,7 @@ function forTextAlign(
   styleMap: StyleMapType,
   textAlign: string,
 ): ?string {
-  const suffix = textAlign.substr(1);
+  const suffix = textAlign.toUpperCase();
   const key = `${TEXT_ALIGN_KEY}_${suffix}`;
   return styleMap[key] ? key : null;
 }

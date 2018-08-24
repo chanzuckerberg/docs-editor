@@ -121,23 +121,64 @@ var DocsTableRow = function (_React$PureComponent) {
 
       var entityData = entity.getData();
       var colsCount = entityData.colsCount,
-          colWidths = entityData.colWidths;
+          colWidths = entityData.colWidths,
+          cellColSpans = entityData.cellColSpans,
+          cellRowSpans = entityData.cellRowSpans,
+          cellBgStyles = entityData.cellBgStyles;
+
+      var cellsCount = colsCount;
+
+      if (cellColSpans) {
+        var ci = 0;
+        while (ci < colsCount) {
+          var cid = (0, _DocsTableModifiers.getEntityDataID)(rowIndex, ci);
+          var colSpan = cellColSpans[cid];
+          if (colSpan && colSpan > 1) {
+            cellsCount = cellsCount - colSpan + 1;
+          }
+          if (cellRowSpans) {
+            var ri = rowIndex - 1;
+            if (ri > -1) {
+              var _ri = rowIndex - 1;
+              while (_ri > -1) {
+                var rid = (0, _DocsTableModifiers.getEntityDataID)(_ri, ci);
+                var rowSpan = cellRowSpans[rid];
+                if (rowSpan && rowSpan > 1) {
+                  if (_ri + rowSpan - 1 >= rowIndex) {
+                    cellsCount -= 1;
+                  }
+                  break;
+                }
+                _ri--;
+              }
+            }
+          }
+          ci++;
+        }
+      }
 
       var cells = [];
       var rr = rowIndex;
       var cc = 0;
-      while (cc < colsCount) {
+      while (cc < cellsCount) {
         var id = (0, _DocsTableModifiers.getEntityDataID)(rr, cc);
         var rawContentState = entityData[id];
         var highlighted = canEdit && rr === editorRowIndex && cc === editorCellIndex;
         var bgStyle = cc === 0 ? entityData.leftColBgStyle : null;
-        var bgColor = null;
-        if (entityData.cellBgStyles && entityData.cellBgStyles[id]) {
-          bgStyle = entityData.cellBgStyles[id];
+        if (rowIndex == 0 && entityData.topRowBgStyle) {
+          bgStyle = entityData.topRowBgStyle;
         }
+        var bgColor = null;
+        if (cellBgStyles && cellBgStyles[id]) {
+          bgStyle = cellBgStyles[id];
+        }
+
+        var _colSpan = cellColSpans && cellColSpans[id] || 1;
+        var _rowSpan = cellRowSpans && cellRowSpans[id] || 1;
         cells.push(_react2.default.createElement(_DocsTableCell2.default, {
           bgStyle: bgStyle,
           cellIndex: cc,
+          colSpan: _colSpan,
           colsCount: colsCount,
           highlighted: highlighted,
           key: id,
@@ -147,6 +188,7 @@ var DocsTableRow = function (_React$PureComponent) {
           rawContentState: rawContentState,
           resizable: resizable,
           rowIndex: rr,
+          rowSpan: _rowSpan,
           width: colWidths && colWidths[cc]
         }));
         cc++;

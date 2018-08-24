@@ -60,14 +60,29 @@ function setDocsTableEntityDataFromCell(safeHTML, row, cell, convertFromHTML, en
   var cellIndex = (0, _asNumber2.default)(cell.cellIndex);
   var classList = cell.classList,
       nodeName = cell.nodeName,
-      innerHTML = cell.innerHTML;
+      innerHTML = cell.innerHTML,
+      colSpan = cell.colSpan,
+      rowSpan = cell.rowSpan;
 
   if (rowIndex === 0 && nodeName === 'TH') {
-    newEntityData = (0, _DocsTableModifiers.toggleHeaderBackground)(entityData, true);
+    newEntityData.topRowBgStyle = 'dark';
+    // newEntityData = toggleHeaderBackground(newEntityData, true);
   }
   var cellEditorState = convertFromHTML(innerHTML);
   var id = (0, _DocsTableModifiers.getEntityDataID)(rowIndex, cellIndex);
   newEntityData[id] = (0, _convertToRaw2.default)(cellEditorState);
+
+  if (colSpan && colSpan > 1) {
+    var cellColSpans = newEntityData.cellColSpans || {};
+    cellColSpans[id] = colSpan;
+    newEntityData.cellColSpans = cellColSpans;
+  }
+
+  if (rowSpan && rowSpan > 1) {
+    var cellRowSpans = newEntityData.cellRowSpans || {};
+    cellRowSpans[id] = rowSpan;
+    newEntityData.cellRowSpans = cellRowSpans;
+  }
 
   if (!classList || !classList.length) {
     return newEntityData;
@@ -115,7 +130,10 @@ function createDocsTableEntityDataFromElement(safeHTML, table, convertFromHTML) 
   (0, _invariant2.default)(table.nodeName === 'TABLE', 'must be a table');
   var entityData = {
     rowsCount: 0,
-    colsCount: 0
+    colsCount: 0,
+    cellColSpans: {},
+    cellRowSpans: {},
+    cellBgStyles: {}
   };
 
   // The children of `table` should have been quarantined. We need to access
@@ -147,7 +165,7 @@ function createDocsTableEntityDataFromElement(safeHTML, table, convertFromHTML) 
   while (rr < rowsCount) {
     var row = rows[rr];
     if (row) {
-      setDocsTableEntityDataFromRow(safeHTML, row, convertFromHTML, entityData);
+      entityData = setDocsTableEntityDataFromRow(safeHTML, row, convertFromHTML, entityData);
     }
     rr++;
   }

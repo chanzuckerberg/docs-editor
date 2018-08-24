@@ -166,6 +166,7 @@ function insertColumn(entityData, colIndex, before) {
     rowsCount: rowsCount
   });
   var rr = 0;
+  // This is just the naive way to deeply clone the object.
   entityData = JSON.parse((0, _stringify2.default)(entityData));
 
   var kk = newEntityData.colsCount;

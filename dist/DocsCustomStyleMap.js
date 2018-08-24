@@ -12,6 +12,10 @@ var _keys = require('babel-runtime/core-js/object/keys');
 
 var _keys2 = _interopRequireDefault(_keys);
 
+var _set = require('babel-runtime/core-js/set');
+
+var _set2 = _interopRequireDefault(_set);
+
 var _color = require('color');
 
 var _color2 = _interopRequireDefault(_color);
@@ -65,7 +69,7 @@ var WEB_SAFE_COLORS = (0, _createWebSafeColors2.default)();
 
 // Background Color defaults to be brighter.
 var BACKGROUND_COLOR_KEY = STYLE_KEY_PREFIX + '_BACKGROUND_COLOR';
-var BACKGROUND_COLOR_VALUES = [(0, _color2.default)('#ffff00'), (0, _color2.default)('#4b4b96')].concat(WEB_SAFE_COLORS, (0, _createPaletteColors2.default)(90, 90));
+var BACKGROUND_COLOR_VALUES = [(0, _color2.default)('#4b4b96')].concat(WEB_SAFE_COLORS, (0, _createPaletteColors2.default)(90, 90));
 
 var FONT_SIZE_KEY = STYLE_KEY_PREFIX + '_FONT_SIZE';
 var FONT_SIZE_VALUES = (0, _numberRange2.default)(4, 86);
@@ -75,7 +79,7 @@ var COLOR_KEY = STYLE_KEY_PREFIX + '_COLOR';
 var COLOR_VALUES = WEB_SAFE_COLORS.concat((0, _createPaletteColors2.default)(90, 20));
 
 var LINE_HEIGHT_KEY = STYLE_KEY_PREFIX + '_LINE_HEIGHT';
-var LINE_HEIGHT_VALUES = (0, _numberRange2.default)(0.8, 5, 0.05);
+var LINE_HEIGHT_VALUES = (0, _numberRange2.default)(0.8, 3, 0.0);
 
 var LIST_STYLE_IMAGE_KEY = STYLE_KEY_PREFIX + '_LIST_STYLE_IMAGE';
 var LIST_STYLE_IMAGE_VALUES = ['25a0', '25cb', '25cd', '25cf'];
@@ -90,6 +94,8 @@ var MARGIN_LEFT_VALUES = (0, _numberRange2.default)(12, 12 * 10, 12);
 
 var TEXT_ALIGN_KEY = STYLE_KEY_PREFIX + '_TEXT_ALIGN';
 var TEXT_ALIGN_VALUES = ['left', 'center', 'right'];
+
+var TRANSPARENT_COLORS = new _set2.default(['default', 'transparent', 'rgba(0, 0, 0, 0)', 'inherit', 'none']);
 
 function defineListStyleImage(styleMap, listStyleCharacterCode) {
   var suffix = listStyleCharacterCode.toUpperCase();
@@ -196,7 +202,8 @@ function injectCSSIntoDocument(styleMap) {
 }
 
 function forColor(styleMap, colorStr) {
-  if (colorStr === 'inherit') {
+
+  if (TRANSPARENT_COLORS.has(colorStr)) {
     return null;
   }
   var color = (0, _getNearestColor2.default)((0, _color2.default)(colorStr), COLOR_VALUES);
@@ -206,7 +213,7 @@ function forColor(styleMap, colorStr) {
 }
 
 function forBackgroundColor(styleMap, colorStr) {
-  if (colorStr === 'inherit') {
+  if (TRANSPARENT_COLORS.has(colorStr)) {
     return null;
   }
   var color = (0, _getNearestColor2.default)((0, _color2.default)(colorStr), BACKGROUND_COLOR_VALUES);
@@ -223,7 +230,7 @@ function forFontSize(styleMap, fontSize) {
 }
 
 function forTextAlign(styleMap, textAlign) {
-  var suffix = textAlign.substr(1);
+  var suffix = textAlign.toUpperCase();
   var key = TEXT_ALIGN_KEY + '_' + suffix;
   return styleMap[key] ? key : null;
 }

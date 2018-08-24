@@ -39,7 +39,7 @@ function getNearestColor(
       hueDelta = hd;
       lightnessDelta = ld;
       saturationvDelta = sd;
-      // result = curr;
+      result = curr;
     }
 
     if (hd === 0 && ld === 0 && sd === 0) {

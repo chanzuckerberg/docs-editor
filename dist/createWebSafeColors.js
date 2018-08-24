@@ -12,12 +12,12 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function createWebSafeColors() {
   var result = [];
-  for (var r = 0; r < 16; r += 3) {
+  for (var r = 0; r < 16; r += 1) {
     var rh = r.toString(16);
-    for (var g = 0; g < 16; g += 3) {
+    for (var g = 0; g < 16; g += 1) {
       var gh = g.toString(16);
-      for (var b = 0; b < 16; b += 3) {
-        var bh = g.toString(16);
+      for (var b = 0; b < 16; b += 1) {
+        var bh = b.toString(16);
         var hex = '#' + rh + gh + bh;
         result.push((0, _color2.default)(hex));
       }

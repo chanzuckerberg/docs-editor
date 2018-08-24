@@ -41,11 +41,49 @@ class DocsTableRow extends React.PureComponent {
     } = this.props;
 
     const entityData: DocsTableEntityData = entity.getData();
-    const {colsCount, colWidths} = entityData;
+    const {
+      colsCount,
+      colWidths,
+      cellColSpans,
+      cellRowSpans,
+      cellBgStyles,
+    } = entityData;
+    let cellsCount = colsCount;
+
+    if (cellColSpans) {
+      let ci = 0;
+      while (ci < colsCount) {
+        const cid = getEntityDataID(rowIndex, ci);
+        const colSpan = cellColSpans[cid];
+        if (colSpan && colSpan > 1) {
+          cellsCount = cellsCount - colSpan + 1;
+        }
+        if (cellRowSpans) {
+          let ri = rowIndex - 1;
+          if (ri > -1) {
+            let ri = rowIndex - 1;
+            while (ri > -1) {
+              const rid = getEntityDataID(ri, ci);
+              const rowSpan = cellRowSpans[rid];
+              if (rowSpan && rowSpan > 1) {
+                if ((ri + rowSpan - 1) >= rowIndex) {
+                  cellsCount -= 1;
+                }
+                break;
+              }
+              ri--;
+            }
+          }
+        }
+        ci++;
+      }
+    }
+
+
     const cells = [];
     const rr = rowIndex;
     let cc = 0;
-    while (cc < colsCount) {
+    while (cc < cellsCount) {
       const id = getEntityDataID(rr, cc);
       const rawContentState = entityData[id];
       const highlighted = (
@@ -54,14 +92,21 @@ class DocsTableRow extends React.PureComponent {
         cc === editorCellIndex
       );
       let bgStyle = cc === 0 ? entityData.leftColBgStyle : null;
-      let bgColor = null;
-      if (entityData.cellBgStyles && entityData.cellBgStyles[id]) {
-        bgStyle = entityData.cellBgStyles[id];
+      if (rowIndex == 0 && entityData.topRowBgStyle) {
+        bgStyle = entityData.topRowBgStyle;
       }
+      let bgColor = null;
+      if (cellBgStyles && cellBgStyles[id]) {
+        bgStyle = cellBgStyles[id];
+      }
+
+      const colSpan = (cellColSpans && cellColSpans[id]) || 1;
+      const rowSpan = (cellRowSpans && cellRowSpans[id]) || 1;
       cells.push(
         <DocsTableCell
           bgStyle={bgStyle}
           cellIndex={cc}
+          colSpan={colSpan}
           colsCount={colsCount}
           highlighted={highlighted}
           key={id}
@@ -71,6 +116,7 @@ class DocsTableRow extends React.PureComponent {
           rawContentState={rawContentState}
           resizable={resizable}
           rowIndex={rr}
+          rowSpan={rowSpan}
           width={colWidths && colWidths[cc]}
         />
       );

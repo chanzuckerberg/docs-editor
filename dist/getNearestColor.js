@@ -16,6 +16,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // https://stackoverflow.com/questions/19782975/convert-rgb-color-to-the-nearest-color-in-palette-web-safe-color
 // TODO: Use binary search when palleteColors is sorted.
 
+var COLOR_BUFFER = 20;
+
 function getNearestColor(color, palleteColors) {
   var hue = color.hue();
   var lightness = color.lightness();
@@ -31,7 +33,7 @@ function getNearestColor(color, palleteColors) {
     var hd = Math.abs(curr.hue() - hue);
     var ld = Math.abs(curr.lightness() - lightness);
     var sd = Math.abs(curr.saturationv() - saturationv);
-    if (hd < 20 && ld < 20 && sd < 20 && hd <= hueDelta && ld <= lightnessDelta && sd <= saturationvDelta) {
+    if (hd <= COLOR_BUFFER && ld <= COLOR_BUFFER && sd <= COLOR_BUFFER && hd <= hueDelta && ld <= lightnessDelta && sd <= saturationvDelta) {
       hueDelta = hd;
       lightnessDelta = ld;
       saturationvDelta = sd;

@@ -166,6 +166,7 @@ function insertColumn(
     rowsCount,
   };
   let rr = 0;
+  // This is just the naive way to deeply clone the object.
   entityData = JSON.parse(JSON.stringify(entityData));
 
   const kk =  newEntityData.colsCount;
@@ -231,7 +232,7 @@ function toggleIndexColumnBackground(
 function toggleHeaderBackground(
   entityData: DocsTableEntityData,
   forceEnabled?: ?boolean,
-): DocsTableEntityData {
+): DocsTableEntityData {  
   const key = DocsTableEntityDataKeys.TOP_ROW_BG_STYLE;
   const value = forceEnabled || !entityData[key];
   const bgStyle = value ? 'dark' : undefined;

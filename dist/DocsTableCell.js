@@ -163,6 +163,8 @@ var DocsTableCell = function (_React$PureComponent) {
 
       var canEdit = this.context.docsContext.canEdit;
       var _props = this.props,
+          colSpan = _props.colSpan,
+          rowSpan = _props.rowSpan,
           cellIndex = _props.cellIndex,
           rowIndex = _props.rowIndex,
           highlighted = _props.highlighted,
@@ -204,7 +206,9 @@ var DocsTableCell = function (_React$PureComponent) {
       return _react2.default.createElement(
         'td',
         (0, _extends3.default)({}, attrs, {
+          colSpan: colSpan,
           className: className,
+          rowSpan: rowSpan,
           style: style }),
         _react2.default.createElement(_DocsBaseEditor2.default, {
           cellIndex: cellIndex,

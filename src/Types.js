@@ -36,10 +36,11 @@ export type BgStyle = 'dark';
 
 export type ElementLike = {
   appendChild: (child: ElementLike) => ElementLike,
-  cells: ?HTMLCollectionLike,
   cellIndex: ?number,
+  cells: ?HTMLCollectionLike,
   classList: ?ArrayLike<string>,
   className: string,
+  colSpan: ?number,
   dispatchEvent: (e: EventLike) => void,
   getAttribute: (attr: string) => string,
   hasAttribute: (attr: string) => boolean,
@@ -52,6 +53,7 @@ export type ElementLike = {
   parentElement: ?ElementLike,
   removeAttribute: (attr: string) => void,
   rowIndex: ?number,
+  rowSpan: ?number,
   rows: ?HTMLCollectionLike,
   setAttribute: (attr: string, value: string) => void,
   style: CSSStyleDeclarationLike,

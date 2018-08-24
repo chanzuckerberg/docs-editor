@@ -19,15 +19,16 @@ if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginF
 if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginFlowReactPropTypes_proptype_ElementLike', {
   value: require('prop-types').shape({
     appendChild: require('prop-types').func.isRequired,
+    cellIndex: require('prop-types').number,
     cells: require('prop-types').shape({
       length: require('prop-types').number.isRequired
     }),
-    cellIndex: require('prop-types').number,
     classList: require('prop-types').shape({
       length: require('prop-types').number.isRequired,
       forEach: require('prop-types').func.isRequired
     }),
     className: require('prop-types').string.isRequired,
+    colSpan: require('prop-types').number,
     dispatchEvent: require('prop-types').func.isRequired,
     getAttribute: require('prop-types').func.isRequired,
     hasAttribute: require('prop-types').func.isRequired,
@@ -47,6 +48,7 @@ if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginF
     parentElement: require('prop-types').any,
     removeAttribute: require('prop-types').func.isRequired,
     rowIndex: require('prop-types').number,
+    rowSpan: require('prop-types').number,
     rows: require('prop-types').shape({
       length: require('prop-types').number.isRequired
     }),
@@ -119,6 +121,8 @@ if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginF
 if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginFlowReactPropTypes_proptype_DocsTableEntityData', {
   value: require('prop-types').shape({
     cellBgStyles: require('prop-types').shape({}),
+    cellColSpans: require('prop-types').shape({}),
+    cellRowSpans: require('prop-types').shape({}),
     colWidths: require('prop-types').arrayOf(require('prop-types').number),
     colsCount: require('prop-types').number.isRequired,
     leftColBgStyle: require('prop-types').string,

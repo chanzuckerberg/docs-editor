@@ -16,6 +16,7 @@ import {LOCAL_CHANGE_ID} from './DocsTableModifiers';
 type Props = {
   bgStyle?: ?string,
   cellIndex: number,
+  colSpan: number,
   colsCount: number,
   highlighted: boolean,
   onChange: (i: number, j: number, s: Object) => void,
@@ -24,6 +25,7 @@ type Props = {
   rawContentState: ?Object,
   resizable: boolean,
   rowIndex: number,
+  rowSpan: number,
   width?: ?number,
 };
 
@@ -74,6 +76,7 @@ class DocsTableCell extends React.PureComponent {
     const {canEdit} = this.context.docsContext;
 
     const {
+      colSpan, rowSpan,
       cellIndex, rowIndex, highlighted, resizable, colsCount,
       onColumnResizeEnd, width, bgStyle, paddingSize,
     } = this.props;
@@ -119,7 +122,9 @@ class DocsTableCell extends React.PureComponent {
     return (
       <td
         {...attrs}
+        colSpan={colSpan}
         className={className}
+        rowSpan={rowSpan}
         style={style}>
         <DocsBaseEditor
           cellIndex={cellIndex}
