@@ -38,16 +38,27 @@ var STYLES_SHEET_ID = 'DocsCustomStyleMap';
 
 var STYLE_KEY_PREFIX = 'DOCS_STYLE';
 
-// Supported Custom Styles.
-// These styles will be used at `convertFromHTML()`.
-// DO NOT RENAME THE KEY (e.g. "FONT_SIZE_KEY") because they will be saved
-// to the contentState.
+// This files defined the supported Custom Styles.
+// These styles will be used by `convertFromHTML()`.
+// See
+// https://github.com/facebook/draft-js/blob/a33fbcdc98832a6d12e30e1491a772c5a35aaaa9/examples/draft-0-10-0/color/color.html
+// https://github.com/facebook/draft-js/issues/52
 
+// =============================================================================
+// DO NOT RENAME THE KEY (e.g. "FONT_SIZE_KEY") because exiting saved document
+// might have save these keys into `contentState => inlineStyleRanges`.
+// =============================================================================
+
+// Background Color defaults to be brighter.
 var BACKGROUND_COLOR_KEY = STYLE_KEY_PREFIX + '_BACKGROUND_COLOR';
-var BACKGROUND_COLOR_VALUES = [(0, _color2.default)('#ffff00')].concat((0, _createPaletteColors2.default)(90, 90));
+var BACKGROUND_COLOR_VALUES = [(0, _color2.default)('#ffff00'), (0, _color2.default)('#4b4b96')].concat((0, _createPaletteColors2.default)(90, 90));
 
 var FONT_SIZE_KEY = STYLE_KEY_PREFIX + '_FONT_SIZE';
 var FONT_SIZE_VALUES = (0, _numberRange2.default)(4, 86);
+
+// Text Color defaults to be darker.
+var COLOR_KEY = STYLE_KEY_PREFIX + '_COLOR';
+var COLOR_VALUES = [(0, _color2.default)('#222222'), (0, _color2.default)('#ffffff')].concat((0, _createPaletteColors2.default)(90, 20));
 
 var LINE_HEIGHT_KEY = STYLE_KEY_PREFIX + '_LINE_HEIGHT';
 var LINE_HEIGHT_VALUES = (0, _numberRange2.default)(0.8, 5, 0.1);
@@ -58,7 +69,8 @@ var LIST_STYLE_IMAGE_VALUES = ['25a0', '25cb', '25cd', '25cf'];
 var LIST_STYLE_TYPE_KEY = STYLE_KEY_PREFIX + '_LIST_STYLE_TYPE';
 var LIST_STYLE_TYPE_VALUES = ['none', 'disc'];
 
-// We support this cause google doc uses margin-left for indentation for <li />.
+// We only support this cause google doc uses margin-left for indentation for
+// <li />.
 var MARGIN_LEFT_KEY = STYLE_KEY_PREFIX + '_TEXT_ALIGN';
 var MARGIN_LEFT_VALUES = (0, _numberRange2.default)(12, 12 * 10, 12);
 
@@ -74,6 +86,15 @@ function defineListStyleImage(styleMap, listStyleImage) {
   styleMap[LIST_STYLE_IMAGE_KEY + '_' + suffix] = {};
   styleMap[LIST_STYLE_IMAGE_KEY + '_' + suffix + ' > ' + childSelector] = {
     'content': '"\\00' + listStyleImage + '  "'
+  };
+}
+
+function defineColorStyle(styleMap, color) {
+  // Get `#FFFFFF`.
+  var hex = color.hex();
+  var suffix = hex.substr(1);
+  styleMap[COLOR_KEY + '_' + suffix] = {
+    'color': hex
   };
 }
 
@@ -146,9 +167,16 @@ function injectCSSIntoDocument(styleMap) {
   root && root.appendChild(el);
 }
 
+function forColor(styleMap, colorStr) {
+  var color = (0, _getNearestColor2.default)((0, _color2.default)(colorStr), COLOR_VALUES);
+  var suffix = color ? color.hex().substr(1) : '';
+  var key = COLOR_KEY + '_' + suffix;
+  return styleMap[key] ? key : null;
+}
+
 function forBackgroundColor(styleMap, backgroundColor) {
-  var color = (0, _color2.default)(backgroundColor);
-  var suffix = color.hex().substr(1);
+  var color = (0, _getNearestColor2.default)((0, _color2.default)(backgroundColor), BACKGROUND_COLOR_VALUES);
+  var suffix = color ? color.hex().substr(1) : '';
   var key = BACKGROUND_COLOR_KEY + '_' + suffix;
   return styleMap[key] ? key : null;
 }
@@ -193,12 +221,15 @@ function forListStyleImage(styleMap, listStyleImage) {
 }
 
 // Styles that can be safely added as inline-style (e.g. style="color: red")
+// to element directly.
 var InlineStyles = {};
 
 // Styles that should be linked a className that is added to the block element.
+// via className which will be stored at `inlineStyleRanges` for a block.
 var BlockStyles = {};
 
 BACKGROUND_COLOR_VALUES.forEach(defineBackgroundColorStyle.bind(null, InlineStyles));
+COLOR_VALUES.forEach(defineColorStyle.bind(null, InlineStyles));
 FONT_SIZE_VALUES.forEach(defineFontSizeStyle.bind(null, InlineStyles));
 LINE_HEIGHT_VALUES.forEach(defineLineHeightStyle.bind(null, BlockStyles));
 LIST_STYLE_IMAGE_VALUES.forEach(defineListStyleImage.bind(null, BlockStyles));
@@ -209,6 +240,7 @@ TEXT_ALIGN_VALUES.forEach(defineTextAlignStyle.bind(null, BlockStyles));
 var AllStyles = (0, _extends3.default)({}, InlineStyles, BlockStyles);
 
 var DocsCustomStyleMap = (0, _extends3.default)({}, InlineStyles, {
+  forColor: forColor.bind(null, AllStyles),
   forBackgroundColor: forBackgroundColor.bind(null, AllStyles),
   forFontSize: forFontSize.bind(null, AllStyles),
   forLineHeight: forLineHeight.bind(null, AllStyles),
@@ -219,7 +251,4 @@ var DocsCustomStyleMap = (0, _extends3.default)({}, InlineStyles, {
   injectCSSIntoDocument: injectCSSIntoDocument.bind(null, AllStyles)
 });
 
-// See
-// https://github.com/facebook/draft-js/blob/a33fbcdc98832a6d12e30e1491a772c5a35aaaa9/examples/draft-0-10-0/color/color.html
-// https://github.com/facebook/draft-js/issues/52
 exports.default = DocsCustomStyleMap;

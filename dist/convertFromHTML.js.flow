@@ -125,6 +125,7 @@ function htmlToStyle(
   if (style) {
     const customStyleHandlers = {
       backgroundColor: DocsCustomStyleMap.forBackgroundColor,
+      color: DocsCustomStyleMap.forColor,
       fontSize: DocsCustomStyleMap.forFontSize,
       lineHeight: DocsCustomStyleMap.forLineHeight,
       listStyleImage: DocsCustomStyleMap.forListStyleImage,

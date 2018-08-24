@@ -15,16 +15,33 @@ type StyleMapType = {
 const STYLES_SHEET_ID = 'DocsCustomStyleMap';
 const STYLE_KEY_PREFIX = 'DOCS_STYLE';
 
-// Supported Custom Styles.
-// These styles will be used at `convertFromHTML()`.
-// DO NOT RENAME THE KEY (e.g. "FONT_SIZE_KEY") because they will be saved
-// to the contentState.
+// This files defined the supported Custom Styles.
+// These styles will be used by `convertFromHTML()`.
+// See
+// https://github.com/facebook/draft-js/blob/a33fbcdc98832a6d12e30e1491a772c5a35aaaa9/examples/draft-0-10-0/color/color.html
+// https://github.com/facebook/draft-js/issues/52
 
+// =============================================================================
+// DO NOT RENAME THE KEY (e.g. "FONT_SIZE_KEY") because exiting saved document
+// might have save these keys into `contentState => inlineStyleRanges`.
+// =============================================================================
+
+// Background Color defaults to be brighter.
 const BACKGROUND_COLOR_KEY = `${STYLE_KEY_PREFIX}_BACKGROUND_COLOR`;
-const BACKGROUND_COLOR_VALUES = [Color('#ffff00')].concat(createPaletteColors(90, 90));
+const BACKGROUND_COLOR_VALUES = [
+  Color('#ffff00'),
+  Color('#4b4b96'),
+].concat(createPaletteColors(90, 90));
 
 const FONT_SIZE_KEY = `${STYLE_KEY_PREFIX}_FONT_SIZE`;
 const FONT_SIZE_VALUES = numberRange(4, 86);
+
+// Text Color defaults to be darker.
+const COLOR_KEY = `${STYLE_KEY_PREFIX}_COLOR`;
+const COLOR_VALUES = [
+  Color('#222222'),
+  Color('#ffffff'),
+].concat(createPaletteColors(90, 20));
 
 const LINE_HEIGHT_KEY = `${STYLE_KEY_PREFIX}_LINE_HEIGHT`;
 const LINE_HEIGHT_VALUES = numberRange(0.8, 5, 0.1);
@@ -35,7 +52,8 @@ const LIST_STYLE_IMAGE_VALUES = ['25a0', '25cb', '25cd', '25cf'];
 const LIST_STYLE_TYPE_KEY = `${STYLE_KEY_PREFIX}_LIST_STYLE_TYPE`;
 const LIST_STYLE_TYPE_VALUES = ['none', 'disc'];
 
-// We support this cause google doc uses margin-left for indentation for <li />.
+// We only support this cause google doc uses margin-left for indentation for
+// <li />.
 const MARGIN_LEFT_KEY = `${STYLE_KEY_PREFIX}_TEXT_ALIGN`;
 const MARGIN_LEFT_VALUES = numberRange(12, 12 * 10, 12);
 
@@ -56,6 +74,19 @@ function defineListStyleImage(
     'content': '"\\00' + listStyleImage + '  "',
   };
 }
+
+function defineColorStyle(
+  styleMap: StyleMapType,
+  color: Color,
+): void {
+  // Get `#FFFFFF`.
+  const hex = color.hex();
+  const suffix = hex.substr(1);
+  styleMap[`${COLOR_KEY}_${suffix}`] = {
+    'color': hex,
+  };
+}
+
 
 function defineBackgroundColorStyle(
   styleMap: StyleMapType,
@@ -144,12 +175,28 @@ function injectCSSIntoDocument(styleMap: StyleMapType): void {
   root && root.appendChild(el);
 }
 
+function forColor(
+  styleMap: StyleMapType,
+  colorStr: string,
+): ?string {
+  const color = getNearestColor(
+    Color(colorStr),
+    COLOR_VALUES,
+  );
+  const suffix = color ? color.hex().substr(1) : '';
+  const key = `${COLOR_KEY}_${suffix}`;
+  return styleMap[key] ? key : null;
+}
+
 function forBackgroundColor(
   styleMap: StyleMapType,
   backgroundColor: string,
 ): ?string {
-  const color = Color(backgroundColor);
-  const suffix = color.hex().substr(1);
+  const color = getNearestColor(
+    Color(backgroundColor),
+    BACKGROUND_COLOR_VALUES,
+  );
+  const suffix = color ? color.hex().substr(1) : ''
   const key = `${BACKGROUND_COLOR_KEY}_${suffix}`;
   return styleMap[key] ? key : null;
 }
@@ -212,12 +259,15 @@ function forListStyleImage(
 }
 
 // Styles that can be safely added as inline-style (e.g. style="color: red")
+// to element directly.
 const InlineStyles = {};
 
 // Styles that should be linked a className that is added to the block element.
+// via className which will be stored at `inlineStyleRanges` for a block.
 const BlockStyles = {};
 
 BACKGROUND_COLOR_VALUES.forEach(defineBackgroundColorStyle.bind(null, InlineStyles));
+COLOR_VALUES.forEach(defineColorStyle.bind(null, InlineStyles));
 FONT_SIZE_VALUES.forEach(defineFontSizeStyle.bind(null, InlineStyles));
 LINE_HEIGHT_VALUES.forEach(defineLineHeightStyle.bind(null, BlockStyles));
 LIST_STYLE_IMAGE_VALUES.forEach(defineListStyleImage.bind(null, BlockStyles));
@@ -225,12 +275,12 @@ LIST_STYLE_TYPE_VALUES.forEach(defineListStyleTypeStyle.bind(null, BlockStyles))
 MARGIN_LEFT_VALUES.forEach(defineMarginLeftStyle.bind(null, BlockStyles));
 TEXT_ALIGN_VALUES.forEach(defineTextAlignStyle.bind(null, BlockStyles));
 
-
 const AllStyles = {...InlineStyles, ...BlockStyles};
 
 const DocsCustomStyleMap = {
   // This will be passed to the prop `customStyleMap` at <DocsBaseEditor />.
   ...InlineStyles,
+  forColor: forColor.bind(null, AllStyles),
   forBackgroundColor: forBackgroundColor.bind(null, AllStyles),
   forFontSize: forFontSize.bind(null, AllStyles),
   forLineHeight: forLineHeight.bind(null, AllStyles),
@@ -241,7 +291,4 @@ const DocsCustomStyleMap = {
   injectCSSIntoDocument: injectCSSIntoDocument.bind(null, AllStyles),
 };
 
-// See
-// https://github.com/facebook/draft-js/blob/a33fbcdc98832a6d12e30e1491a772c5a35aaaa9/examples/draft-0-10-0/color/color.html
-// https://github.com/facebook/draft-js/issues/52
 export default DocsCustomStyleMap;

@@ -14,7 +14,6 @@ import {EditorState} from 'draft-js';
 import {LOCAL_CHANGE_ID} from './DocsTableModifiers';
 
 type Props = {
-  bgColor?: ?string,
   bgStyle?: ?string,
   cellIndex: number,
   colsCount: number,
@@ -76,15 +75,17 @@ class DocsTableCell extends React.PureComponent {
 
     const {
       cellIndex, rowIndex, highlighted, resizable, colsCount,
-      onColumnResizeEnd, width, bgStyle, paddingSize, bgColor,
+      onColumnResizeEnd, width, bgStyle, paddingSize,
     } = this.props;
     const editorID = this._editorID;
 
+    // $FlowFixMe: can't assign key `bgStyle`.
     const className = cx({
       'docs-table-cell': true,
       'docs-table-cell-highlighted': highlighted,
       'docs-table-cell-with-bg-style': !!bgStyle,
       'docs-table-cell-with-padding-large': paddingSize === 'large',
+      [bgStyle]: !!bgStyle,
     });
 
     const leftHandle =
@@ -108,13 +109,6 @@ class DocsTableCell extends React.PureComponent {
     let style = null;
     if (rowIndex === 0 && typeof width === 'number' && !isNaN(width)) {
       style = {width: (width * 100) + '%'};
-    }
-
-    if (bgColor) {
-      style = {
-        ...style,
-        backgroundColor: bgColor,
-      };
     }
 
     const attrs = {

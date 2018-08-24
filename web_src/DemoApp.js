@@ -11,6 +11,7 @@ import {DocsEditor, DocsContext, EditorState, convertToRaw, convertFromRaw, conv
 // include is up to you, but the simplest way is to include the latest styles
 // from the CDN.
 // `npm install bootstrap-css@3.3.7`
+/*
 import '../node_modules/bootstrap-css/lib/alerts.css';
 import '../node_modules/bootstrap-css/lib/badges.css';
 import '../node_modules/bootstrap-css/lib/breadcrumbs.css';
@@ -53,6 +54,7 @@ import '../node_modules/draft-js/dist/Draft.css';
 
 // `npm install bootswatch@3.3.4`
 import "../node_modules/bootswatch/cerulean/bootstrap.min.css";
+*/
 
 import './DemoApp.css';
 

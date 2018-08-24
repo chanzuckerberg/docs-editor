@@ -12,6 +12,10 @@ var _color = require('color');
 
 var _color2 = _interopRequireDefault(_color);
 
+var _DocsCustomStyleMap = require('./DocsCustomStyleMap');
+
+var _DocsCustomStyleMap2 = _interopRequireDefault(_DocsCustomStyleMap);
+
 var _asElement = require('./asElement');
 
 var _asElement2 = _interopRequireDefault(_asElement);
@@ -77,9 +81,12 @@ function setDocsTableEntityDataFromCell(safeHTML, row, cell, convertFromHTML, en
     if (rules) {
       rules.forEach(function (styleValue, styleName) {
         if (styleName === 'background-color') {
-          var cellBgColors = newEntityData.cellBgColors || {};
-          cellBgColors[id] = (0, _color2.default)(styleValue).hex();
-          newEntityData.cellBgColors = cellBgColors;
+          var customClassName = _DocsCustomStyleMap2.default.forBackgroundColor(styleValue);
+          if (customClassName) {
+            var cellBgStyles = newEntityData.cellBgStyles || {};
+            cellBgStyles[id] = customClassName;
+            newEntityData.cellBgStyles = cellBgStyles;
+          }
         }
       });
     }

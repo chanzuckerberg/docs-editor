@@ -194,6 +194,7 @@ function htmlToStyle(safeHTML, nodeName, node, currentStyle) {
   if (style) {
     var customStyleHandlers = {
       backgroundColor: _DocsCustomStyleMap2.default.forBackgroundColor,
+      color: _DocsCustomStyleMap2.default.forColor,
       fontSize: _DocsCustomStyleMap2.default.forFontSize,
       lineHeight: _DocsCustomStyleMap2.default.forLineHeight,
       listStyleImage: _DocsCustomStyleMap2.default.forListStyleImage,

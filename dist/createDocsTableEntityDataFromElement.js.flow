@@ -1,12 +1,14 @@
 // @flow
 
 import Color from 'color';
+import DocsCustomStyleMap from './DocsCustomStyleMap';
 import asElement from './asElement';
 import asNumber from './asNumber';
 import convertToRaw from './convertToRaw';
 import createEmptyEditorState from './createEmptyEditorState';
 import getSafeHTML from './getSafeHTML';
 import invariant from 'invariant';
+
 import {EditorState} from 'draft-js';
 import {getEntityDataID} from './DocsTableModifiers';
 import {toggleHeaderBackground} from './DocsTableModifiers';
@@ -50,9 +52,13 @@ function setDocsTableEntityDataFromCell(
     if (rules) {
       rules.forEach((styleValue, styleName) => {
         if (styleName === 'background-color') {
-          const cellBgColors = newEntityData.cellBgColors || {};
-          cellBgColors[id] = Color(styleValue).hex();
-          newEntityData.cellBgColors = cellBgColors;
+          const customClassName =
+            DocsCustomStyleMap.forBackgroundColor(styleValue);
+          if (customClassName) {
+            const cellBgStyles = newEntityData.cellBgStyles || {};
+            cellBgStyles[id] = customClassName;
+            newEntityData.cellBgStyles = cellBgStyles;
+          }
         }
       });
     }

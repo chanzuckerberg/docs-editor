@@ -55,12 +55,11 @@ class DocsTableRow extends React.PureComponent {
       );
       let bgStyle = cc === 0 ? entityData.leftColBgStyle : null;
       let bgColor = null;
-      if (entityData.cellBgColors && entityData.cellBgColors[id]) {
-        bgColor = entityData.cellBgColors[id];
+      if (entityData.cellBgStyles && entityData.cellBgStyles[id]) {
+        bgStyle = entityData.cellBgStyles[id];
       }
       cells.push(
         <DocsTableCell
-          bgColor={bgColor}
           bgStyle={bgStyle}
           cellIndex={cc}
           colsCount={colsCount}

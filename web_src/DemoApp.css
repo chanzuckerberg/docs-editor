@@ -3,6 +3,11 @@ body, html {
   border: 0;
 }
 
+#app .docs-editor-toolbar .docs-button.btn {
+  border-bottom: solid 1px #ccc;
+  border-right: solid 1px #ccc;
+}
+
 #app {
   box-sizing: border-box;
   display: flex;
@@ -54,7 +59,7 @@ body, html {
   resize: none;
   white-space: pre;
 }
-max-width: 468pt;
+
 .docs-editor-frame-head {
   box-sizing: border-box;
   padding-left: 20px;

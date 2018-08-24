@@ -105,7 +105,7 @@ export type DocsAnnotationEtityData = {
 };
 
 export type DocsTableEntityData = {
-  cellBgColors?: ?{[cellId: string]: string},
+  cellBgStyles?: ?{[cellId: string]: string},
   colWidths?: ?Array<number>,
   colsCount: number,
   leftColBgStyle?: ?string,

@@ -118,7 +118,7 @@ if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginF
 });
 if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginFlowReactPropTypes_proptype_DocsTableEntityData', {
   value: require('prop-types').shape({
-    cellBgColors: require('prop-types').shape({}),
+    cellBgStyles: require('prop-types').shape({}),
     colWidths: require('prop-types').arrayOf(require('prop-types').number),
     colsCount: require('prop-types').number.isRequired,
     leftColBgStyle: require('prop-types').string,
