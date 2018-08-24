@@ -132,6 +132,7 @@ class DemoApp extends React.PureComponent<any, any, any> {
             defaultValue={debugValue}
             id={debugKey}
             key={debugKey}
+            onDrop={this._onDrop}
           />
         </div>
       </div>
@@ -215,6 +216,31 @@ class DemoApp extends React.PureComponent<any, any, any> {
     }
     this.setState({debugValue: '', debugKey: uniqueID()});
     window.localStorage.clear();
+  };
+
+  _onDrop = (e: any): void => {
+    e.preventDefault();
+    const {debugKey} = this.state;
+    const el: any = document.getElementById(debugKey);
+    const file = e.dataTransfer.files[0];
+    if (!file || !(/\.html$/).test(file.name)) {
+      return;
+    }
+    let reader = new FileReader();
+    reader.onload = (onload) => {
+      el.readOnly = false;
+      const html = el.value = onload.target.result;
+      this.applyHTML(html);
+      reader = null;
+    };
+    this.applyHTML('<div>Load: ' + file.name + '</div>');
+    el.readOnly = true;
+    setTimeout(() => {
+      el.readOnly = true;
+      el.value = 'Load: ' + file.name;
+      reader && reader.readAsText(file);
+    });
+    return;
   };
 }
 

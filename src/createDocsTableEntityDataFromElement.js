@@ -102,6 +102,9 @@ function createDocsTableEntityDataFromElement(
   const entityData: any = {
     rowsCount: 0,
     colsCount: 0,
+    cellColSpans: {},
+    cellRowSpans: {},
+    cellBgStyles: {},
   };
 
   // The children of `table` should have been quarantined. We need to access

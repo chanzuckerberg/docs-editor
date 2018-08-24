@@ -8,6 +8,8 @@ import Color from 'color';
 // https://stackoverflow.com/questions/19782975/convert-rgb-color-to-the-nearest-color-in-palette-web-safe-color
 // TODO: Use binary search when palleteColors is sorted.
 
+const COLOR_BUFFER = 20;
+
 function getNearestColor(
   color: Color,
   palleteColors: Array<Color>,
@@ -27,9 +29,9 @@ function getNearestColor(
     const ld = Math.abs(curr.lightness() - lightness);
     const sd = Math.abs(curr.saturationv () - saturationv);
     if (
-      hd < 20 &&
-      ld < 20 &&
-      sd < 20 &&
+      hd <= COLOR_BUFFER &&
+      ld <= COLOR_BUFFER &&
+      sd <= COLOR_BUFFER &&
       hd <= hueDelta &&
       ld  <= lightnessDelta &&
       sd <= saturationvDelta
@@ -37,7 +39,7 @@ function getNearestColor(
       hueDelta = hd;
       lightnessDelta = ld;
       saturationvDelta = sd;
-      result = curr;
+      // result = curr;
     }
 
     if (hd === 0 && ld === 0 && sd === 0) {

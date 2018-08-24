@@ -106,6 +106,8 @@ export type DocsAnnotationEtityData = {
 
 export type DocsTableEntityData = {
   cellBgStyles?: ?{[cellId: string]: string},
+  cellColSpans?: ?{[cellId: string]: number},
+  cellRowSpans?: ?{[cellId: string]: number},
   colWidths?: ?Array<number>,
   colsCount: number,
   leftColBgStyle?: ?string,
