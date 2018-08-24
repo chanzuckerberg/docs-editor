@@ -1,6 +1,6 @@
 {
-  "name": "doc-editor",
-  "version": "0.0.4",
+  "name": "docs-editor",
+  "version": "0.0.5",
   "subversion": "6",
   "description": "rich text editor for education purpose",
   "main": "dist/index.js",
