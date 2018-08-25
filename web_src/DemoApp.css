@@ -60,15 +60,15 @@ body, html {
   white-space: pre;
 }
 
-.docs-editor-frame-head {
+#app .docs-editor-frame-head {
   box-sizing: border-box;
 }
 
-.docs-editor-frame-body-scroll {
+#app .docs-editor-frame-body-scroll {
   box-sizing: border-box;
-  padding: 72pt;
+  padding: 36pt;
 }
 
-.WTF {
-  outline: solid 1px red;
+#app figure {
+  margin: 0;
 }
