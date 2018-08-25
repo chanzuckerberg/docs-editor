@@ -12,48 +12,48 @@ import {DocsEditor, DocsContext, EditorState, convertToRaw, convertFromRaw, conv
 // from the CDN.
 // `npm install bootstrap-css@3.3.7`
 
-import '../node_modules/bootstrap-css/lib/alerts.css';
-import '../node_modules/bootstrap-css/lib/badges.css';
-import '../node_modules/bootstrap-css/lib/breadcrumbs.css';
+// import '../node_modules/bootstrap-css/lib/alerts.css';
+// import '../node_modules/bootstrap-css/lib/badges.css';
+// import '../node_modules/bootstrap-css/lib/breadcrumbs.css';
 import '../node_modules/bootstrap-css/lib/button-groups.css';
 import '../node_modules/bootstrap-css/lib/buttons.css';
-import '../node_modules/bootstrap-css/lib/carousel.css';
-import '../node_modules/bootstrap-css/lib/close.css';
-import '../node_modules/bootstrap-css/lib/code.css';
-import '../node_modules/bootstrap-css/lib/component-animations.css';
+// import '../node_modules/bootstrap-css/lib/carousel.css';
+// import '../node_modules/bootstrap-css/lib/close.css';
+// import '../node_modules/bootstrap-css/lib/code.css';
+// import '../node_modules/bootstrap-css/lib/component-animations.css';
 import '../node_modules/bootstrap-css/lib/dropdowns.css';
-import '../node_modules/bootstrap-css/lib/forms.css';
-import '../node_modules/bootstrap-css/lib/grid.css';
-import '../node_modules/bootstrap-css/lib/input-groups.css';
-import '../node_modules/bootstrap-css/lib/jumbotron.css';
-import '../node_modules/bootstrap-css/lib/labels.css';
-import '../node_modules/bootstrap-css/lib/list-group.css';
-import '../node_modules/bootstrap-css/lib/media.css';
-import '../node_modules/bootstrap-css/lib/modals.css';
-import '../node_modules/bootstrap-css/lib/navbar.css';
-import '../node_modules/bootstrap-css/lib/navs.css';
+// import '../node_modules/bootstrap-css/lib/forms.css';
+// import '../node_modules/bootstrap-css/lib/grid.css';
+// import '../node_modules/bootstrap-css/lib/input-groups.css';
+// import '../node_modules/bootstrap-css/lib/jumbotron.css';
+// import '../node_modules/bootstrap-css/lib/labels.css';
+// import '../node_modules/bootstrap-css/lib/list-group.css';
+// import '../node_modules/bootstrap-css/lib/media.css';
+// import '../node_modules/bootstrap-css/lib/modals.css';
+// import '../node_modules/bootstrap-css/lib/navbar.css';
+// import '../node_modules/bootstrap-css/lib/navs.css';
 import '../node_modules/bootstrap-css/lib/normalize.css';
-import '../node_modules/bootstrap-css/lib/pager.css';
-import '../node_modules/bootstrap-css/lib/pagination.css';
-import '../node_modules/bootstrap-css/lib/panels.css';
-import '../node_modules/bootstrap-css/lib/popovers.css';
-import '../node_modules/bootstrap-css/lib/print.css';
-import '../node_modules/bootstrap-css/lib/progress-bars.css';
-import '../node_modules/bootstrap-css/lib/responsive-embed.css';
-import '../node_modules/bootstrap-css/lib/responsive-utilities.css';
-import '../node_modules/bootstrap-css/lib/scaffolding.css';
-import '../node_modules/bootstrap-css/lib/tables.css';
-import '../node_modules/bootstrap-css/lib/thumbnails.css';
-import '../node_modules/bootstrap-css/lib/tooltip.css';
-import '../node_modules/bootstrap-css/lib/type.css';
-import '../node_modules/bootstrap-css/lib/utilities.css';
-import '../node_modules/bootstrap-css/lib/wells.css';
+// import '../node_modules/bootstrap-css/lib/pager.css';
+// import '../node_modules/bootstrap-css/lib/pagination.css';
+// import '../node_modules/bootstrap-css/lib/panels.css';
+// import '../node_modules/bootstrap-css/lib/popovers.css';
+// import '../node_modules/bootstrap-css/lib/print.css';
+// import '../node_modules/bootstrap-css/lib/progress-bars.css';
+// import '../node_modules/bootstrap-css/lib/responsive-embed.css';
+// import '../node_modules/bootstrap-css/lib/responsive-utilities.css';
+// import '../node_modules/bootstrap-css/lib/scaffolding.css';
+// import '../node_modules/bootstrap-css/lib/tables.css';
+// import '../node_modules/bootstrap-css/lib/thumbnails.css';
+// import '../node_modules/bootstrap-css/lib/tooltip.css';
+// import '../node_modules/bootstrap-css/lib/type.css';
+// import '../node_modules/bootstrap-css/lib/utilities.css';
+// import '../node_modules/bootstrap-css/lib/wells.css';
 
 // `npm install draft-js@0.10.0`
 import '../node_modules/draft-js/dist/Draft.css';
 
 // `npm install bootswatch@3.3.4`
-import "../node_modules/bootswatch/cerulean/bootstrap.min.css";
+// import "../node_modules/bootswatch/sandstone/bootstrap.min.css";
 
 import './DemoApp.css';
 
