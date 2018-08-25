@@ -51,6 +51,8 @@ class DocsTableRow extends React.PureComponent {
     let cellsCount = colsCount;
 
     if (cellColSpans) {
+      // We need to find out how many cells exactly we need to render.
+      // TODO: This is super inefficient, we need to make it faster.
       let ci = 0;
       while (ci < colsCount) {
         const cid = getEntityDataID(rowIndex, ci);
@@ -58,6 +60,8 @@ class DocsTableRow extends React.PureComponent {
         if (colSpan && colSpan > 1) {
           cellsCount = cellsCount - colSpan + 1;
         }
+        // If any cell from any row above that may overlap this row, the current
+        // row won't have a cell for that.
         if (cellRowSpans) {
           let ri = rowIndex - 1;
           if (ri > -1) {

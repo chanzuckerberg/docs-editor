@@ -100,9 +100,9 @@ var babelPluginFlowReactPropTypes_proptype_ModalHandle = require('./showModalDia
 
 var LOCAL_CHANGE_ID = '_docs_expandable_local_change';
 
-function showLabelEditorModalDialog(title, label, callback) {
+function showLabelEditorModalDialog(placeholder, label, callback) {
   return (0, _showModalDialog2.default)(_DocsTextInputEditor2.default, {
-    title: title,
+    placeholder: placeholder,
     value: label
   }, callback);
 }
@@ -178,6 +178,7 @@ var DocsExpandable = function (_React$PureComponent) {
       _this.setState({ expanded: !_this.state.expanded }, _this._notifyChange);
     }, _this._onEditLabel = function (event) {
       event.preventDefault();
+      console.log(event);
 
       var blockProps = _this.props.blockProps;
       var entity = blockProps.entity;
@@ -290,9 +291,8 @@ var DocsExpandable = function (_React$PureComponent) {
       var placeholder = canEdit ? 'type something' : '';
       var editLabel = canEdit ? _react2.default.createElement(_DocsIcon2.default, {
         className: 'docs-expandable-toggle-icon',
-        'data-docs-tool': 'true',
         icon: 'create',
-        onMouseDown: this._onEditLabel
+        onClick: this._onEditLabel
       }) : null;
 
       var attrs = (0, _defineProperty3.default)({}, _DocsDataAttributes2.default.EDITOR_FOR, editorID);

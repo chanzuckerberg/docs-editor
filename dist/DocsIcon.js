@@ -1,5 +1,13 @@
 'use strict';
 
+var _extends2 = require('babel-runtime/helpers/extends');
+
+var _extends3 = _interopRequireDefault(_extends2);
+
+var _defineProperty2 = require('babel-runtime/helpers/defineProperty');
+
+var _defineProperty3 = _interopRequireDefault(_defineProperty2);
+
 var _getPrototypeOf = require('babel-runtime/core-js/object/get-prototype-of');
 
 var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
@@ -19,6 +27,10 @@ var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorRet
 var _inherits2 = require('babel-runtime/helpers/inherits');
 
 var _inherits3 = _interopRequireDefault(_inherits2);
+
+var _DocsDataAttributes = require('./DocsDataAttributes');
+
+var _DocsDataAttributes2 = _interopRequireDefault(_DocsDataAttributes);
 
 var _react = require('react');
 
@@ -45,12 +57,19 @@ var DocsIcon = function (_React$PureComponent) {
     value: function render() {
       var _props = this.props,
           className = _props.className,
-          icon = _props.icon;
+          icon = _props.icon,
+          onClick = _props.onClick,
+          title = _props.title;
 
       var allClassNames = (0, _classnames2.default)('docs-icon', className);
+
+      var attrs = onClick ? (0, _defineProperty3.default)({}, _DocsDataAttributes2.default.TOOL, true) : null;
       return _react2.default.createElement(
         'i',
-        { className: allClassNames },
+        (0, _extends3.default)({}, attrs, {
+          className: allClassNames,
+          onClick: onClick,
+          title: title }),
         icon
       );
     }

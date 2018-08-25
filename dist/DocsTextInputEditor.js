@@ -92,6 +92,7 @@ var DocsTextInputEditor = function (_React$PureComponent) {
   }, {
     key: 'render',
     value: function render() {
+      var placeholder = this.props.placeholder;
       var value = this.state.value;
 
       var id = this._id;
@@ -102,6 +103,7 @@ var DocsTextInputEditor = function (_React$PureComponent) {
           id: id,
           onChange: this._onChange,
           onKeyDown: this._onKeyDown,
+          placeholder: placeholder,
           type: 'text',
           value: value
         }),

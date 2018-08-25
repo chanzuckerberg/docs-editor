@@ -56,13 +56,16 @@ var DocsButton = function (_React$PureComponent) {
   (0, _createClass3.default)(DocsButton, [{
     key: 'render',
     value: function render() {
-      var value = this.props.value;
+      var _props = this.props,
+          value = _props.value,
+          placeholder = _props.placeholder;
 
 
       return _react2.default.createElement(_reactBootstrap.FormControl, {
+        onChange: this._onChange,
+        placeholder: placeholder,
         type: 'text',
-        value: value,
-        onChange: this._onChange
+        value: value
       });
     }
   }]);

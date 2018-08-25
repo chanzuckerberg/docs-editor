@@ -4,10 +4,6 @@ var _defineProperty2 = require('babel-runtime/helpers/defineProperty');
 
 var _defineProperty3 = _interopRequireDefault(_defineProperty2);
 
-var _stringify = require('babel-runtime/core-js/json/stringify');
-
-var _stringify2 = _interopRequireDefault(_stringify);
-
 var _extends4 = require('babel-runtime/helpers/extends');
 
 var _extends5 = _interopRequireDefault(_extends4);
@@ -29,33 +25,85 @@ function getEntityDataID(rowIndex, cellIndex) {
   return 'cell_' + rowIndex + '_' + cellIndex;
 }
 
+function shiftCell(entityData, fromID, toID) {
+  var cellBgStyles = entityData.cellBgStyles,
+      cellColSpans = entityData.cellColSpans,
+      cellRowSpans = entityData.cellRowSpans;
+
+  entityData[toID] = entityData[fromID];
+  delete entityData[fromID];
+
+  if (cellBgStyles) {
+    cellBgStyles[toID] = cellBgStyles[fromID];
+    delete cellBgStyles[fromID];
+  }
+  if (cellColSpans) {
+    cellColSpans[toID] = cellColSpans[fromID];
+    delete cellColSpans[fromID];
+  }
+  if (cellRowSpans) {
+    cellRowSpans[toID] = cellRowSpans[fromID];
+    delete cellRowSpans[fromID];
+  }
+  return entityData;
+}
+
 // These are the very naive implementation of functions that update rows.
 // Need a better way of doing this.
-function insertRow(entityData, rowIndex, before) {
-  var _entityData = entityData,
-      rowsCount = _entityData.rowsCount,
-      colsCount = _entityData.colsCount;
+function insertRow(entityData, rowIndex, colIndex, before) {
 
   var newEntityData = (0, _extends5.default)({}, entityData, {
-    rowsCount: rowsCount + 1,
-    colsCount: colsCount
+    rowsCount: entityData.rowsCount + 1
   });
-  var rr = 0;
-  entityData = JSON.parse((0, _stringify2.default)(entityData));
-  var jj = before ? rowIndex : rowIndex + 1;
-  var kk = newEntityData.rowsCount;
-  while (rr < kk) {
+
+  var _newEntityData = newEntityData,
+      colsCount = _newEntityData.colsCount,
+      rowsCount = _newEntityData.rowsCount;
+
+
+  var start = before ? rowIndex : rowIndex + 1;
+  var end = rowsCount;
+  var rr = end;
+  while (rr > start) {
     var cc = 0;
     while (cc < colsCount) {
-      var id = getEntityDataID(rr, cc);
-      var data = entityData[id] || {};
-      delete data[LOCAL_CHANGE_ID];
-      if (rr < jj) {
-        newEntityData[id] = data;
-      } else {
-        var newID = getEntityDataID(rr + 1, cc);
-        newEntityData[newID] = data;
-      }
+      var fromID = getEntityDataID(rr - 1, cc);
+      var toID = getEntityDataID(rr, cc);
+      newEntityData = shiftCell(newEntityData, fromID, toID);
+      cc++;
+    }
+    rr--;
+  }
+  return newEntityData;
+}
+
+function insertRowAfter(entityData, rowIndex, colIndex) {
+  return insertRow(entityData, rowIndex, colIndex, false);
+}
+
+function insertRowBefore(entityData, rowIndex, colIndex) {
+  return insertRow(entityData, rowIndex, colIndex, true);
+}
+
+function deleteRow(entityData, rowIndex, colIndex, before) {
+  if (entityData.rowsCount <= 1) {
+    return entityData;
+  }
+
+  var newEntityData = (0, _extends5.default)({}, entityData, {
+    rowsCount: entityData.rowsCount - 1
+  });
+  var _newEntityData2 = newEntityData,
+      colsCount = _newEntityData2.colsCount,
+      rowsCount = _newEntityData2.rowsCount;
+
+  var rr = rowIndex;
+  while (rr < rowsCount) {
+    var cc = 0;
+    while (cc < colsCount) {
+      var fromID = getEntityDataID(rr + 1, cc);
+      var toID = getEntityDataID(rr, cc);
+      newEntityData = shiftCell(newEntityData, fromID, toID);
       cc++;
     }
     rr++;
@@ -63,25 +111,18 @@ function insertRow(entityData, rowIndex, before) {
   return newEntityData;
 }
 
-function insertRowAfter(entityData, rowIndex, colIndex) {
-  return insertRow(entityData, rowIndex, false);
-}
-
-function insertRowBefore(entityData, rowIndex, colIndex) {
-  return insertRow(entityData, rowIndex, true);
-}
-
-function deleteRow(entityData, rowIndex, colIndex) {
+function xxxxdeleteRow(entityData, rowIndex, colIndex) {
   var rowsCount = entityData.rowsCount,
       colsCount = entityData.colsCount;
 
   if (rowsCount <= 1) {
     return entityData;
   }
-  var newEntityData = {
+  var newEntityData = (0, _extends5.default)({}, entityData, {
     rowsCount: rowsCount - 1,
     colsCount: colsCount
-  };
+  });
+
   var rr = 0;
   var kk = newEntityData.rowsCount;
   while (rr < kk) {
@@ -103,113 +144,101 @@ function deleteRow(entityData, rowIndex, colIndex) {
 }
 
 function deleteColumn(entityData, rowIndex, colIndex) {
-  var _entityData2 = entityData,
-      rowsCount = _entityData2.rowsCount,
-      colsCount = _entityData2.colsCount;
-
-  if (colsCount <= 1) {
-    return entityData;
-  }
-  entityData = JSON.parse((0, _stringify2.default)(entityData));
   var newEntityData = (0, _extends5.default)({}, entityData, {
-    rowsCount: rowsCount,
-    colsCount: colsCount - 1,
-    colWidths: null
+    colsCount: entityData.colsCount - 1
   });
-  var kk = newEntityData.colsCount;
+  var _newEntityData3 = newEntityData,
+      rowsCount = _newEntityData3.rowsCount,
+      colsCount = _newEntityData3.colsCount,
+      colWidths = _newEntityData3.colWidths;
+
+  var start = colIndex;
+  var end = colsCount;
   var rr = 0;
   while (rr < rowsCount) {
-    var cc = 0;
-    while (cc < kk) {
-      var id = getEntityDataID(rr, cc);
-      var data = entityData[id];
-      if (cc < colIndex) {
-        newEntityData[id] = data;
-      } else if (cc > colIndex) {
-        var newID = getEntityDataID(rr, cc - 1);
-        newEntityData[newID] = data;
-      }
+    var cc = start;
+    while (cc < end) {
+      var fromID = getEntityDataID(rr, cc);
+      var toID = getEntityDataID(rr, cc - 1);
+      newEntityData = shiftCell(newEntityData, fromID, toID);
       cc++;
     }
     rr++;
   }
 
-  // Allocate width to sibling column.
-  var _entityData3 = entityData,
-      colWidths = _entityData3.colWidths;
+  // Re-allocate width to sibling column.
+  if (Array.isArray(colWidths) && colWidths.length === colsCount - 1) {
+    var newWidth = colWidths[colIndex] / 2;
+    var newColWidths = colWidths.slice(0);
+    newColWidths[colIndex] = newWidth;
+    newColWidths.splice(colIndex, 0, newWidth);
+    newEntityData.colWidths = newColWidths;
+  } else {
+    delete newEntityData.colWidths;
+  }
 
-  var newColWidths = void 0;
+  // Allocate width to sibling column.
   if (Array.isArray(colWidths) && colWidths.length === colsCount) {
     var deletedWidth = colWidths[colIndex];
-    newColWidths = colWidths.slice(0);
-    newColWidths.splice(colIndex, 1);
-    if (newColWidths[colIndex - 1]) {
-      newColWidths[colIndex - 1] += deletedWidth;
-    } else if (newColWidths[colIndex - 1]) {
-      newColWidths[colIndex + 1] += deletedWidth;
+    var _newColWidths = colWidths.slice(0);
+    _newColWidths.splice(colIndex, 1);
+    if (_newColWidths[colIndex - 1]) {
+      _newColWidths[colIndex - 1] += deletedWidth;
+    } else if (_newColWidths[colIndex - 1]) {
+      _newColWidths[colIndex + 1] += deletedWidth;
     } else {
-      newColWidths = undefined;
+      _newColWidths = undefined;
     }
+    newEntityData.colWidths = _newColWidths;
+  } else {
+    delete newEntityData.colWidths;
   }
-  newEntityData.colWidths = newColWidths;
   return newEntityData;
 }
 
-function insertColumn(entityData, colIndex, before) {
-  var _entityData4 = entityData,
-      rowsCount = _entityData4.rowsCount,
-      colsCount = _entityData4.colsCount;
-
+function insertColumn(entityData, rowIndex, colIndex, before) {
   var newEntityData = (0, _extends5.default)({}, entityData, {
-    colWidths: null,
-    colsCount: colsCount + 1,
-    rowsCount: rowsCount
+    colsCount: entityData.colsCount + 1
   });
-  var rr = 0;
-  // This is just the naive way to deeply clone the object.
-  entityData = JSON.parse((0, _stringify2.default)(entityData));
+  var _newEntityData4 = newEntityData,
+      rowsCount = _newEntityData4.rowsCount,
+      colsCount = _newEntityData4.colsCount,
+      colWidths = _newEntityData4.colWidths;
 
-  var kk = newEntityData.colsCount;
+  var start = before ? colIndex : colIndex + 1;
+  var end = colsCount;
+  var rr = 0;
   while (rr < rowsCount) {
-    var cc = 0;
-    while (cc < kk) {
-      var jj = before ? colIndex : colIndex + 1;
-      var id = getEntityDataID(rr, cc);
-      var data = entityData[id] || {};
-      delete data[LOCAL_CHANGE_ID];
-      if (cc < jj) {
-        newEntityData[id] = data;
-      } else {
-        var newID = getEntityDataID(rr, cc + 1);
-        newEntityData[newID] = data;
-      }
-      cc++;
+    var cc = end;
+    while (cc > start) {
+      var fromID = getEntityDataID(rr, cc - 1);
+      var toID = getEntityDataID(rr, cc);
+      newEntityData = shiftCell(newEntityData, fromID, toID);
+      cc--;
     }
     rr++;
   }
 
-  // Allocate width to sibling column.
-  var _entityData5 = entityData,
-      colWidths = _entityData5.colWidths;
-
-  var newColWidths = void 0;
-  if (Array.isArray(colWidths) && colWidths.length === colsCount) {
+  // Re-allocate width to sibling column.
+  if (Array.isArray(colWidths) && colWidths.length === colsCount - 1) {
     var newWidth = colWidths[colIndex] / 2;
-    newColWidths = colWidths.slice(0);
+    var newColWidths = colWidths.slice(0);
     newColWidths[colIndex] = newWidth;
     newColWidths.splice(colIndex, 0, newWidth);
+    newEntityData.colWidths = newColWidths;
+  } else {
+    delete newEntityData.colWidths;
   }
 
-  newEntityData.colWidths = newColWidths;
   return newEntityData;
 }
 
 function insertColumnAfter(entityData, rowIndex, colIndex) {
-  return insertColumn(entityData, colIndex, false);
+  return insertColumn(entityData, rowIndex, colIndex, false);
 }
 
 function insertColumnBefore(entityData, rowIndex, colIndex) {
-  return insertColumn(entityData, colIndex, true);
+  return insertColumn(entityData, rowIndex, colIndex, true);
 }
 
 function toggleIndexColumnBackground(entityData) {

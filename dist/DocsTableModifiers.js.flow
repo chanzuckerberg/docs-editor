@@ -15,38 +15,61 @@ function getEntityDataID(rowIndex: number, cellIndex: number): string {
   return 'cell_' + rowIndex + '_' + cellIndex;
 }
 
+function shiftCell(
+  entityData: DocsTableEntityData,
+  fromID: string,
+  toID: string,
+): DocsTableEntityData {
+  const {cellBgStyles, cellColSpans, cellRowSpans} = entityData;
+  entityData[toID] = entityData[fromID];
+  delete entityData[fromID];
+
+  if (cellBgStyles) {
+    cellBgStyles[toID] = cellBgStyles[fromID];
+    delete cellBgStyles[fromID];
+  }
+  if (cellColSpans) {
+    cellColSpans[toID] = cellColSpans[fromID];
+    delete cellColSpans[fromID];
+  }
+  if (cellRowSpans) {
+    cellRowSpans[toID] = cellRowSpans[fromID];
+    delete cellRowSpans[fromID];
+  }
+  return entityData;
+}
+
 // These are the very naive implementation of functions that update rows.
 // Need a better way of doing this.
 function insertRow(
   entityData: DocsTableEntityData,
   rowIndex: number,
+  colIndex: number,
   before: boolean,
 ): DocsTableEntityData {
-  const {rowsCount, colsCount} = entityData;
-  const newEntityData = {
+
+  let newEntityData = {
     ...entityData,
-    rowsCount: rowsCount + 1,
-    colsCount,
+    rowsCount: entityData.rowsCount + 1,
   };
-  let rr = 0;
-  entityData = JSON.parse(JSON.stringify(entityData));
-  const jj = before ? rowIndex : rowIndex + 1;
-  const kk =  newEntityData.rowsCount;
-  while (rr < kk) {
+
+  const {
+    colsCount,
+    rowsCount,
+  } = newEntityData;
+
+  const start = before ? rowIndex : rowIndex + 1;
+  const end = rowsCount;
+  let rr = end;
+  while (rr > start) {
     let cc = 0;
     while (cc < colsCount) {
-      const id = getEntityDataID(rr, cc);
-      const data = entityData[id] || {};
-      delete data[LOCAL_CHANGE_ID];
-      if (rr < jj) {
-        newEntityData[id] = data;
-      } else {
-        const newID = getEntityDataID(rr + 1, cc);
-        newEntityData[newID] = data;
-      }
+      const fromID = getEntityDataID(rr - 1, cc);
+      const toID = getEntityDataID(rr, cc);
+      newEntityData = shiftCell(newEntityData, fromID, toID);
       cc++;
     }
-    rr++;
+    rr--;
   }
   return newEntityData;
 }
@@ -56,7 +79,7 @@ function insertRowAfter(
   rowIndex: number,
   colIndex: number,
 ): DocsTableEntityData {
-  return insertRow(entityData, rowIndex, false);
+  return insertRow(entityData, rowIndex, colIndex, false);
 }
 
 function insertRowBefore(
@@ -64,10 +87,42 @@ function insertRowBefore(
   rowIndex: number,
   colIndex: number,
 ): DocsTableEntityData {
-  return insertRow(entityData, rowIndex, true);
+  return insertRow(entityData, rowIndex, colIndex, true);
 }
 
 function deleteRow(
+  entityData: DocsTableEntityData,
+  rowIndex: number,
+  colIndex: number,
+  before: boolean,
+): DocsTableEntityData {
+  if (entityData.rowsCount <= 1) {
+    return entityData;
+  }
+
+  let newEntityData = {
+    ...entityData,
+    rowsCount: entityData.rowsCount - 1,
+  };
+  const {
+    colsCount,
+    rowsCount,
+  } = newEntityData;
+  let rr = rowIndex;
+  while (rr < rowsCount) {
+    let cc = 0;
+    while (cc < colsCount) {
+      const fromID = getEntityDataID(rr + 1, cc);
+      const toID = getEntityDataID(rr, cc);
+      newEntityData = shiftCell(newEntityData, fromID, toID);
+      cc++;
+    }
+    rr++;
+  }
+  return newEntityData;
+}
+
+function xxxxdeleteRow(
   entityData: DocsTableEntityData,
   rowIndex: number,
   colIndex: number,
@@ -77,9 +132,11 @@ function deleteRow(
     return entityData;
   }
   const newEntityData = {
+    ...entityData,
     rowsCount: rowsCount - 1,
     colsCount,
   };
+
   let rr = 0;
   const kk =  newEntityData.rowsCount;
   while (rr < kk) {
@@ -105,41 +162,44 @@ function deleteColumn(
   rowIndex: number,
   colIndex: number,
 ): DocsTableEntityData {
-  const {rowsCount, colsCount} = entityData;
-  if (colsCount <= 1) {
-    return entityData;
-  }
-  entityData = JSON.parse(JSON.stringify(entityData));
-  const newEntityData = {
+  let newEntityData = {
     ...entityData,
-    rowsCount,
-    colsCount: colsCount - 1,
-    colWidths: null,
+    colsCount: entityData.colsCount - 1,
   };
-  const kk =  newEntityData.colsCount;
+  const {
+    rowsCount,
+    colsCount,
+    colWidths,
+  } = newEntityData;
+  const start = colIndex;
+  const end = colsCount;
   let rr = 0;
   while (rr < rowsCount) {
-    let cc = 0;
-    while (cc < kk) {
-      const id = getEntityDataID(rr, cc);
-      const data = entityData[id];
-      if (cc < colIndex) {
-        newEntityData[id] = data;
-      } else if (cc > colIndex) {
-        const newID = getEntityDataID(rr, cc - 1);
-        newEntityData[newID] = data;
-      }
+    let cc = start;
+    while (cc < end) {
+      const fromID = getEntityDataID(rr, cc);
+      const toID = getEntityDataID(rr, cc - 1);
+      newEntityData = shiftCell(newEntityData, fromID, toID);
       cc++;
     }
     rr++;
   }
 
+  // Re-allocate width to sibling column.
+  if (Array.isArray(colWidths) && colWidths.length === (colsCount - 1)) {
+    const newWidth = colWidths[colIndex] / 2;
+    const newColWidths = colWidths.slice(0);
+    newColWidths[colIndex] = newWidth;
+    newColWidths.splice(colIndex, 0, newWidth);
+    newEntityData.colWidths = newColWidths;
+  } else {
+    delete newEntityData.colWidths;
+  }
+
   // Allocate width to sibling column.
-  const {colWidths} = entityData;
-  let newColWidths;
   if (Array.isArray(colWidths) && colWidths.length === colsCount) {
     const deletedWidth = colWidths[colIndex];
-    newColWidths = colWidths.slice(0);
+    let newColWidths = colWidths.slice(0);
     newColWidths.splice(colIndex, 1);
     if (newColWidths[colIndex - 1]) {
       newColWidths[colIndex - 1] += deletedWidth;
@@ -148,57 +208,53 @@ function deleteColumn(
     } else {
       newColWidths = undefined;
     }
+    newEntityData.colWidths = newColWidths;
+  } else {
+    delete newEntityData.colWidths;
   }
-  newEntityData.colWidths = newColWidths;
   return newEntityData;
 }
 
 function insertColumn(
   entityData: DocsTableEntityData,
+  rowIndex: number,
   colIndex: number,
   before: boolean,
 ): DocsTableEntityData {
-  const {rowsCount, colsCount} = entityData;
-  const newEntityData = {
+  let newEntityData = {
     ...entityData,
-    colWidths: null,
-    colsCount: colsCount + 1,
-    rowsCount,
+    colsCount: entityData.colsCount + 1,
   };
+  const {
+    rowsCount,
+    colsCount,
+    colWidths,
+  } = newEntityData;
+  const start = before ? colIndex : colIndex + 1;
+  const end = colsCount;
   let rr = 0;
-  // This is just the naive way to deeply clone the object.
-  entityData = JSON.parse(JSON.stringify(entityData));
-
-  const kk =  newEntityData.colsCount;
   while (rr < rowsCount) {
-    let cc = 0;
-    while (cc < kk) {
-      const jj = before ? colIndex  : colIndex + 1;
-      const id = getEntityDataID(rr, cc);
-      const data = entityData[id] || {};
-      delete data[LOCAL_CHANGE_ID];
-      if (cc < jj) {
-        newEntityData[id] = data;
-      } else {
-        const newID = getEntityDataID(rr, cc + 1);
-        newEntityData[newID] = data;
-      }
-      cc++;
+    let cc = end;
+    while (cc > start) {
+      const fromID = getEntityDataID(rr, cc - 1);
+      const toID = getEntityDataID(rr, cc);
+      newEntityData = shiftCell(newEntityData, fromID, toID);
+      cc--;
     }
     rr++;
   }
 
-  // Allocate width to sibling column.
-  const {colWidths} = entityData;
-  let newColWidths;
-  if (Array.isArray(colWidths) && colWidths.length === colsCount) {
+  // Re-allocate width to sibling column.
+  if (Array.isArray(colWidths) && colWidths.length === (colsCount - 1)) {
     const newWidth = colWidths[colIndex] / 2;
-    newColWidths = colWidths.slice(0);
+    const newColWidths = colWidths.slice(0);
     newColWidths[colIndex] = newWidth;
     newColWidths.splice(colIndex, 0, newWidth);
+    newEntityData.colWidths = newColWidths;
+  } else {
+    delete newEntityData.colWidths;
   }
 
-  newEntityData.colWidths = newColWidths;
   return newEntityData;
 }
 
@@ -207,7 +263,7 @@ function insertColumnAfter(
   rowIndex: number,
   colIndex: number,
 ): DocsTableEntityData {
-  return insertColumn(entityData, colIndex, false);
+  return insertColumn(entityData, rowIndex, colIndex, false);
 }
 
 function insertColumnBefore(
@@ -215,7 +271,7 @@ function insertColumnBefore(
   rowIndex: number,
   colIndex: number,
 ): DocsTableEntityData {
-  return insertColumn(entityData, colIndex, true);
+  return insertColumn(entityData, rowIndex, colIndex, true);
 }
 
 function toggleIndexColumnBackground(
@@ -232,7 +288,7 @@ function toggleIndexColumnBackground(
 function toggleHeaderBackground(
   entityData: DocsTableEntityData,
   forceEnabled?: ?boolean,
-): DocsTableEntityData {  
+): DocsTableEntityData {
   const key = DocsTableEntityDataKeys.TOP_ROW_BG_STYLE;
   const value = forceEnabled || !entityData[key];
   const bgStyle = value ? 'dark' : undefined;

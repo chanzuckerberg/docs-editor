@@ -8,9 +8,10 @@ import uniqueID from './uniqueID';
 import tryFocus from './tryFocus';
 
 type Props = {
-  value: ?string,
   onCancel: () => void,
   onConfirm: (v: ?string) => void,
+  placeholder?: ?string,
+  value: ?string,
 };
 
 const ENTER_CODE = 23;
@@ -34,6 +35,7 @@ class DocsTextInputEditor extends React.PureComponent {
   }
 
   render(): React.Element<any> {
+    const {placeholder} = this.props;
     const {value} = this.state;
     const id = this._id;
     return (
@@ -42,6 +44,7 @@ class DocsTextInputEditor extends React.PureComponent {
           id={id}
           onChange={this._onChange}
           onKeyDown={this._onKeyDown}
+          placeholder={placeholder}
           type="text"
           value={value}
         />
