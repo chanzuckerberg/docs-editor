@@ -36,7 +36,7 @@ import '../node_modules/bootstrap-css/lib/normalize.css';
 // import '../node_modules/bootstrap-css/lib/pager.css';
 // import '../node_modules/bootstrap-css/lib/pagination.css';
 // import '../node_modules/bootstrap-css/lib/panels.css';
-// import '../node_modules/bootstrap-css/lib/popovers.css';
+import '../node_modules/bootstrap-css/lib/popovers.css';
 // import '../node_modules/bootstrap-css/lib/print.css';
 // import '../node_modules/bootstrap-css/lib/progress-bars.css';
 // import '../node_modules/bootstrap-css/lib/responsive-embed.css';

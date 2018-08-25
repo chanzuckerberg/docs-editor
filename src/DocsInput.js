@@ -5,8 +5,9 @@ import cx from 'classnames';
 import {FormControl} from 'react-bootstrap';
 
 type Props = {
-  value?: any,
   onChange?: (e: SyntheticInputEvent) => void,
+  placeholder?: ?string,
+  value?: any,
 };
 
 class DocsButton extends React.PureComponent {
@@ -15,13 +16,14 @@ class DocsButton extends React.PureComponent {
   props: Props;
 
   render(): React.Element<any> {
-    const {value} = this.props;
+    const {value, placeholder} = this.props;
 
     return (
       <FormControl
+        onChange={this._onChange}
+        placeholder={placeholder}
         type="text"
         value={value}
-        onChange={this._onChange}
       />
     );
   }

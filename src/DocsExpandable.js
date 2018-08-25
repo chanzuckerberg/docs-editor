@@ -36,12 +36,12 @@ type Props = {
 const LOCAL_CHANGE_ID = '_docs_expandable_local_change';
 
 function showLabelEditorModalDialog(
-  title: string,
+  placeholder: string,
   label: string,
   callback: Function,
 ): ModalHandle {
   return showModalDialog(DocsTextInputEditor, {
-    title,
+    placeholder,
     value: label,
   }, callback);
 }
@@ -123,9 +123,8 @@ class DocsExpandable extends React.PureComponent {
     const editLabel = canEdit ?
       <DocsIcon
         className="docs-expandable-toggle-icon"
-        data-docs-tool="true"
         icon="create"
-        onMouseDown={this._onEditLabel}
+        onClick={this._onEditLabel}
       /> :
       null;
 
@@ -201,6 +200,7 @@ class DocsExpandable extends React.PureComponent {
 
   _onEditLabel = (event: any) => {
     event.preventDefault();
+    console.log(event);
 
     const {blockProps} = this.props;
     const {entity} = blockProps;
