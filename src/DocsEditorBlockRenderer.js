@@ -1,6 +1,8 @@
 // @flow
 
 import DocsBlockTypeToComponent from './DocsBlockTypeToComponent';
+import DocsList from './DocsList';
+import React from 'react';
 import tryGetEntityAtContentState from './tryGetEntityAtContentState';
 import {ContentBlock, EditorState, DefaultDraftBlockRenderMap} from 'draft-js';
 import {Map as ImmutableMap} from 'immutable';
@@ -10,11 +12,17 @@ type Props = {
   editorState: EditorState,
 };
 
+// Copied from https://github.com/facebook/draft-js/blob/master/src/model/constants/DraftBlockType.js#L27-L28
+const UNORDERED_LIST_ITEM = 'unordered-list-item'
+const ORDERED_LIST_ITEM = 'ordered-list-item'
+const PARAGRAPH = 'paragraph';
+
 function renderBlock(
   contentBlock: ContentBlock,
   blockProps: Props,
 ) {
   const blockType = contentBlock.getType();
+
   if (blockType !== 'atomic') {
     return null;
   }
@@ -67,8 +75,24 @@ function getStyle(
   return classNames.length ? classNames.join(' ') : null;
 }
 
+
+// https://github.com/facebook/draft-js/blob/0.10-stable/src/model/immutable/DefaultDraftBlockRenderMap.js#L22
+// https://github.com/facebook/draft-js/issues/1497
+
+const BLOCK_RENDER_MAP = DefaultDraftBlockRenderMap.merge(ImmutableMap({
+  [PARAGRAPH]: {element: 'p'},
+  [UNORDERED_LIST_ITEM]: {
+    element: 'li',
+    wrapper: <DocsList.Ordered />,
+  },
+  [ORDERED_LIST_ITEM]: {
+    element: 'li',
+    wrapper: <DocsList.Unordered />,
+  },
+}));
+
 function getBlockRenderMap(): ImmutableMap<any> {
-  return DefaultDraftBlockRenderMap.set('paragraph', {element: 'p'});
+  return BLOCK_RENDER_MAP;
 }
 
 module.exports = {
