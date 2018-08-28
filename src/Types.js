@@ -35,13 +35,13 @@ export type DocumentLike = {
 export type BgStyle = 'dark';
 
 export type ElementLike = {
-  appendChild: (child: ElementLike) => ElementLike,
+  appendChild: (child: ElementLike | Element) => ElementLike,
   cellIndex: ?number,
   cells: ?HTMLCollectionLike,
   classList: ?ArrayLike<string>,
   className: string,
   colSpan: ?number,
-  dispatchEvent: (e: EventLike) => void,
+  dispatchEvent: (e: EventLike | Element) => void,
   getAttribute: (attr: string) => string,
   hasAttribute: (attr: string) => boolean,
   href: string,
@@ -49,8 +49,11 @@ export type ElementLike = {
   innerHTML: string,
   nodeName: string,
   nodeType: number,
+  outerHTML: string,
   ownerDocument: DocumentLike,
   parentElement: ?ElementLike,
+  parentNode: ?ElementLike,
+  previousElementSibling: ?ElementLike,
   removeAttribute: (attr: string) => void,
   rowIndex: ?number,
   rowSpan: ?number,

@@ -1,57 +1,105 @@
 /* @flow */
 
 import React from 'react';
-import {EditorBlock} from 'draft-js'
+import cx from 'classnames';
+import invariant from 'invariant';
+import {EditorBlock} from 'draft-js';
 
-type BlockProps = {
-  start?: ?number,
-};
+import './DocsList.css';
 
-type Props = {
-  blockProps: BlockProps,
-  className?: ?string,
-  offsetKey: string,
+function getListItemBlockData(listItem: ?React.Element<any>): ?Object {
+  if (!listItem || !listItem.props.children) {
+    return null;
+  }
+  const content = React.Children.only(listItem.props.children);
+  if (
+    !content ||
+    !content.props ||
+    !content.props.block ||
+    !content.props.block.data
+  ) {
+    return null;
+  }
+  return content.props.block.data;
+}
+
+function renderListItems(
+  listItems: React.Children,
   ordered: boolean,
-};
+): Array<React.Element<any>> {
+  return React.Children.map(listItems, (listItem, index) => {
+    invariant(listItem.type === 'li', 'invalid type');
+    const {children, className} = listItem.props;
+    const blockData = getListItemBlockData(listItem);
+    const safeClassName = className ?
+      className.replace(/public-DraftStyleDefault/g, '_') :
+      '';
+    const start = blockData ? blockData.get('start') : 1;
+    const listStyleTypeDefault = ordered ? 'decimal' : 'disc';
+    const listStyleType =
+      blockData && blockData.get('listStyleType') ||
+      listStyleTypeDefault;
+    const attributes = {
+      className: cx(className, {
+        'docs-list-item': true,
+        // [listStyleType]: true,
+      }),
+      'data-counter-start': start,
+      'data-counter-value': start + index,
+    };
+    return React.cloneElement(listItem, attributes);
+  });
+}
 
-class DocsList extends React.Component {
-
-  props: any;
-
-  render() {
-    const {
-      children,
-      className,
-      offsetKey,
-      ordered,
-    } = this.props
-    return ordered ?
-      <ol
-        className={className}
-        data-offset-key={offsetKey}>
-        {children}
-      </ol> :
-      <ul
-        className={className}
-        data-offset-key={offsetKey}>
-        {children}
-      </ul>;
+// http://www.cssdesk.com/H9r2K
+class DocsListItem extends React.Component {
+  render(): React.Element<any> {
+    return <EditorBlock {...this.props} />;
   }
 }
 
-class DocsOrderedList extends React.Component {
+class DocsListBase extends React.Component {
   render(): React.Element<any> {
-    return <DocsList ordered={true} {...this.props} />;
+    const {className, ordered, children, ...restProps} = this.props;
+    const items = renderListItems(children, ordered);
+    // Uset the first list-item to serve the block data.
+    const blockData = getListItemBlockData(items[0]);
+    const start = blockData ? blockData.get('start') : null;
+    const listStyleTypeDefault = ordered ? 'decimal' : 'disc';
+    const listStyleType =
+      blockData && blockData.get('listStyleType') ||
+      listStyleTypeDefault;
+
+    const mainClassName = cx(className, {
+      'docs-list-type': true,
+      [listStyleType]: true,
+    });
+
+    const props = {
+      ...restProps,
+      start: start || 1,
+      children: items,
+      className: mainClassName,
+    };
+
+    return ordered ? <ol {...props} /> : <ul {...props} />;
   }
 }
 
-class DocsUnorderedList extends React.Component {
+class DocsListOrdered extends React.Component {
   render(): React.Element<any> {
-    return <DocsList ordered={true} {...this.props} />;
+    return <DocsListBase {...this.props} ordered={true} />;
+  }
+}
+
+class DocsListUnordered extends React.Component {
+  render(): React.Element<any> {
+    return <DocsListBase {...this.props} ordered={false} />;
   }
 }
 
 export default {
-  Ordered: DocsOrderedList,
-  Unordered: DocsUnorderedList,
+  Item: DocsListItem,
+  Ordered: DocsListOrdered,
+  Unordered: DocsListUnordered,
 };

@@ -21,35 +21,51 @@ function renderBlock(
   contentBlock: ContentBlock,
   blockProps: Props,
 ) {
-  const blockType = contentBlock.getType();
 
-  if (blockType !== 'atomic') {
+  let component;
+  let props;
+  let editable;
+
+  switch (contentBlock.getType()) {
+    case 'atomic' :
+      const contentState = blockProps.editorState.getCurrentContent();
+      const entityKey = contentBlock.getEntityAt(0);
+      // entity could be `null`.
+      // This happens while pasting HTML from external sources and we failed
+      // to parse its data.
+      const entity = entityKey ?
+        tryGetEntityAtContentState(contentState, entityKey) :
+        null;
+      if (entity) {
+        component = DocsBlockTypeToComponent.getComponent(entity.getType());
+        editable = false;
+        props = {
+          ...blockProps,
+          entity,
+          entityKey,
+        };
+      }
+      break;
+
+    // case UNORDERED_LIST_ITEM:
+    // case ORDERED_LIST_ITEM:
+    //   component = DocsList.Item;
+    //   props = blockProps;
+    //   break;
+
+    default:
+      return null;
+  }
+
+  if (!component) {
     return null;
   }
-  const entityKey = contentBlock.getEntityAt(0);
-  const contentState = blockProps.editorState.getCurrentContent();
-  const entity = entityKey ?
-    tryGetEntityAtContentState(contentState, entityKey) :
-    null;
-  if (!entity) {
-    // This happens while pasting HTML from external sources and we failed
-    // to parse its data.
-    return null;
-  }
-  const type = entity.getType();
-  const Component = DocsBlockTypeToComponent.getComponent(type);
-  if (Component) {
-    return {
-      component: Component,
-      editable: false,
-      props: {
-        ...blockProps,
-        entity,
-        entityKey,
-      },
-    };
-  }
-  return null;
+
+  return {
+    component,
+    editable,
+    props,
+  };
 }
 
 function getStyle(
@@ -81,14 +97,14 @@ function getStyle(
 
 const BLOCK_RENDER_MAP = DefaultDraftBlockRenderMap.merge(ImmutableMap({
   [PARAGRAPH]: {element: 'p'},
-  [UNORDERED_LIST_ITEM]: {
-    element: 'li',
-    wrapper: <DocsList.Ordered />,
-  },
-  [ORDERED_LIST_ITEM]: {
-    element: 'li',
-    wrapper: <DocsList.Unordered />,
-  },
+  // [UNORDERED_LIST_ITEM]: {
+  //   element: 'li',
+  //   wrapper: <DocsList.Unordered />,
+  // },
+  // [ORDERED_LIST_ITEM]: {
+  //   element: 'li',
+  //   wrapper: <DocsList.Ordered />,
+  // },
 }));
 
 function getBlockRenderMap(): ImmutableMap<any> {

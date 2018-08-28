@@ -25,6 +25,7 @@ const CSS_BOLD_VALUES = new Set(['bold', 'bolder']);
 const CSS_NOT_BOLD_VALUES = new Set(['light', 'lighter', 'normal']);
 const CSS_BOLD_MIN_NUMERIC_VALUE_PATTERN = /^\d+$/;
 
+
 // Name of the outermost element used by atomic component.
 const ATOMIC_ELEMENT_NODE_NAME = 'figure';
 
@@ -38,7 +39,35 @@ const STYLE_BOLD = 'BOLD';
 // `nodeType` to ensure only valid HTML element is used.
 const NODE_TYPE_ELEMENT = Node.ELEMENT_NODE;
 
-const ZERO_WIDTH_CHAR = '\u200B';
+const CHAR_ZERO_WIDTH = '\u200B';
+const CHAR_BULLET = '\u25CF';
+const CHAR_CIRCLE = '\u25cb';
+
+const LIST_STYLE_TYPES = [
+  // 'armenian',
+  'circle',
+  // 'cjk-ideographic',
+  'decimal',
+  'decimal-leading-zero',
+  'disc',
+  'georgian',
+  'hebrew',
+  'hiragana',
+  'hiragana-iroha',
+  'inherit',
+  'katakana',
+  'katakana-iroha',
+  'lower-alpha',
+  'lower-greek',
+  'lower-latin',
+  'lower-roman',
+  // 'none',
+  'square',
+  'upper-alpha',
+  'upper-greek',
+  'upper-latin',
+  'upper-roman',
+];
 
 // Processing HTML is hard, and here are some resources that could be helpful.
 // https://goo.gl/4mvkWg : Sample HTML converted into Draft content state
@@ -127,11 +156,20 @@ function htmlToStyle(
       color: DocsCustomStyleMap.forColor,
       fontSize: DocsCustomStyleMap.forFontSize,
       lineHeight: DocsCustomStyleMap.forLineHeight,
-      listStyleImage: DocsCustomStyleMap.forListStyleImage,
+      listStart: DocsCustomStyleMap.forListStart,
       listStyleType: DocsCustomStyleMap.forListStyleType,
       marginLeft: DocsCustomStyleMap.forMarginLeft,
       textAlign: DocsCustomStyleMap.forTextAlign,
     };
+
+    if (nodeName === 'li') {
+      const parentElement = asElement(el.parentElement);
+      if (parentElement.nodeName === 'OL') {
+        const start = parentElement.getAttribute('start');
+        const styleName = DocsCustomStyleMap.forListStart(start);
+        styleName && nextStyle.add(styleName);
+      }
+    }
 
     Object.keys(customStyleHandlers).forEach(attr => {
       const styleValue = style[attr];
@@ -261,6 +299,9 @@ function htmlToBlock(
   nodeName: string,
   node: Node | ElementLike,
 ): ?Object {
+  if (nodeName === 'li') {
+    return htmlToListItemBlock(safeHTML, nodeName, node);
+  }
 
   const normalizedNode =
     normalizeNodeForTable(safeHTML, nodeName, node);
@@ -269,6 +310,67 @@ function htmlToBlock(
     nodeName = node.nodeName.toLowerCase();
   }
   return htmlToAtomicBlock(safeHTML, nodeName, node);
+}
+
+function htmlToListItemBlock(
+  safeHTML: SafeHTML,
+  nodeName: string,
+  node: Node | ElementLike,
+): ?Object {
+
+  const el = asElement(node);
+  const parentEl = asElement(el.parentNode);
+
+  const start = parseInt(parentEl.getAttribute('start'), 10);
+
+  const type = parentEl.nodeName === 'UL' ?
+    'unordered-list-item' :
+    'ordered-list-item';
+
+  const {classList} = parentEl;
+  const {cssRules} = safeHTML;
+
+  // This part of logic is only optimized for HTML converted from google doc.
+  let listStyleType;
+  if (false && classList && classList.length) {
+    const classNames = Array.from(classList);
+    for (var ii = 0, jj = classNames.length; ii < jj; ii++) {
+      const className = classNames[ii];
+      const selector = `.${String(className)} > li::before`;
+      const styleMap = cssRules.get(selector);
+      if (!styleMap) {
+        continue;
+      }
+      const content = String(styleMap.get('content') );
+      if (!content) {
+        continue;
+      }
+
+      if (content.indexOf(CHAR_CIRCLE) >= 0) {
+        listStyleType = 'circle';
+        continue;
+      }
+
+      if (content.indexOf(CHAR_BULLET) >= 0) {
+        listStyleType = 'disc';
+        continue;
+      }
+
+      const found = LIST_STYLE_TYPES.find(t => content.indexOf(t) >= 0);
+      if (found) {
+        listStyleType = found;
+        continue;
+      }
+    };
+  }
+
+  return {
+    type,
+    data: {
+      start: start && start > 1 ? start : 1,
+      listStyleType,
+    },
+  };
 }
 
 function htmlToAtomicBlock(
