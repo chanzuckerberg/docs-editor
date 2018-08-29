@@ -28,6 +28,9 @@ var babelPluginFlowReactPropTypes_proptype_StyleMap = require('./getCSSRules').b
 
 var babelPluginFlowReactPropTypes_proptype_CSSRules = require('./getCSSRules').babelPluginFlowReactPropTypes_proptype_CSSRules || require('prop-types').any;
 
+var CHAR_BULLET = '\u25CF';
+var CHAR_CIRCLE = '\u25CB';
+
 function sortCSSRuleStyleMap(one, two) {
   var p1 = one.get(_getCSSRules.CSS_SELECTOR_PRIORITY);
   var p2 = two.get(_getCSSRules.CSS_SELECTOR_PRIORITY);
@@ -63,25 +66,29 @@ function mergeCSSRuleStylesToElement(cssRules, el) {
     // This handles the special case that google docs uses `content: "."`
     // as the bullet for the list item.
     styleMap = cssRules.get('.' + className + ' > li::before');
-    if (styleMap && (nodeName === 'ol' || nodeName === 'ul')) {
-      var content = styleMap.get('content') || '';
-      var children = content ? el.children : null;
-      if (children) {
-        // Remove the wrapping `""`.
-        content = content.replace(/(^")|("$)/g, '');
-        // Temporarity stores the `content` as list-style-image.
-        // We'll read it from `DocsCustomStyleMap.forListStyleImage()`
-        // and `convertFromHTML()` later. Note that the fake url has to
-        // look like a real url othewise browser will reject it.
-        content = window.encodeURIComponent(content).replace(/\%/g, '-');
-        content = 'url(' + content + ')';
-        for (var ii = 0, jj = children.length; ii < jj; ii++) {
-          var item = children[ii];
-          if (item.nodeName === 'LI') {
-            item.style.listStyleImage = content;
-          }
+
+    var listStyleType = void 0;
+    if (styleMap) {
+      var content = String(styleMap.get('content'));
+      if (!content) {
+        // pass
+      } else if (content.indexOf(CHAR_CIRCLE) >= 0) {
+        listStyleType = 'circle';
+      } else if (content.indexOf(CHAR_BULLET) >= 0) {
+        listStyleType = 'disc';
+      } else {
+        var found = _getCSSRules.LIST_STYLE_TYPES.find(function (t) {
+          return content.indexOf(t) >= 0;
+        });
+        if (found) {
+          listStyleType = found;
         }
       }
+    }
+
+    if (listStyleType) {
+      // $FlowFixMe
+      memo.push((0, _immutable.OrderedMap)({ 'list-style-type': listStyleType }));
     }
 
     return memo;
@@ -100,7 +107,6 @@ function mergeCSSRuleStylesToElement(cssRules, el) {
 
       var attr = (0, _camelize2.default)(styleName);
       if (elStyle[attr]) {
-
         // Already has inline-style.
         return;
       }

@@ -11,7 +11,7 @@ import createDocsTableEntityDataFromElement from './createDocsTableEntityDataFro
 import getSafeHTML from './getSafeHTML';
 import invariant from 'invariant';
 import uniqueID from './uniqueID';
-import {CSS_SELECTOR_PRIORITY, CSS_SELECTOR_TEXT} from './getCSSRules';
+import {CSS_SELECTOR_PRIORITY, CSS_SELECTOR_TEXT, LIST_STYLE_TYPES} from './getCSSRules';
 import {ContentState, Modifier, EditorState, Entity} from 'draft-js';
 import {OrderedSet} from 'immutable';
 import {convertFromHTML as draftConvertFromHTML} from 'draft-convert';
@@ -24,6 +24,7 @@ const CSS_BOLD_MIN_NUMERIC_VALUE = 500;
 const CSS_BOLD_VALUES = new Set(['bold', 'bolder']);
 const CSS_NOT_BOLD_VALUES = new Set(['light', 'lighter', 'normal']);
 const CSS_BOLD_MIN_NUMERIC_VALUE_PATTERN = /^\d+$/;
+
 
 // Name of the outermost element used by atomic component.
 const ATOMIC_ELEMENT_NODE_NAME = 'figure';
@@ -38,7 +39,9 @@ const STYLE_BOLD = 'BOLD';
 // `nodeType` to ensure only valid HTML element is used.
 const NODE_TYPE_ELEMENT = Node.ELEMENT_NODE;
 
-const ZERO_WIDTH_CHAR = '\u200B';
+const CHAR_ZERO_WIDTH = '\u200B';
+const CHAR_BULLET = '\u25CF';
+const CHAR_CIRCLE = '\u25cb';
 
 // Processing HTML is hard, and here are some resources that could be helpful.
 // https://goo.gl/4mvkWg : Sample HTML converted into Draft content state
@@ -127,11 +130,20 @@ function htmlToStyle(
       color: DocsCustomStyleMap.forColor,
       fontSize: DocsCustomStyleMap.forFontSize,
       lineHeight: DocsCustomStyleMap.forLineHeight,
-      listStyleImage: DocsCustomStyleMap.forListStyleImage,
+      listStart: DocsCustomStyleMap.forListStart,
       listStyleType: DocsCustomStyleMap.forListStyleType,
       marginLeft: DocsCustomStyleMap.forMarginLeft,
       textAlign: DocsCustomStyleMap.forTextAlign,
     };
+
+    if (nodeName === 'li') {
+      const parentElement = asElement(el.parentElement);
+      if (parentElement.nodeName === 'OL') {
+        const start = parentElement.getAttribute('start');
+        const styleName = DocsCustomStyleMap.forListStart(start);
+        styleName && nextStyle.add(styleName);
+      }
+    }
 
     Object.keys(customStyleHandlers).forEach(attr => {
       const styleValue = style[attr];
@@ -261,7 +273,6 @@ function htmlToBlock(
   nodeName: string,
   node: Node | ElementLike,
 ): ?Object {
-
   const normalizedNode =
     normalizeNodeForTable(safeHTML, nodeName, node);
   if (normalizedNode) {

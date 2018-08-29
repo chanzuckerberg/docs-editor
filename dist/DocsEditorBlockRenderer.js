@@ -1,5 +1,9 @@
 'use strict';
 
+var _defineProperty2 = require('babel-runtime/helpers/defineProperty');
+
+var _defineProperty3 = _interopRequireDefault(_defineProperty2);
+
 var _extends2 = require('babel-runtime/helpers/extends');
 
 var _extends3 = _interopRequireDefault(_extends2);
@@ -7,6 +11,10 @@ var _extends3 = _interopRequireDefault(_extends2);
 var _DocsBlockTypeToComponent = require('./DocsBlockTypeToComponent');
 
 var _DocsBlockTypeToComponent2 = _interopRequireDefault(_DocsBlockTypeToComponent);
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
 
 var _tryGetEntityAtContentState = require('./tryGetEntityAtContentState');
 
@@ -18,32 +26,49 @@ var _immutable = require('immutable');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// Copied from https://github.com/facebook/draft-js/blob/master/src/model/constants/DraftBlockType.js#L27-L28
+var UNORDERED_LIST_ITEM = 'unordered-list-item';
+
+var ORDERED_LIST_ITEM = 'ordered-list-item';
+var PARAGRAPH = 'paragraph';
+
 function renderBlock(contentBlock, blockProps) {
-  var blockType = contentBlock.getType();
-  if (blockType !== 'atomic') {
+
+  var component = void 0;
+  var props = void 0;
+  var editable = void 0;
+
+  switch (contentBlock.getType()) {
+    case 'atomic':
+      var contentState = blockProps.editorState.getCurrentContent();
+      var entityKey = contentBlock.getEntityAt(0);
+      // entity could be `null`.
+      // This happens while pasting HTML from external sources and we failed
+      // to parse its data.
+      var entity = entityKey ? (0, _tryGetEntityAtContentState2.default)(contentState, entityKey) : null;
+      if (entity) {
+        component = _DocsBlockTypeToComponent2.default.getComponent(entity.getType());
+        editable = false;
+        props = (0, _extends3.default)({}, blockProps, {
+          entity: entity,
+          entityKey: entityKey
+        });
+      }
+      break;
+
+    default:
+      return null;
+  }
+
+  if (!component) {
     return null;
   }
-  var entityKey = contentBlock.getEntityAt(0);
-  var contentState = blockProps.editorState.getCurrentContent();
-  var entity = entityKey ? (0, _tryGetEntityAtContentState2.default)(contentState, entityKey) : null;
-  if (!entity) {
-    // This happens while pasting HTML from external sources and we failed
-    // to parse its data.
-    return null;
-  }
-  var type = entity.getType();
-  var Component = _DocsBlockTypeToComponent2.default.getComponent(type);
-  if (Component) {
-    return {
-      component: Component,
-      editable: false,
-      props: (0, _extends3.default)({}, blockProps, {
-        entity: entity,
-        entityKey: entityKey
-      })
-    };
-  }
-  return null;
+
+  return {
+    component: component,
+    editable: editable,
+    props: props
+  };
 }
 
 function getStyle(contentBlock) {
@@ -67,8 +92,13 @@ function getStyle(contentBlock) {
   return classNames.length ? classNames.join(' ') : null;
 }
 
+// https://github.com/facebook/draft-js/blob/0.10-stable/src/model/immutable/DefaultDraftBlockRenderMap.js#L22
+// https://github.com/facebook/draft-js/issues/1497
+
+var BLOCK_RENDER_MAP = _draftJs.DefaultDraftBlockRenderMap.merge((0, _immutable.Map)((0, _defineProperty3.default)({}, PARAGRAPH, { element: 'p' })));
+
 function getBlockRenderMap() {
-  return _draftJs.DefaultDraftBlockRenderMap.set('paragraph', { element: 'p' });
+  return BLOCK_RENDER_MAP;
 }
 
 module.exports = {

@@ -38,7 +38,7 @@ var _draftJs = require('draft-js');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var ZERO_WIDTH_CHAR = '\u200B';
+var CHAR_ZERO_WIDTH = '\u200B';
 
 // All the modifiers in this file muss have the same interface like this:
 //   `function modifyXY(editorState: EditorState, ...rest): EditorState {}``
@@ -84,7 +84,7 @@ function insertDecorator(editorState, decoratorType, immutable, rawEntityData, a
   // Add an invisible space before the component so that it can be selectable.
   var newContentState = _draftJs.Modifier.insertText(afterRemovalContentState, targetSelection, ' ', null, null);
 
-  newContentState = _draftJs.Modifier.insertText(newContentState, newContentState.getSelectionAfter(), ZERO_WIDTH_CHAR, null, entityKey);
+  newContentState = _draftJs.Modifier.insertText(newContentState, newContentState.getSelectionAfter(), CHAR_ZERO_WIDTH, null, entityKey);
   var targetSelectionEnd = targetSelection.getAnchorOffset();
   var blockKey = targetSelection.getAnchorKey();
   var blockSize = contentState.getBlockForKey(blockKey).getLength();

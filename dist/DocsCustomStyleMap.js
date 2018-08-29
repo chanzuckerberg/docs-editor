@@ -40,6 +40,8 @@ var _numberRange = require('./numberRange');
 
 var _numberRange2 = _interopRequireDefault(_numberRange);
 
+var _getCSSRules = require('./getCSSRules');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // Styles that can be safely added as inline-style (e.g. style="color: red")
@@ -48,10 +50,13 @@ var InlineStyles = {};
 
 // Styles that should be linked a className that is added to the block element.
 // via className which will be stored at `inlineStyleRanges` for a block.
+
+
 var BlockStyles = {};
 
 var STYLES_SHEET_ID = 'DocsCustomStyleMap';
 var STYLE_KEY_PREFIX = 'DOCS_STYLE';
+var LIST_MAX_DEPTH = 20;
 var WEB_SAFE_COLORS = (0, _createWebSafeColors2.default)();
 
 // This files defined the supported Custom Styles.
@@ -81,15 +86,15 @@ var COLOR_VALUES = WEB_SAFE_COLORS.concat((0, _createPaletteColors2.default)(90,
 var LINE_HEIGHT_KEY = STYLE_KEY_PREFIX + '_LINE_HEIGHT';
 var LINE_HEIGHT_VALUES = (0, _numberRange2.default)(0.8, 3, 0.0);
 
-var LIST_STYLE_IMAGE_KEY = STYLE_KEY_PREFIX + '_LIST_STYLE_IMAGE';
-var LIST_STYLE_IMAGE_VALUES = ['25a0', '25cb', '25cd', '25cf'];
-
 var LIST_STYLE_TYPE_KEY = STYLE_KEY_PREFIX + '_LIST_STYLE_TYPE';
-var LIST_STYLE_TYPE_VALUES = ['none', 'disc'];
+var LIST_STYLE_TYPE_VALUES = _getCSSRules.LIST_STYLE_TYPES;
+
+var LIST_START_KEY = STYLE_KEY_PREFIX + '_LIST_START';
+var LIST_START_VALUES = (0, _numberRange2.default)(2, 100);
 
 // We only support this cause google doc uses margin-left for indentation for
 // <li />.
-var MARGIN_LEFT_KEY = STYLE_KEY_PREFIX + '_TEXT_ALIGN';
+var MARGIN_LEFT_KEY = STYLE_KEY_PREFIX + '_MARGIN_LEFT';
 var MARGIN_LEFT_VALUES = (0, _numberRange2.default)(12, 12 * 10, 12);
 
 var TEXT_ALIGN_KEY = STYLE_KEY_PREFIX + '_TEXT_ALIGN';
@@ -97,23 +102,16 @@ var TEXT_ALIGN_VALUES = ['left', 'center', 'right'];
 
 var TRANSPARENT_COLORS = new _set2.default(['default', 'transparent', 'rgba(0, 0, 0, 0)', 'inherit', 'none']);
 
-function defineListStyleImage(styleMap, listStyleCharacterCode) {
-  var suffix = listStyleCharacterCode.toUpperCase();
-  var childSelector = '.public-DraftStyleDefault-block::before';
-  var padding = '1em';
-
-  styleMap[LIST_STYLE_IMAGE_KEY + '_' + suffix] = {
-    'paddingLeft': padding
-  };
-  styleMap[LIST_STYLE_IMAGE_KEY + '_' + suffix + '::before'] = {
-    'content': '"\\00' + listStyleCharacterCode + '  "',
-    'float': 'left',
-    'cssFloat': 'left',
-    'marginLeft': '-' + padding
-  };
-  styleMap[LIST_STYLE_IMAGE_KEY + '_' + suffix + '::after'] = {
-    'clear': 'both'
-  };
+function defineListStartStyle(styleMap, listStart) {
+  var suffix = listStart.toString();
+  styleMap[LIST_START_KEY + '_' + suffix] = {};
+  var dd = 0;
+  while (dd <= LIST_MAX_DEPTH) {
+    styleMap[LIST_START_KEY + '_' + suffix + ('.public-DraftStyleDefault-depth' + dd) + '.public-DraftStyleDefault-reset'] = {
+      'counter-reset': 'ol' + dd + ' ' + (listStart - 1)
+    };
+    dd++;
+  }
 }
 
 function defineColorStyle(styleMap, color) {
@@ -154,9 +152,9 @@ function defineLineHeightStyle(styleMap, lineHeight) {
 
 function defineMarginLeftStyle(styleMap, marginLeft) {
   var suffix = String(marginLeft);
-  styleMap[MARGIN_LEFT_KEY + '_' + suffix + 'PT'] = {
-    'marginLeft': marginLeft + 'pt'
-  };
+  // Do not render the actual margin. This is only to mark the element
+  /// with `marginLeft`. See `getSafeHTML => monkeyPatchNestedListElements()`.
+  styleMap[MARGIN_LEFT_KEY + '_' + suffix + 'PT'] = {};
 }
 
 function defineTextAlignStyle(styleMap, align) {
@@ -168,9 +166,14 @@ function defineTextAlignStyle(styleMap, align) {
 
 function defineListStyleTypeStyle(styleMap, listStyleType) {
   var suffix = listStyleType.toUpperCase();
-  styleMap[LIST_STYLE_TYPE_KEY + '_' + suffix] = {
-    'listStyleType': '' + listStyleType
-  };
+  styleMap[LIST_STYLE_TYPE_KEY + '_' + suffix] = {};
+  var dd = 0;
+  while (dd < LIST_MAX_DEPTH) {
+    styleMap[LIST_STYLE_TYPE_KEY + '_' + suffix + '.public-DraftStyleDefault-orderedListItem' + ('.public-DraftStyleDefault-depth' + dd + '::before')] = {
+      'content': 'counter(ol' + dd + ', ' + listStyleType + ') ". "'
+    };
+    dd++;
+  }
 }
 
 function injectCSSIntoDocument(styleMap) {
@@ -247,37 +250,35 @@ function forListStyleType(styleMap, listStyleType) {
   return styleMap[key] ? key : null;
 }
 
+function forListStart(styleMap, listStart) {
+  var suffix = listStart;
+  var key = LIST_START_KEY + '_' + listStart;
+  return styleMap[key] ? key : null;
+}
+
 function forMarginLeft(styleMap, marginLeft) {
   var suffix = String(marginLeft).toUpperCase();
   var key = MARGIN_LEFT_KEY + '_' + suffix;
   return styleMap[key] ? key : null;
 }
 
-function forListStyleImage(styleMap, listStyleImage) {
-  var url = listStyleImage.replace(/^url/, '').replace(/[\(\)\"\']/g, '');
-  var content = window.decodeURIComponent(url.replace(/-/g, '%'));
-  var suffix = content.charCodeAt(0).toString(16).toUpperCase();
-  var key = LIST_STYLE_IMAGE_KEY + '_' + suffix;
-  return styleMap[key] ? key : 'DOCS_STYLE_LIST_STYLE_IMAGE_25CB';
-}
-
 BACKGROUND_COLOR_VALUES.forEach(defineBackgroundColorStyle.bind(null, InlineStyles));
 COLOR_VALUES.forEach(defineColorStyle.bind(null, InlineStyles));
 FONT_SIZE_VALUES.forEach(defineFontSizeStyle.bind(null, InlineStyles));
 LINE_HEIGHT_VALUES.forEach(defineLineHeightStyle.bind(null, BlockStyles));
-LIST_STYLE_IMAGE_VALUES.forEach(defineListStyleImage.bind(null, BlockStyles));
 LIST_STYLE_TYPE_VALUES.forEach(defineListStyleTypeStyle.bind(null, BlockStyles));
+LIST_START_VALUES.forEach(defineListStartStyle.bind(null, BlockStyles));
 MARGIN_LEFT_VALUES.forEach(defineMarginLeftStyle.bind(null, BlockStyles));
 TEXT_ALIGN_VALUES.forEach(defineTextAlignStyle.bind(null, BlockStyles));
 
 var AllStyles = (0, _extends3.default)({}, InlineStyles, BlockStyles);
 
 var DocsCustomStyleMap = (0, _extends3.default)({}, InlineStyles, {
-  forColor: forColor.bind(null, AllStyles),
   forBackgroundColor: forBackgroundColor.bind(null, InlineStyles),
+  forColor: forColor.bind(null, AllStyles),
   forFontSize: forFontSize.bind(null, AllStyles),
   forLineHeight: forLineHeight.bind(null, AllStyles),
-  forListStyleImage: forListStyleImage.bind(null, AllStyles),
+  forListStart: forListStart.bind(null, AllStyles),
   forListStyleType: forListStyleType.bind(null, AllStyles),
   forMarginLeft: forMarginLeft.bind(null, AllStyles),
   forTextAlign: forTextAlign.bind(null, AllStyles),
