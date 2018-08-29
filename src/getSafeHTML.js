@@ -8,6 +8,7 @@ import getCSSRules from './getCSSRules';
 import getSafeDocumentElementFromHTML from './getSafeDocumentElementFromHTML';
 import mergeCSSRuleStylesToElement from './mergeCSSRuleStylesToElement';
 import uniqueID from './uniqueID';
+import {CHAR_ZERO_WIDTH} from './DocsCharacter';
 
 import type {DocumentLike} from './Types';
 import type {CSSRules} from './getCSSRules';
@@ -17,8 +18,6 @@ export type SafeHTML = {
   unsafeNodes: Map<string, Node>,
   cssRules: CSSRules,
 };
-
-const CHAR_ZERO_WIDTH = '\u200B';
 
 function getSafeHTML(
   html: string,

@@ -1,7 +1,8 @@
 // @flow
 
+import DocsCustomStyleMap from './DocsCustomStyleMap';
 import camelize from './camelize';
-import {CSS_SELECTOR_TEXT, CSS_SELECTOR_PRIORITY, LIST_STYLE_TYPES} from './getCSSRules';
+import {CSS_SELECTOR_TEXT, CSS_SELECTOR_PRIORITY} from './getCSSRules';
 import {OrderedMap} from 'immutable';
 
 import type {DocumentLike} from './Types';
@@ -29,7 +30,7 @@ function mergeCSSRuleStylesToElement(cssRules: CSSRules, el: HTMLElement): void 
   // So later rules can overwrite previous one.
   const elStyle: Object = style;
   const nodeName = el.nodeName.toLowerCase();
-
+  const finderCache = {};
   const sortedStyleMaps = Array
     .from(classList)
     .reduce((memo, className) => {
@@ -50,18 +51,22 @@ function mergeCSSRuleStylesToElement(cssRules: CSSRules, el: HTMLElement): void 
       styleMap = cssRules.get(`.${className} > li::before`);
 
       let listStyleType;
-      if (styleMap) {
-        const content = String(styleMap.get('content') );
-        if (!content) {
-          // pass
+      const content = styleMap ? String(styleMap.get('content')) : null;
+      if (content) {
+        if (finderCache[content]) {
+          listStyleType = finderCache[content];
         } else if (content.indexOf(CHAR_CIRCLE) >= 0) {
           listStyleType = 'circle';
+          finderCache[content] = listStyleType;
         } else if (content.indexOf(CHAR_BULLET) >= 0) {
           listStyleType = 'disc';
+          finderCache[content] = listStyleType;
         } else {
-          const found = LIST_STYLE_TYPES.find(t => content.indexOf(t) >= 0);
+          const finder = (type) => content.indexOf(type) >= 0;
+          const found = DocsCustomStyleMap.LIST_STYLE_TYPE_VALUES.find(finder);
           if (found) {
             listStyleType = found;
+            finderCache[content] = listStyleType;
           }
         }
       }
@@ -91,7 +96,7 @@ function mergeCSSRuleStylesToElement(cssRules: CSSRules, el: HTMLElement): void 
 
       const attr = camelize(styleName);
       if (elStyle[attr]) {
-        // Already has inline-style.
+        // The source HTML alway has inline-style defined, don't overwrite it.
         return;
       }
       styleNew = styleNew || {};
