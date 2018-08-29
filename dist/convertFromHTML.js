@@ -253,8 +253,7 @@ function htmlToEntity(safeHTML, nodeName, node, createEntity) {
     case 'TABLE':
       el = normalizeNodeForTable(safeHTML, nodeName, el);
       if (el) {
-        nodeName = el.nodeName.toLowerCase();
-        return htmlToAtomicBlockEntity(safeHTML, nodeName, el, createEntity);
+        return htmlToAtomicBlockEntity(safeHTML, el.nodeName, el, createEntity);
       }
       break;
     case 'A':
