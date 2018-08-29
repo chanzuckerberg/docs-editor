@@ -8,7 +8,7 @@ import getElementDimension from './getElementDimension';
 
 import type {DocsImageEntityData} from './Types';
 
-const ZERO_WIDTH_CHAR = '\u200B';
+const CHAR_ZERO_WIDTH = '\u200B';
 
 // Note that this function has side-effect!
 // img does not have characters data, thus DraftJS wo't be able to
@@ -54,7 +54,7 @@ function convertImageElementToPlaceholderElement(img: Object): void {
     DocsDataAttributes.DECORATOR_TYPE,
     DocsDecoratorTypes.DOCS_IMAGE,
   );
-  node.innerHTML = ZERO_WIDTH_CHAR;
+  node.innerHTML = CHAR_ZERO_WIDTH;
   parentNode.insertBefore(node, img);
   parentNode.removeChild(img);
 }

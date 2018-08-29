@@ -11,7 +11,7 @@ import uniqueID from './uniqueID';
 import {List, Map as ImmutableMap, OrderedMap, Repeat} from 'immutable';
 import {genKey, CharacterMetadata, ContentBlock, Modifier, EditorState, SelectionState, RichUtils} from 'draft-js';
 
-const ZERO_WIDTH_CHAR = '\u200B';
+const CHAR_ZERO_WIDTH = '\u200B';
 
 // All the modifiers in this file muss have the same interface like this:
 //   `function modifyXY(editorState: EditorState, ...rest): EditorState {}``
@@ -100,7 +100,7 @@ function insertDecorator(
   newContentState = Modifier.insertText(
     newContentState,
     newContentState.getSelectionAfter(),
-    ZERO_WIDTH_CHAR,
+    CHAR_ZERO_WIDTH,
     null,
     entityKey,
   );

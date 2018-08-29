@@ -32,7 +32,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var babelPluginFlowReactPropTypes_proptype_DocsImageEntityData = require('./Types').babelPluginFlowReactPropTypes_proptype_DocsImageEntityData || require('prop-types').any;
 
-var ZERO_WIDTH_CHAR = '\u200B';
+var CHAR_ZERO_WIDTH = '\u200B';
 
 // Note that this function has side-effect!
 // img does not have characters data, thus DraftJS wo't be able to
@@ -74,7 +74,7 @@ function convertImageElementToPlaceholderElement(img) {
 
   node.setAttribute(_DocsDataAttributes2.default.DECORATOR_DATA, (0, _stringify2.default)(decoratorData));
   node.setAttribute(_DocsDataAttributes2.default.DECORATOR_TYPE, _DocsDecoratorTypes2.default.DOCS_IMAGE);
-  node.innerHTML = ZERO_WIDTH_CHAR;
+  node.innerHTML = CHAR_ZERO_WIDTH;
   parentNode.insertBefore(node, img);
   parentNode.removeChild(img);
 }

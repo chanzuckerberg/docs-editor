@@ -37,6 +37,7 @@ if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginF
     innerHTML: require('prop-types').string.isRequired,
     nodeName: require('prop-types').string.isRequired,
     nodeType: require('prop-types').number.isRequired,
+    outerHTML: require('prop-types').string.isRequired,
     ownerDocument: require('prop-types').shape({
       close: require('prop-types').func.isRequired,
       getElementsByTagName: require('prop-types').func.isRequired,
@@ -46,6 +47,8 @@ if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginF
       write: require('prop-types').func.isRequired
     }).isRequired,
     parentElement: require('prop-types').any,
+    parentNode: require('prop-types').any,
+    previousElementSibling: require('prop-types').any,
     removeAttribute: require('prop-types').func.isRequired,
     rowIndex: require('prop-types').number,
     rowSpan: require('prop-types').number,

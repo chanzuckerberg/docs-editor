@@ -1,6 +1,7 @@
 // @flow
 
 import DocsBlockTypeToComponent from './DocsBlockTypeToComponent';
+import React from 'react';
 import tryGetEntityAtContentState from './tryGetEntityAtContentState';
 import {ContentBlock, EditorState, DefaultDraftBlockRenderMap} from 'draft-js';
 import {Map as ImmutableMap} from 'immutable';
@@ -10,38 +11,54 @@ type Props = {
   editorState: EditorState,
 };
 
+// Copied from https://github.com/facebook/draft-js/blob/master/src/model/constants/DraftBlockType.js#L27-L28
+const UNORDERED_LIST_ITEM = 'unordered-list-item'
+const ORDERED_LIST_ITEM = 'ordered-list-item'
+const PARAGRAPH = 'paragraph';
+
 function renderBlock(
   contentBlock: ContentBlock,
   blockProps: Props,
 ) {
-  const blockType = contentBlock.getType();
-  if (blockType !== 'atomic') {
+
+  let component;
+  let props;
+  let editable;
+
+  switch (contentBlock.getType()) {
+    case 'atomic' :
+      const contentState = blockProps.editorState.getCurrentContent();
+      const entityKey = contentBlock.getEntityAt(0);
+      // entity could be `null`.
+      // This happens while pasting HTML from external sources and we failed
+      // to parse its data.
+      const entity = entityKey ?
+        tryGetEntityAtContentState(contentState, entityKey) :
+        null;
+      if (entity) {
+        component = DocsBlockTypeToComponent.getComponent(entity.getType());
+        editable = false;
+        props = {
+          ...blockProps,
+          entity,
+          entityKey,
+        };
+      }
+      break;
+
+    default:
+      return null;
+  }
+
+  if (!component) {
     return null;
   }
-  const entityKey = contentBlock.getEntityAt(0);
-  const contentState = blockProps.editorState.getCurrentContent();
-  const entity = entityKey ?
-    tryGetEntityAtContentState(contentState, entityKey) :
-    null;
-  if (!entity) {
-    // This happens while pasting HTML from external sources and we failed
-    // to parse its data.
-    return null;
-  }
-  const type = entity.getType();
-  const Component = DocsBlockTypeToComponent.getComponent(type);
-  if (Component) {
-    return {
-      component: Component,
-      editable: false,
-      props: {
-        ...blockProps,
-        entity,
-        entityKey,
-      },
-    };
-  }
-  return null;
+
+  return {
+    component,
+    editable,
+    props,
+  };
 }
 
 function getStyle(
@@ -67,8 +84,16 @@ function getStyle(
   return classNames.length ? classNames.join(' ') : null;
 }
 
+
+// https://github.com/facebook/draft-js/blob/0.10-stable/src/model/immutable/DefaultDraftBlockRenderMap.js#L22
+// https://github.com/facebook/draft-js/issues/1497
+
+const BLOCK_RENDER_MAP = DefaultDraftBlockRenderMap.merge(ImmutableMap({
+  [PARAGRAPH]: {element: 'p'},
+}));
+
 function getBlockRenderMap(): ImmutableMap<any> {
-  return DefaultDraftBlockRenderMap.set('paragraph', {element: 'p'});
+  return BLOCK_RENDER_MAP;
 }
 
 module.exports = {

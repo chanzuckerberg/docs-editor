@@ -111,7 +111,9 @@ var STYLE_BOLD = 'BOLD';
 // `nodeType` to ensure only valid HTML element is used.
 var NODE_TYPE_ELEMENT = Node.ELEMENT_NODE;
 
-var ZERO_WIDTH_CHAR = '\u200B';
+var CHAR_ZERO_WIDTH = '\u200B';
+var CHAR_BULLET = '\u25CF';
+var CHAR_CIRCLE = '\u25CB';
 
 // Processing HTML is hard, and here are some resources that could be helpful.
 // https://goo.gl/4mvkWg : Sample HTML converted into Draft content state
@@ -195,11 +197,20 @@ function htmlToStyle(safeHTML, nodeName, node, currentStyle) {
       color: _DocsCustomStyleMap2.default.forColor,
       fontSize: _DocsCustomStyleMap2.default.forFontSize,
       lineHeight: _DocsCustomStyleMap2.default.forLineHeight,
-      listStyleImage: _DocsCustomStyleMap2.default.forListStyleImage,
+      listStart: _DocsCustomStyleMap2.default.forListStart,
       listStyleType: _DocsCustomStyleMap2.default.forListStyleType,
       marginLeft: _DocsCustomStyleMap2.default.forMarginLeft,
       textAlign: _DocsCustomStyleMap2.default.forTextAlign
     };
+
+    if (nodeName === 'li') {
+      var parentElement = (0, _asElement2.default)(el.parentElement);
+      if (parentElement.nodeName === 'OL') {
+        var start = parentElement.getAttribute('start');
+        var styleName = _DocsCustomStyleMap2.default.forListStart(start);
+        styleName && nextStyle.add(styleName);
+      }
+    }
 
     (0, _keys2.default)(customStyleHandlers).forEach(function (attr) {
       var styleValue = style[attr];
@@ -301,7 +312,6 @@ function textToEntity(safeHTML, text, createEntity) {
 }
 
 function htmlToBlock(safeHTML, nodeName, node) {
-
   var normalizedNode = normalizeNodeForTable(safeHTML, nodeName, node);
   if (normalizedNode) {
     node = normalizedNode;

@@ -12,6 +12,31 @@ export type CSSRules = OrderedMap<string, StyleMap>;
 
 export const CSS_SELECTOR_PRIORITY = '--docs-css-selector-priority';
 export const CSS_SELECTOR_TEXT = '--docs-css-selector-text';
+export const LIST_STYLE_TYPES = [
+  // 'armenian',
+  'circle',
+  // 'cjk-ideographic',
+  'decimal',
+  'decimal-leading-zero',
+  'disc',
+  'georgian',
+  'hebrew',
+  'hiragana',
+  'hiragana-iroha',
+  'inherit',
+  'katakana',
+  'katakana-iroha',
+  'lower-alpha',
+  'lower-greek',
+  'lower-latin',
+  'lower-roman',
+  // 'none',
+  'square',
+  'upper-alpha',
+  'upper-greek',
+  'upper-latin',
+  'upper-roman',
+];
 
 const EMPTY_MAP = new OrderedMap();
 
