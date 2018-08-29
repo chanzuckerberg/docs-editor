@@ -173,7 +173,7 @@ function defineListStyleTypeStyle(
   const suffix = listStyleType.toUpperCase();
   styleMap[`${LIST_STYLE_TYPE_KEY}_${suffix}`] = {};
   let dd = 0;
-  while (dd < 20) {
+  while (dd < LIST_MAX_DEPTH) {
     styleMap[
       `${LIST_STYLE_TYPE_KEY}_${suffix}` +
       `.public-DraftStyleDefault-orderedListItem` +

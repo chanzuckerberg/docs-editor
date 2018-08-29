@@ -1,7 +1,6 @@
 // @flow
 
 import DocsBlockTypeToComponent from './DocsBlockTypeToComponent';
-import DocsList from './DocsList';
 import React from 'react';
 import tryGetEntityAtContentState from './tryGetEntityAtContentState';
 import {ContentBlock, EditorState, DefaultDraftBlockRenderMap} from 'draft-js';
@@ -47,12 +46,6 @@ function renderBlock(
       }
       break;
 
-    // case UNORDERED_LIST_ITEM:
-    // case ORDERED_LIST_ITEM:
-    //   component = DocsList.Item;
-    //   props = blockProps;
-    //   break;
-
     default:
       return null;
   }
@@ -97,14 +90,6 @@ function getStyle(
 
 const BLOCK_RENDER_MAP = DefaultDraftBlockRenderMap.merge(ImmutableMap({
   [PARAGRAPH]: {element: 'p'},
-  // [UNORDERED_LIST_ITEM]: {
-  //   element: 'li',
-  //   wrapper: <DocsList.Unordered />,
-  // },
-  // [ORDERED_LIST_ITEM]: {
-  //   element: 'li',
-  //   wrapper: <DocsList.Ordered />,
-  // },
 }));
 
 function getBlockRenderMap(): ImmutableMap<any> {

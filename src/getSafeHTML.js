@@ -107,8 +107,6 @@ function monkeyPatchNestedListElements(el: Element): void {
   if (hasNoMargin) {
     return;
   }
-  debugger;
-  items.forEach(item => item.style.marginLeft = '');
   previousElementSibling.appendChild(el);
 }
 
