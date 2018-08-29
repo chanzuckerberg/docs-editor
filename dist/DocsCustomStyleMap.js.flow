@@ -6,8 +6,6 @@ import createWebSafeColors from './createWebSafeColors';
 import getNearestColor from './getNearestColor';
 import hyphenize from './hyphenize';
 import numberRange from './numberRange';
-import {LIST_STYLE_TYPES} from './getCSSRules';
-
 
 type StyleMapType = {
   [name: string]: {
@@ -61,15 +59,33 @@ const LINE_HEIGHT_KEY = `${STYLE_KEY_PREFIX}_LINE_HEIGHT`;
 const LINE_HEIGHT_VALUES = numberRange(0.8, 3, 0.0);
 
 const LIST_STYLE_TYPE_KEY = `${STYLE_KEY_PREFIX}_LIST_STYLE_TYPE`;
-const LIST_STYLE_TYPE_VALUES = LIST_STYLE_TYPES;
+const LIST_STYLE_TYPE_VALUES = [
+  'armenian',
+  'circle',
+  'cjk-ideographic',
+  'decimal',
+  'decimal-leading-zero',
+  'disc',
+  'georgian',
+  'hebrew',
+  'hiragana',
+  'hiragana-iroha',
+  'inherit',
+  'katakana',
+  'katakana-iroha',
+  'lower-alpha',
+  'lower-greek',
+  'lower-latin',
+  'lower-roman',
+  'square',
+  'upper-alpha',
+  'upper-greek',
+  'upper-latin',
+  'upper-roman',
+];
 
 const LIST_START_KEY = `${STYLE_KEY_PREFIX}_LIST_START`;
 const LIST_START_VALUES = numberRange(2, 100);
-
-// We only support this cause google doc uses margin-left for indentation for
-// <li />.
-const MARGIN_LEFT_KEY = `${STYLE_KEY_PREFIX}_MARGIN_LEFT`;
-const MARGIN_LEFT_VALUES = numberRange(12, 12 * 10, 12);
 
 const TEXT_ALIGN_KEY = `${STYLE_KEY_PREFIX}_TEXT_ALIGN`;
 const TEXT_ALIGN_VALUES = ['left', 'center', 'right'];
@@ -144,16 +160,6 @@ function defineLineHeightStyle(
   styleMap[`${LINE_HEIGHT_KEY}_${suffix}`] = {
     'lineHeight': `${lineHeight}`,
   };
-}
-
-function defineMarginLeftStyle(
-  styleMap: StyleMapType,
-  marginLeft: number,
-): void {
-  const suffix = String(marginLeft);
-  // Do not render the actual margin. This is only to mark the element
-  /// with `marginLeft`. See `getSafeHTML => monkeyPatchNestedListElements()`.
-  styleMap[`${MARGIN_LEFT_KEY}_${suffix}PT`] = {};
 }
 
 function defineTextAlignStyle(
@@ -292,37 +298,26 @@ function forListStart(
   return styleMap[key] ? key : null;
 }
 
-function forMarginLeft(
-  styleMap: StyleMapType,
-  marginLeft: string,
-): ?string {
-  const suffix = String(marginLeft).toUpperCase();
-  const key = `${MARGIN_LEFT_KEY}_${suffix}`;
-  return styleMap[key] ? key : null;
-}
-
 BACKGROUND_COLOR_VALUES.forEach(defineBackgroundColorStyle.bind(null, InlineStyles));
 COLOR_VALUES.forEach(defineColorStyle.bind(null, InlineStyles));
 FONT_SIZE_VALUES.forEach(defineFontSizeStyle.bind(null, InlineStyles));
 LINE_HEIGHT_VALUES.forEach(defineLineHeightStyle.bind(null, BlockStyles));
 LIST_STYLE_TYPE_VALUES.forEach(defineListStyleTypeStyle.bind(null, BlockStyles));
 LIST_START_VALUES.forEach(defineListStartStyle.bind(null, BlockStyles));
-MARGIN_LEFT_VALUES.forEach(defineMarginLeftStyle.bind(null, BlockStyles));
 TEXT_ALIGN_VALUES.forEach(defineTextAlignStyle.bind(null, BlockStyles));
-
 
 const AllStyles = {...InlineStyles, ...BlockStyles};
 
 const DocsCustomStyleMap = {
   // This will be passed to the prop `customStyleMap` at <DocsBaseEditor />.
   ...InlineStyles,
+  LIST_STYLE_TYPE_VALUES,
   forBackgroundColor: forBackgroundColor.bind(null, InlineStyles),
   forColor: forColor.bind(null, AllStyles),
   forFontSize: forFontSize.bind(null, AllStyles),
   forLineHeight: forLineHeight.bind(null, AllStyles),
   forListStart: forListStart.bind(null, AllStyles),
   forListStyleType: forListStyleType.bind(null, AllStyles),
-  forMarginLeft: forMarginLeft.bind(null, AllStyles),
   forTextAlign: forTextAlign.bind(null, AllStyles),
   injectCSSIntoDocument: injectCSSIntoDocument.bind(null, AllStyles),
 };

@@ -28,16 +28,16 @@ var _getElementDimension = require('./getElementDimension');
 
 var _getElementDimension2 = _interopRequireDefault(_getElementDimension);
 
+var _DocsCharacter = require('./DocsCharacter');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var babelPluginFlowReactPropTypes_proptype_DocsImageEntityData = require('./Types').babelPluginFlowReactPropTypes_proptype_DocsImageEntityData || require('prop-types').any;
-
-var CHAR_ZERO_WIDTH = '\u200B';
 
 // Note that this function has side-effect!
 // img does not have characters data, thus DraftJS wo't be able to
 // parse its entity data. The workaround is to replace it with an
 // empty element that can be converted to DocsImage later.
+var babelPluginFlowReactPropTypes_proptype_DocsImageEntityData = require('./Types').babelPluginFlowReactPropTypes_proptype_DocsImageEntityData || require('prop-types').any;
+
 function convertImageElementToPlaceholderElement(img) {
   var parentNode = img.parentNode,
       src = img.src;
@@ -74,7 +74,7 @@ function convertImageElementToPlaceholderElement(img) {
 
   node.setAttribute(_DocsDataAttributes2.default.DECORATOR_DATA, (0, _stringify2.default)(decoratorData));
   node.setAttribute(_DocsDataAttributes2.default.DECORATOR_TYPE, _DocsDecoratorTypes2.default.DOCS_IMAGE);
-  node.innerHTML = CHAR_ZERO_WIDTH;
+  node.innerHTML = _DocsCharacter.CHAR_ZERO_WIDTH;
   parentNode.insertBefore(node, img);
   parentNode.removeChild(img);
 }

@@ -40,8 +40,6 @@ var _numberRange = require('./numberRange');
 
 var _numberRange2 = _interopRequireDefault(_numberRange);
 
-var _getCSSRules = require('./getCSSRules');
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // Styles that can be safely added as inline-style (e.g. style="color: red")
@@ -50,8 +48,6 @@ var InlineStyles = {};
 
 // Styles that should be linked a className that is added to the block element.
 // via className which will be stored at `inlineStyleRanges` for a block.
-
-
 var BlockStyles = {};
 
 var STYLES_SHEET_ID = 'DocsCustomStyleMap';
@@ -87,15 +83,10 @@ var LINE_HEIGHT_KEY = STYLE_KEY_PREFIX + '_LINE_HEIGHT';
 var LINE_HEIGHT_VALUES = (0, _numberRange2.default)(0.8, 3, 0.0);
 
 var LIST_STYLE_TYPE_KEY = STYLE_KEY_PREFIX + '_LIST_STYLE_TYPE';
-var LIST_STYLE_TYPE_VALUES = _getCSSRules.LIST_STYLE_TYPES;
+var LIST_STYLE_TYPE_VALUES = ['armenian', 'circle', 'cjk-ideographic', 'decimal', 'decimal-leading-zero', 'disc', 'georgian', 'hebrew', 'hiragana', 'hiragana-iroha', 'inherit', 'katakana', 'katakana-iroha', 'lower-alpha', 'lower-greek', 'lower-latin', 'lower-roman', 'square', 'upper-alpha', 'upper-greek', 'upper-latin', 'upper-roman'];
 
 var LIST_START_KEY = STYLE_KEY_PREFIX + '_LIST_START';
 var LIST_START_VALUES = (0, _numberRange2.default)(2, 100);
-
-// We only support this cause google doc uses margin-left for indentation for
-// <li />.
-var MARGIN_LEFT_KEY = STYLE_KEY_PREFIX + '_MARGIN_LEFT';
-var MARGIN_LEFT_VALUES = (0, _numberRange2.default)(12, 12 * 10, 12);
 
 var TEXT_ALIGN_KEY = STYLE_KEY_PREFIX + '_TEXT_ALIGN';
 var TEXT_ALIGN_VALUES = ['left', 'center', 'right'];
@@ -148,13 +139,6 @@ function defineLineHeightStyle(styleMap, lineHeight) {
   styleMap[LINE_HEIGHT_KEY + '_' + suffix] = {
     'lineHeight': '' + lineHeight
   };
-}
-
-function defineMarginLeftStyle(styleMap, marginLeft) {
-  var suffix = String(marginLeft);
-  // Do not render the actual margin. This is only to mark the element
-  /// with `marginLeft`. See `getSafeHTML => monkeyPatchNestedListElements()`.
-  styleMap[MARGIN_LEFT_KEY + '_' + suffix + 'PT'] = {};
 }
 
 function defineTextAlignStyle(styleMap, align) {
@@ -256,31 +240,24 @@ function forListStart(styleMap, listStart) {
   return styleMap[key] ? key : null;
 }
 
-function forMarginLeft(styleMap, marginLeft) {
-  var suffix = String(marginLeft).toUpperCase();
-  var key = MARGIN_LEFT_KEY + '_' + suffix;
-  return styleMap[key] ? key : null;
-}
-
 BACKGROUND_COLOR_VALUES.forEach(defineBackgroundColorStyle.bind(null, InlineStyles));
 COLOR_VALUES.forEach(defineColorStyle.bind(null, InlineStyles));
 FONT_SIZE_VALUES.forEach(defineFontSizeStyle.bind(null, InlineStyles));
 LINE_HEIGHT_VALUES.forEach(defineLineHeightStyle.bind(null, BlockStyles));
 LIST_STYLE_TYPE_VALUES.forEach(defineListStyleTypeStyle.bind(null, BlockStyles));
 LIST_START_VALUES.forEach(defineListStartStyle.bind(null, BlockStyles));
-MARGIN_LEFT_VALUES.forEach(defineMarginLeftStyle.bind(null, BlockStyles));
 TEXT_ALIGN_VALUES.forEach(defineTextAlignStyle.bind(null, BlockStyles));
 
 var AllStyles = (0, _extends3.default)({}, InlineStyles, BlockStyles);
 
 var DocsCustomStyleMap = (0, _extends3.default)({}, InlineStyles, {
+  LIST_STYLE_TYPE_VALUES: LIST_STYLE_TYPE_VALUES,
   forBackgroundColor: forBackgroundColor.bind(null, InlineStyles),
   forColor: forColor.bind(null, AllStyles),
   forFontSize: forFontSize.bind(null, AllStyles),
   forLineHeight: forLineHeight.bind(null, AllStyles),
   forListStart: forListStart.bind(null, AllStyles),
   forListStyleType: forListStyleType.bind(null, AllStyles),
-  forMarginLeft: forMarginLeft.bind(null, AllStyles),
   forTextAlign: forTextAlign.bind(null, AllStyles),
   injectCSSIntoDocument: injectCSSIntoDocument.bind(null, AllStyles)
 });

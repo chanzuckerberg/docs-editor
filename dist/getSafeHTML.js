@@ -44,6 +44,8 @@ var _uniqueID = require('./uniqueID');
 
 var _uniqueID2 = _interopRequireDefault(_uniqueID);
 
+var _DocsCharacter = require('./DocsCharacter');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var babelPluginFlowReactPropTypes_proptype_DocumentLike = require('./Types').babelPluginFlowReactPropTypes_proptype_DocumentLike || require('prop-types').any;
@@ -58,8 +60,6 @@ if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginF
   })
 });
 
-
-var CHAR_ZERO_WIDTH = '\u200B';
 
 function getSafeHTML(html, domDocument) {
   var documentElement = (0, _getSafeDocumentElementFromHTML2.default)(html, domDocument);
@@ -78,7 +78,7 @@ function getSafeHTML(html, domDocument) {
       var id = (0, _uniqueID2.default)();
       node.id = id;
       unsafeNodes.set(id, node.cloneNode(true));
-      node.innerHTML = CHAR_ZERO_WIDTH;
+      node.innerHTML = _DocsCharacter.CHAR_ZERO_WIDTH;
     };
 
     var atomicNodes = body.querySelectorAll('figure[' + _DocsDataAttributes2.default.ATOMIC_BLOCK_DATA + ']');

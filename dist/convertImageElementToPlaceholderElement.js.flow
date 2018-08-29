@@ -5,10 +5,9 @@ import DocsDecoratorTypes from './DocsDecoratorTypes';
 import asElement from './asElement';
 import getElementAlignment from './getElementAlignment';
 import getElementDimension from './getElementDimension';
+import {CHAR_ZERO_WIDTH} from './DocsCharacter';
 
 import type {DocsImageEntityData} from './Types';
-
-const CHAR_ZERO_WIDTH = '\u200B';
 
 // Note that this function has side-effect!
 // img does not have characters data, thus DraftJS wo't be able to

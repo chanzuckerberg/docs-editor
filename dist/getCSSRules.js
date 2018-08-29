@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.LIST_STYLE_TYPES = exports.CSS_SELECTOR_TEXT = exports.CSS_SELECTOR_PRIORITY = undefined;
+exports.CSS_SELECTOR_TEXT = exports.CSS_SELECTOR_PRIORITY = undefined;
 
 var _from = require('babel-runtime/core-js/array/from');
 
@@ -21,13 +21,6 @@ var babelPluginFlowReactPropTypes_proptype_DocumentLike = require('./Types').bab
 
 var CSS_SELECTOR_PRIORITY = exports.CSS_SELECTOR_PRIORITY = '--docs-css-selector-priority';
 var CSS_SELECTOR_TEXT = exports.CSS_SELECTOR_TEXT = '--docs-css-selector-text';
-var LIST_STYLE_TYPES = exports.LIST_STYLE_TYPES = [
-// 'armenian',
-'circle',
-// 'cjk-ideographic',
-'decimal', 'decimal-leading-zero', 'disc', 'georgian', 'hebrew', 'hiragana', 'hiragana-iroha', 'inherit', 'katakana', 'katakana-iroha', 'lower-alpha', 'lower-greek', 'lower-latin', 'lower-roman',
-// 'none',
-'square', 'upper-alpha', 'upper-greek', 'upper-latin', 'upper-roman'];
 
 var EMPTY_MAP = new _immutable.OrderedMap();
 

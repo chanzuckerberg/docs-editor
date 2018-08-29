@@ -12,6 +12,10 @@ var _from = require('babel-runtime/core-js/array/from');
 
 var _from2 = _interopRequireDefault(_from);
 
+var _DocsCustomStyleMap = require('./DocsCustomStyleMap');
+
+var _DocsCustomStyleMap2 = _interopRequireDefault(_DocsCustomStyleMap);
+
 var _camelize = require('./camelize');
 
 var _camelize2 = _interopRequireDefault(_camelize);
@@ -49,7 +53,7 @@ function mergeCSSRuleStylesToElement(cssRules, el) {
   // So later rules can overwrite previous one.
   var elStyle = style;
   var nodeName = el.nodeName.toLowerCase();
-
+  var finderCache = {};
   var sortedStyleMaps = (0, _from2.default)(classList).reduce(function (memo, className) {
     // Try `.class-name`
     var styleMap = cssRules.get('.' + className);
@@ -68,20 +72,24 @@ function mergeCSSRuleStylesToElement(cssRules, el) {
     styleMap = cssRules.get('.' + className + ' > li::before');
 
     var listStyleType = void 0;
-    if (styleMap) {
-      var content = String(styleMap.get('content'));
-      if (!content) {
-        // pass
+    var content = styleMap ? String(styleMap.get('content')) : null;
+    if (content) {
+      if (finderCache[content]) {
+        listStyleType = finderCache[content];
       } else if (content.indexOf(CHAR_CIRCLE) >= 0) {
         listStyleType = 'circle';
+        finderCache[content] = listStyleType;
       } else if (content.indexOf(CHAR_BULLET) >= 0) {
         listStyleType = 'disc';
+        finderCache[content] = listStyleType;
       } else {
-        var found = _getCSSRules.LIST_STYLE_TYPES.find(function (t) {
-          return content.indexOf(t) >= 0;
-        });
+        var finder = function finder(type) {
+          return content.indexOf(type) >= 0;
+        };
+        var found = _DocsCustomStyleMap2.default.LIST_STYLE_TYPE_VALUES.find(finder);
         if (found) {
           listStyleType = found;
+          finderCache[content] = listStyleType;
         }
       }
     }
@@ -107,7 +115,7 @@ function mergeCSSRuleStylesToElement(cssRules, el) {
 
       var attr = (0, _camelize2.default)(styleName);
       if (elStyle[attr]) {
-        // Already has inline-style.
+        // The source HTML alway has inline-style defined, don't overwrite it.
         return;
       }
       styleNew = styleNew || {};
