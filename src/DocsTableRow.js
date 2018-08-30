@@ -121,7 +121,6 @@ class DocsTableRow extends React.PureComponent {
           resizable={resizable}
           rowIndex={rr}
           rowSpan={rowSpan}
-          width={colWidths && colWidths[cc]}
         />
       );
       cc++;

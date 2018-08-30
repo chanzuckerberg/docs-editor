@@ -43,7 +43,7 @@ class DocsTable extends React.PureComponent {
     const {blockProps} = this.props;
     const {entity, editorState, onChange, entityKey} = blockProps;
     const entityData = entity.getData();
-    const {colsCount, rowsCount} = entityData;
+    const {colsCount, rowsCount, colWidths} = entityData;
     const activeEditor = this._activeEditor;
 
     let editorRowIndex = -1;
@@ -88,12 +88,15 @@ class DocsTable extends React.PureComponent {
       [DocsDataAttributes.ELEMENT]: true,
       [DocsDataAttributes.TABLE]: true,
     };
-
     const resizePlaceholderCells = new Array(colsCount).fill(0).map((_, ii) => {
+      const width = colWidths ?
+        (Math.round(colWidths[ii] * 10000) / 100) + '%' :
+        undefined;
       return (
         <td
           className="docs-table-resize-placeholder-cell"
           key={`resize_${ii}`}
+          width={width}
         />
       );
     });

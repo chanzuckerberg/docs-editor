@@ -52,8 +52,14 @@ class DocsTableCellResizeHandle extends React.PureComponent {
       target,
       DocsDataAttributes.TABLE_CELL,
     );
-    if (position === 'left' && td) {
+    if (!td) {
+      return;
+    }
+    if (position === 'left') {
       td = td.previousElementSibling;
+    }
+    if (!td) {
+      return;
     }
     const table: any = lookupElementByAttribute(td, DocsDataAttributes.TABLE);
     const tr: any =
