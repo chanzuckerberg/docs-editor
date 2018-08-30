@@ -197,14 +197,7 @@ function injectCSSIntoDocument(styleMap: StyleMapType): void {
   }
   const cssTexts = [];
   Object.keys(styleMap).sort().forEach(styleName => {
-    if (InlineStyles[styleName]) {
-      // All inline styles should be merged into element (e.g. <span />)
-      // directly, but not for <td /> element which still need to reference
-      // the className injected.
-      cssTexts.push(`td.${styleName} {`);
-    } else {
-      cssTexts.push(`.${styleName} {`);
-    }
+    cssTexts.push(`.${styleName} {`);
     const rules = styleMap[styleName];
     Object.keys(rules).forEach(attr => {
        cssTexts.push(`${hyphenize(attr)}: ${rules[attr]} !important;`);

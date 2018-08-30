@@ -67,8 +67,7 @@ function setDocsTableEntityDataFromCell(safeHTML, row, cell, convertFromHTML, en
       rowSpan = cell.rowSpan;
 
   if (rowIndex === 0 && nodeName === 'TH') {
-    newEntityData.topRowBgStyle = 'dark';
-    // newEntityData = toggleHeaderBackground(newEntityData, true);
+    newEntityData = (0, _DocsTableModifiers.toggleHeaderBackground)(newEntityData, true);
   }
   var cellEditorState = convertFromHTML(innerHTML, null, // TODO: Find a way to get the editor state.
   row.ownerDocument, safeHTML.cssRules);
@@ -106,6 +105,11 @@ function setDocsTableEntityDataFromCell(safeHTML, row, cell, convertFromHTML, en
             cellBgStyles[id] = customClassName;
             newEntityData.cellBgStyles = cellBgStyles;
           }
+        } else if (styleName === 'width' && rowIndex === 0) {
+          var colWidths = newEntityData.colWidths || [];
+          var width = styleValue;
+          colWidths[cellIndex] = width;
+          newEntityData.colWidths = colWidths;
         }
       });
     }
@@ -174,7 +178,42 @@ function createDocsTableEntityDataFromElement(safeHTML, table, convertFromHTML) 
     rr++;
   }
 
+  entityData.colWidths = convertColumnWidthToPercentageNumbers(entityData);
   return entityData;
+}
+
+function convertColumnWidthToPercentageNumbers(entityData) {
+  var colWidths = entityData.colWidths,
+      colsCount = entityData.colsCount;
+
+  if (!Array.isArray(colWidths) || colWidths.length === 0 || colWidths.length !== colsCount) {
+    return null;
+  }
+  var unitValuePattern = /[\.\d]/g;
+  var firstWidth = String(colWidths[0]);
+  var totalWidth = colWidths.reduce(function (sum, width, ii) {
+    var currentWidth = String(width);
+    var currentUnit = currentWidth.replace(unitValuePattern, '');
+    if (ii > 1) {
+      var prevWidth = String(colWidths[ii - 1]);
+      var prevUnit = prevWidth.replace(unitValuePattern, '');
+      if (!prevUnit || prevUnit !== currentUnit) {
+        // It expects that all columns use the same CSS unit.
+        return -1;
+      }
+    }
+    sum += parseFloat(currentWidth);
+    return sum;
+  }, 0);
+
+  if (totalWidth <= 0) {
+    return null;
+  }
+
+  return colWidths.map(function (w) {
+    var decimal = parseFloat(w) / totalWidth;
+    return Math.round(decimal * 1000) / 1000;
+  });
 }
 
 exports.default = createDocsTableEntityDataFromElement;
