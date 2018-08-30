@@ -6,6 +6,7 @@ import DocsDecorator from './DocsDecorator';
 import DocsDecoratorTypes from './DocsDecoratorTypes';
 import convertFromHTML from './convertFromHTML';
 import getCurrentSelectionEntity from './getCurrentSelectionEntity';
+import isContentBlockEmpty from './isContentBlockEmpty';
 import tryInsertAtomicBlock from './tryInsertAtomicBlock';
 import uniqueID from './uniqueID';
 import {List, Map as ImmutableMap, OrderedMap, Repeat} from 'immutable';
@@ -414,12 +415,21 @@ function maybeInsertSiblingBlock(
   before: boolean,
   blockMap: OrderedMap<string, ContentBlock>,
 ): void {
+
+  if (siblingBlock && isContentBlockEmpty(siblingBlock)) {
+    // No need to inject extra blank line since siblingBlock is already empty.
+    // blockMap.set(currentBlock.getKey(), currentBlock);
+    // return;
+  }
+
   const className = before ?
     'docs-before-atomic-block' :
     'docs-after-atomic-block';
+
   if (
-    !siblingBlock ||
-    siblingBlock.getData().get('className') !== className
+    0
+    // !siblingBlock ||
+    // siblingBlock.getData().get('className') !== className
   ) {
     const newBlock = createContentBlock('', className);
     if (before) {
@@ -453,6 +463,8 @@ function createContentBlock(text: string, className?: string): ContentBlock {
     data: className ? ImmutableMap({className}) : undefined,
   });
 }
+
+
 
 module.exports = {
   ensureAtomicBlocksAreSelectable,

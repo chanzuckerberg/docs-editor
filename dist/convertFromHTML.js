@@ -52,6 +52,10 @@ var _DocsDecoratorTypes = require('./DocsDecoratorTypes');
 
 var _DocsDecoratorTypes2 = _interopRequireDefault(_DocsDecoratorTypes);
 
+var _DocsModifiers = require('./DocsModifiers');
+
+var _DocsModifiers2 = _interopRequireDefault(_DocsModifiers);
+
 var _asElement = require('./asElement');
 
 var _asElement2 = _interopRequireDefault(_asElement);
@@ -67,6 +71,10 @@ var _getSafeHTML2 = _interopRequireDefault(_getSafeHTML);
 var _invariant = require('invariant');
 
 var _invariant2 = _interopRequireDefault(_invariant);
+
+var _isContentBlockEmpty = require('./isContentBlockEmpty');
+
+var _isContentBlockEmpty2 = _interopRequireDefault(_isContentBlockEmpty);
 
 var _uniqueID = require('./uniqueID');
 
@@ -137,6 +145,13 @@ function convertFromHTML(html, editorState, domDocument, cssRules) {
     };
   });
   var contentState = (0, _draftConvert.convertFromHTML)(handlers)(safeHTML.html);
+
+  if (!editorState && !cssRules) {
+    // Assume this to be a conversion for HTML from external source, we'll do
+    // extra work.
+    contentState = purgeBlankContentBlocks(contentState);
+  }
+
   var decorator = _DocsDecorator2.default.get();
   return editorState ? _draftJs.EditorState.push(editorState, contentState) : _draftJs.EditorState.createWithContent(contentState, decorator);
 }
@@ -363,6 +378,22 @@ function normalizeNodeForTable(safeHTML, nodeName, node) {
   };
   var atomicNode = new FakeAtomicElement(data);
   return atomicNode;
+}
+
+function purgeBlankContentBlocks(contentState) {
+  var blockMap = contentState.getBlockMap().withMutations(function (nextBlockMap) {
+    var blocks = nextBlockMap.toArray();
+    for (var ii = 1, jj = blocks.length; ii < jj; ii++) {
+      var currBlock = blocks[ii - 1];
+      if ((0, _isContentBlockEmpty2.default)(currBlock)) {
+        nextBlockMap.delete(currBlock.getKey());
+      }
+    }
+  });
+
+  return contentState.merge({
+    blockMap: blockMap
+  });
 }
 
 exports.default = convertFromHTML;

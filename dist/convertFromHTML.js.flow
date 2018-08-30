@@ -6,10 +6,12 @@ import DocsCustomStyleMap from './DocsCustomStyleMap';
 import DocsDataAttributes from './DocsDataAttributes';
 import DocsDecorator from './DocsDecorator';
 import DocsDecoratorTypes from './DocsDecoratorTypes';
+import DocsModifiers from './DocsModifiers';
 import asElement from './asElement';
 import createDocsTableEntityDataFromElement from './createDocsTableEntityDataFromElement';
 import getSafeHTML from './getSafeHTML';
 import invariant from 'invariant';
+import isContentBlockEmpty from './isContentBlockEmpty';
 import uniqueID from './uniqueID';
 import {CSS_SELECTOR_PRIORITY, CSS_SELECTOR_TEXT} from './getCSSRules';
 import {ContentState, Modifier, EditorState, Entity} from 'draft-js';
@@ -71,7 +73,15 @@ function convertFromHTML(
       return fn(safeHTML, nodeName.toUpperCase(), node, currentStyle);
     };
   });
-  const contentState = draftConvertFromHTML(handlers)(safeHTML.html);
+  let contentState = draftConvertFromHTML(handlers)(safeHTML.html);
+
+  if (!editorState && !cssRules) {
+    // Assume this to be a conversion for HTML from external source, we'll do
+    // extra work.
+    contentState = purgeBlankContentBlocks(contentState);
+  }
+
+
   const decorator = DocsDecorator.get();
   return editorState ?
     EditorState.push(editorState, contentState) :
@@ -337,6 +347,22 @@ function normalizeNodeForTable(
   };
   const atomicNode: any = new FakeAtomicElement(data);
   return atomicNode;
+}
+
+function purgeBlankContentBlocks(contentState: ContentState): ContentState {
+  const blockMap = contentState.getBlockMap().withMutations(nextBlockMap => {
+    const blocks = nextBlockMap.toArray();
+    for (var ii = 1, jj = blocks.length; ii < jj; ii++) {
+      const currBlock = blocks[ii - 1];
+      if (isContentBlockEmpty(currBlock)) {
+        nextBlockMap.delete(currBlock.getKey());
+      }
+    }
+  });
+
+  return contentState.merge({
+    blockMap,
+  });
 }
 
 export default convertFromHTML;
