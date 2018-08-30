@@ -1,13 +1,15 @@
 .docs-table-main {
   clear: both;
   margin: 8px auto;
+  overflow-y: hidden;
   padding: 0;
   position: relative;
   width: 100%;
 }
 
 .docs-table {
-  background: #222;
+  /* Use background-color to present the simulated border-color.`*/
+  background-color: #222;
   border: none;
   border-collapse: separate;
   /*
@@ -16,11 +18,27 @@
    */
   border-spacing: 1.5px;
   display: table;
+  empty-cells: hide;
   position: relative;
   table-layout: fixed;
+  top: -2px; /* offset the height of the resize placeholder */
   white-space: normal;
   width: 100%;
   z-index: 1;
+}
+
+.docs-table-resize-placeholder-footer,
+.docs-table-resize-placeholder-row,
+.docs-table-resize-placeholder-cell {
+  visibility: hidden;
+}
+
+.docs-table-resize-placeholder-cell {
+  border: none;
+  font-size: 0;
+  height: 1px;
+  line-height: 0;
+  padding: 0;
 }
 
 .docs-table-main-no-borders > .docs-table {
@@ -56,7 +74,7 @@
 }
 
 .docs-table-body {
-  display: table-body;
+  display: table-row-group;
 }
 
 .docs-table-row {
