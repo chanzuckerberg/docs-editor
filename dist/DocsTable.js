@@ -161,7 +161,8 @@ var DocsTable = function (_React$PureComponent) {
           entityKey = blockProps.entityKey;
 
       var entityData = entity.getData();
-      var rowsCount = entityData.rowsCount;
+      var colsCount = entityData.colsCount,
+          rowsCount = entityData.rowsCount;
 
       var activeEditor = this._activeEditor;
 
@@ -200,6 +201,13 @@ var DocsTable = function (_React$PureComponent) {
       });
       var attrs = (0, _defineProperty3.default)({}, _DocsDataAttributes2.default.EDITOR_FOR, editorID);
       var tableAttrs = (_tableAttrs = {}, (0, _defineProperty3.default)(_tableAttrs, _DocsDataAttributes2.default.ELEMENT, true), (0, _defineProperty3.default)(_tableAttrs, _DocsDataAttributes2.default.TABLE, true), _tableAttrs);
+
+      var resizePlaceholderCells = new Array(colsCount).fill(0).map(function (_, ii) {
+        return _react2.default.createElement('td', {
+          className: 'docs-table-resize-placeholder-cell',
+          key: 'resize_' + ii
+        });
+      });
       return _react2.default.createElement(
         'div',
         (0, _extends3.default)({}, attrs, {
@@ -219,6 +227,17 @@ var DocsTable = function (_React$PureComponent) {
           (0, _extends3.default)({}, tableAttrs, {
             className: 'docs-table',
             ref: this._onTableRef }),
+          _react2.default.createElement(
+            'tbody',
+            {
+              'aria-hidden': 'true',
+              className: 'docs-table-resize-placeholder-footer' },
+            _react2.default.createElement(
+              'tr',
+              { className: 'docs-table-resize-placeholder-row' },
+              resizePlaceholderCells
+            )
+          ),
           _react2.default.createElement(
             'tbody',
             { className: 'docs-table-body' },

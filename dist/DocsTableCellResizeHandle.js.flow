@@ -56,7 +56,9 @@ class DocsTableCellResizeHandle extends React.PureComponent {
       td = td.previousElementSibling;
     }
     const table: any = lookupElementByAttribute(td, DocsDataAttributes.TABLE);
-    const tr: any = (table && table.rows && table.rows[0]) || null;
+    const tr: any =
+      (table && table.rows && table.rows[0]) ||
+      null;
     td = (tr && td && tr.cells && tr.cells[td.cellIndex]) || null;
     if (!td || !tr || !table) {
       return;
