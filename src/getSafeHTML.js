@@ -22,11 +22,12 @@ export type SafeHTML = {
 function getSafeHTML(
   html: string,
   domDocument?: ?DocumentLike,
+  defaultCSSRules?: ?CSSRules,
 ): SafeHTML {
   const documentElement = getSafeDocumentElementFromHTML(html, domDocument);
   const body = documentElement ? documentElement.querySelector('body') : null;
   const ownerDocument: any = body && body.ownerDocument;
-  const cssRules = getCSSRules(ownerDocument);
+  const cssRules = defaultCSSRules || getCSSRules(ownerDocument);
   const unsafeNodes = new Map();
   let safeHTML = '';
   if (body) {
@@ -39,6 +40,7 @@ function getSafeHTML(
       const id = uniqueID();
       node.id = id;
       unsafeNodes.set(id, node.cloneNode(true));
+      node.setAttribute('data-quarantined-by-safe-html', id);
       node.innerHTML = CHAR_ZERO_WIDTH;
     };
 

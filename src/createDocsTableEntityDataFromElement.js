@@ -15,11 +15,13 @@ import {toggleHeaderBackground} from './DocsTableModifiers';
 
 import type {DocsTableEntityData, ElementLike, DocumentLike} from './Types';
 import type {SafeHTML} from './getSafeHTML';
+import type {CSSRules} from './getCSSRules';
 
 type convertFromHTML = (
   html: string,
   editorState?: ?EditorState,
   domDocument?: ?DocumentLike,
+  cssRules?: ?CSSRules,
 ) => EditorState;
 
 function setDocsTableEntityDataFromCell(
@@ -37,7 +39,13 @@ function setDocsTableEntityDataFromCell(
     newEntityData.topRowBgStyle = 'dark';
     // newEntityData = toggleHeaderBackground(newEntityData, true);
   }
-  const cellEditorState = convertFromHTML(innerHTML);
+  const cellEditorState = convertFromHTML(
+    innerHTML,
+    null, // TODO: Find a way to get the editor state.
+    row.ownerDocument,
+    safeHTML.cssRules,
+  );
+
   const id = getEntityDataID(rowIndex, cellIndex);
   newEntityData[id] = convertToRaw(cellEditorState);
 
