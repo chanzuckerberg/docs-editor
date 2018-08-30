@@ -36,8 +36,7 @@ function setDocsTableEntityDataFromCell(
   const cellIndex = asNumber(cell.cellIndex);
   const {classList, nodeName, innerHTML, colSpan, rowSpan} = cell;
   if (rowIndex === 0 && nodeName === 'TH') {
-    newEntityData.topRowBgStyle = 'dark';
-    // newEntityData = toggleHeaderBackground(newEntityData, true);
+    newEntityData = toggleHeaderBackground(newEntityData, true);
   }
   const cellEditorState = convertFromHTML(
     innerHTML,
@@ -80,6 +79,11 @@ function setDocsTableEntityDataFromCell(
             cellBgStyles[id] = customClassName;
             newEntityData.cellBgStyles = cellBgStyles;
           }
+        } else if (styleName === 'width' && rowIndex === 0) {
+          const colWidths = newEntityData.colWidths || [];
+          const width: any = styleValue;
+          colWidths[cellIndex] = width;
+          newEntityData.colWidths = colWidths;
         }
       });
     }
@@ -174,7 +178,46 @@ function createDocsTableEntityDataFromElement(
     rr++;
   }
 
+  entityData.colWidths = convertColumnWidthToPercentageNumbers(entityData);
   return entityData;
+}
+
+function convertColumnWidthToPercentageNumbers(
+  entityData: DocsTableEntityData
+): ?Array<number> {
+  const {colWidths, colsCount} = entityData;
+  if (
+    !Array.isArray(colWidths) ||
+    colWidths.length === 0 ||
+    colWidths.length !== colsCount
+  ) {
+    return null;
+  }
+  const unitValuePattern = /[\.\d]/g;
+  const firstWidth = String(colWidths[0]);
+  const totalWidth = colWidths.reduce((sum, width, ii) => {
+    const currentWidth = String(width);
+    const currentUnit = currentWidth.replace(unitValuePattern, '');
+    if (ii > 1) {
+      const prevWidth = String(colWidths[ii - 1]);
+      const prevUnit = prevWidth.replace(unitValuePattern, '');
+      if (!prevUnit || prevUnit !== currentUnit) {
+        // It expects that all columns use the same CSS unit.
+        return -1;
+      }
+    }
+    sum += parseFloat(currentWidth);
+    return sum;
+  }, 0);
+
+  if (totalWidth <= 0) {
+    return null;
+  }
+
+  return colWidths.map(w => {
+    const decimal = parseFloat(w) / totalWidth;
+    return Math.round(decimal * 1000) / 1000;
+  });
 }
 
 export default createDocsTableEntityDataFromElement;
