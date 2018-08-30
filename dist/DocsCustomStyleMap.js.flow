@@ -197,7 +197,14 @@ function injectCSSIntoDocument(styleMap: StyleMapType): void {
   }
   const cssTexts = [];
   Object.keys(styleMap).sort().forEach(styleName => {
-    cssTexts.push(`.${styleName} {`);
+    if (InlineStyles[styleName]) {
+      // If this style is meant to be applied inline, we don't need to map it to
+      // a global className, except for the `<td />` element.
+      // by <td />.
+      cssTexts.push(`td.${styleName} {`);
+    } else {
+      cssTexts.push(`.${styleName} {`);
+    }
     const rules = styleMap[styleName];
     Object.keys(rules).forEach(attr => {
        cssTexts.push(`${hyphenize(attr)}: ${rules[attr]} !important;`);

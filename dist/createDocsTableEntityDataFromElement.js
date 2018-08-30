@@ -101,6 +101,7 @@ function setDocsTableEntityDataFromCell(safeHTML, row, cell, convertFromHTML, en
         if (styleName === 'background-color') {
           var customClassName = _DocsCustomStyleMap2.default.forBackgroundColor(styleValue);
           if (customClassName) {
+            // console.log(customClassName);
             var cellBgStyles = newEntityData.cellBgStyles || {};
             cellBgStyles[id] = customClassName;
             newEntityData.cellBgStyles = cellBgStyles;

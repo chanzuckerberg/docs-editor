@@ -75,6 +75,7 @@ function setDocsTableEntityDataFromCell(
           const customClassName =
             DocsCustomStyleMap.forBackgroundColor(styleValue);
           if (customClassName) {
+            // console.log(customClassName);
             const cellBgStyles = newEntityData.cellBgStyles || {};
             cellBgStyles[id] = customClassName;
             newEntityData.cellBgStyles = cellBgStyles;

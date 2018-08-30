@@ -167,9 +167,9 @@ function injectCSSIntoDocument(styleMap) {
   var cssTexts = [];
   (0, _keys2.default)(styleMap).sort().forEach(function (styleName) {
     if (InlineStyles[styleName]) {
-      // All inline styles should be merged into element (e.g. <span />)
-      // directly, but not for <td /> element which still need to reference
-      // the className injected.
+      // If this style is meant to be applied inline, we don't need to map it to
+      // a global className, except for the `<td />` element.
+      // by <td />.
       cssTexts.push('td.' + styleName + ' {');
     } else {
       cssTexts.push('.' + styleName + ' {');
