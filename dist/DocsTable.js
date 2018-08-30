@@ -162,7 +162,8 @@ var DocsTable = function (_React$PureComponent) {
 
       var entityData = entity.getData();
       var colsCount = entityData.colsCount,
-          rowsCount = entityData.rowsCount;
+          rowsCount = entityData.rowsCount,
+          colWidths = entityData.colWidths;
 
       var activeEditor = this._activeEditor;
 
@@ -201,11 +202,12 @@ var DocsTable = function (_React$PureComponent) {
       });
       var attrs = (0, _defineProperty3.default)({}, _DocsDataAttributes2.default.EDITOR_FOR, editorID);
       var tableAttrs = (_tableAttrs = {}, (0, _defineProperty3.default)(_tableAttrs, _DocsDataAttributes2.default.ELEMENT, true), (0, _defineProperty3.default)(_tableAttrs, _DocsDataAttributes2.default.TABLE, true), _tableAttrs);
-
       var resizePlaceholderCells = new Array(colsCount).fill(0).map(function (_, ii) {
+        var width = colWidths ? Math.round(colWidths[ii] * 10000) / 100 + '%' : undefined;
         return _react2.default.createElement('td', {
           className: 'docs-table-resize-placeholder-cell',
-          key: 'resize_' + ii
+          key: 'resize_' + ii,
+          width: width
         });
       });
       return _react2.default.createElement(

@@ -92,7 +92,7 @@ class DocsTableCell extends React.PureComponent {
     });
 
     const leftHandle =
-      (canEdit && resizable && cellIndex > 0 && rowIndex >= 0) ?
+      (canEdit && resizable && cellIndex > 0) ?
       <DocsTableCellResizeHandle
         key="r1"
         onColumnResizeEnd={onColumnResizeEnd}
@@ -100,8 +100,9 @@ class DocsTableCell extends React.PureComponent {
       /> :
       null;
 
+    const effectiveColspan = colSpan || 1;
     const rightHandle =
-      (resizable && cellIndex < (colsCount - 1) && rowIndex === 0) ?
+      (resizable && (cellIndex + effectiveColspan - 1) < (colsCount - 1)) ?
       <DocsTableCellResizeHandle
         key="r2"
         onColumnResizeEnd={onColumnResizeEnd}

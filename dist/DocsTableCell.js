@@ -185,13 +185,14 @@ var DocsTableCell = function (_React$PureComponent) {
         'docs-table-cell-with-padding-large': paddingSize === 'large'
       }, bgStyle, !!bgStyle));
 
-      var leftHandle = canEdit && resizable && cellIndex > 0 && rowIndex >= 0 ? _react2.default.createElement(_DocsTableCellResizeHandle2.default, {
+      var leftHandle = canEdit && resizable && cellIndex > 0 ? _react2.default.createElement(_DocsTableCellResizeHandle2.default, {
         key: 'r1',
         onColumnResizeEnd: onColumnResizeEnd,
         position: 'left'
       }) : null;
 
-      var rightHandle = resizable && cellIndex < colsCount - 1 && rowIndex === 0 ? _react2.default.createElement(_DocsTableCellResizeHandle2.default, {
+      var effectiveColspan = colSpan || 1;
+      var rightHandle = resizable && cellIndex + effectiveColspan - 1 < colsCount - 1 ? _react2.default.createElement(_DocsTableCellResizeHandle2.default, {
         key: 'r2',
         onColumnResizeEnd: onColumnResizeEnd,
         position: 'right'

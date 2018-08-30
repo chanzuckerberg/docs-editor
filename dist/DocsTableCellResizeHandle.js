@@ -75,8 +75,14 @@ var DocsTableCellResizeHandle = function (_React$PureComponent) {
       var target = e.target;
 
       var td = (0, _lookupElementByAttribute2.default)(target, _DocsDataAttributes2.default.TABLE_CELL);
-      if (position === 'left' && td) {
+      if (!td) {
+        return;
+      }
+      if (position === 'left') {
         td = td.previousElementSibling;
+      }
+      if (!td) {
+        return;
       }
       var table = (0, _lookupElementByAttribute2.default)(td, _DocsDataAttributes2.default.TABLE);
       var tr = table && table.rows && table.rows[0] || null;

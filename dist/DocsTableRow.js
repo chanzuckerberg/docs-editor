@@ -192,8 +192,7 @@ var DocsTableRow = function (_React$PureComponent) {
           rawContentState: rawContentState,
           resizable: resizable,
           rowIndex: rr,
-          rowSpan: _rowSpan,
-          width: colWidths && colWidths[cc]
+          rowSpan: _rowSpan
         }));
         cc++;
       }
