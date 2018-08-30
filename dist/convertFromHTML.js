@@ -72,8 +72,6 @@ var _uniqueID = require('./uniqueID');
 
 var _uniqueID2 = _interopRequireDefault(_uniqueID);
 
-var _DocsCharacter = require('./DocsCharacter');
-
 var _getCSSRules = require('./getCSSRules');
 
 var _draftJs = require('draft-js');
@@ -83,6 +81,8 @@ var _immutable = require('immutable');
 var _draftConvert = require('draft-convert');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var babelPluginFlowReactPropTypes_proptype_CSSRules = require('./getCSSRules').babelPluginFlowReactPropTypes_proptype_CSSRules || require('prop-types').any;
 
 var babelPluginFlowReactPropTypes_proptype_ElementLike = require('./Types').babelPluginFlowReactPropTypes_proptype_ElementLike || require('prop-types').any;
 
@@ -121,9 +121,9 @@ var NODE_TYPE_ELEMENT = Node.ELEMENT_NODE;
 // https://github.com/facebook/draft-js/issues/787
 // https://github.com/HubSpot/draft-convert#convertfromhtml
 // https://zhuanlan.zhihu.com/p/24951621
-function convertFromHTML(html, editorState, domDocument) {
+function convertFromHTML(html, editorState, domDocument, cssRules) {
   // See https://github.com/HubSpot/draft-convert#convertfromhtml
-  var safeHTML = (0, _getSafeHTML2.default)(html, domDocument);
+  var safeHTML = (0, _getSafeHTML2.default)(html, domDocument, cssRules);
   var handlers = {
     htmlToBlock: htmlToBlock,
     htmlToEntity: htmlToEntity,

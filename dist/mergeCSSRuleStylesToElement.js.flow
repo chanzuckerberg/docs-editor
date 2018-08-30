@@ -8,8 +8,8 @@ import {OrderedMap} from 'immutable';
 import type {DocumentLike} from './Types';
 import type {CSSRules, StyleMap} from './getCSSRules';
 
-const CHAR_BULLET = '\u25CF';
-const CHAR_CIRCLE = '\u25cb';
+import {CHAR_BULLET, CHAR_CIRCLE, CHAR_SQUARE} from './DocsCharacter';
+
 
 function sortCSSRuleStyleMap(
   one: StyleMap,
@@ -60,6 +60,9 @@ function mergeCSSRuleStylesToElement(cssRules: CSSRules, el: HTMLElement): void 
           finderCache[content] = listStyleType;
         } else if (content.indexOf(CHAR_BULLET) >= 0) {
           listStyleType = 'disc';
+          finderCache[content] = listStyleType;
+        } else if (content.indexOf(CHAR_SQUARE) >= 0) {
+          listStyleType = 'square';
           finderCache[content] = listStyleType;
         } else {
           const finder = (type) => content.indexOf(type) >= 0;

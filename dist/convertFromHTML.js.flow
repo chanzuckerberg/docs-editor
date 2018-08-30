@@ -11,12 +11,12 @@ import createDocsTableEntityDataFromElement from './createDocsTableEntityDataFro
 import getSafeHTML from './getSafeHTML';
 import invariant from 'invariant';
 import uniqueID from './uniqueID';
-import {CHAR_ZERO_WIDTH, CHAR_BULLET, CHAR_CIRCLE} from './DocsCharacter';
 import {CSS_SELECTOR_PRIORITY, CSS_SELECTOR_TEXT} from './getCSSRules';
 import {ContentState, Modifier, EditorState, Entity} from 'draft-js';
 import {OrderedSet} from 'immutable';
 import {convertFromHTML as draftConvertFromHTML} from 'draft-convert';
 
+import type {CSSRules} from './getCSSRules';
 import type {DocsTableEntityData, DocsImageEntityData, DocumentLike, ElementLike} from './Types';
 import type {SafeHTML} from './getSafeHTML';
 
@@ -51,9 +51,10 @@ function convertFromHTML(
   html: string,
   editorState?: ?EditorState,
   domDocument?: ?DocumentLike,
+  cssRules?: ?CSSRules,
 ): EditorState {
   // See https://github.com/HubSpot/draft-convert#convertfromhtml
-  const safeHTML = getSafeHTML(html, domDocument);
+  const safeHTML = getSafeHTML(html, domDocument, cssRules);
   const handlers = {
     htmlToBlock,
     htmlToEntity,
@@ -319,7 +320,7 @@ function normalizeNodeForTable(
   if (nodeName !== 'TABLE') {
     return null;
   }
-  const element = asElement(node);
+  const element: any = asElement(node);
   if (element.hasAttribute(DocsDataAttributes.TABLE)) {
     // Already an docs node
     return null;

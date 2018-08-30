@@ -61,11 +61,11 @@ if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginF
 });
 
 
-function getSafeHTML(html, domDocument) {
+function getSafeHTML(html, domDocument, defaultCSSRules) {
   var documentElement = (0, _getSafeDocumentElementFromHTML2.default)(html, domDocument);
   var body = documentElement ? documentElement.querySelector('body') : null;
   var ownerDocument = body && body.ownerDocument;
-  var cssRules = (0, _getCSSRules2.default)(ownerDocument);
+  var cssRules = defaultCSSRules || (0, _getCSSRules2.default)(ownerDocument);
   var unsafeNodes = new _map2.default();
   var safeHTML = '';
   if (body) {
@@ -78,6 +78,7 @@ function getSafeHTML(html, domDocument) {
       var id = (0, _uniqueID2.default)();
       node.id = id;
       unsafeNodes.set(id, node.cloneNode(true));
+      node.setAttribute('data-quarantined-by-safe-html', id);
       node.innerHTML = _DocsCharacter.CHAR_ZERO_WIDTH;
     };
 

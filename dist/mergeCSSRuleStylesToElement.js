@@ -24,6 +24,8 @@ var _getCSSRules = require('./getCSSRules');
 
 var _immutable = require('immutable');
 
+var _DocsCharacter = require('./DocsCharacter');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var babelPluginFlowReactPropTypes_proptype_DocumentLike = require('./Types').babelPluginFlowReactPropTypes_proptype_DocumentLike || require('prop-types').any;
@@ -31,9 +33,6 @@ var babelPluginFlowReactPropTypes_proptype_DocumentLike = require('./Types').bab
 var babelPluginFlowReactPropTypes_proptype_StyleMap = require('./getCSSRules').babelPluginFlowReactPropTypes_proptype_StyleMap || require('prop-types').any;
 
 var babelPluginFlowReactPropTypes_proptype_CSSRules = require('./getCSSRules').babelPluginFlowReactPropTypes_proptype_CSSRules || require('prop-types').any;
-
-var CHAR_BULLET = '\u25CF';
-var CHAR_CIRCLE = '\u25CB';
 
 function sortCSSRuleStyleMap(one, two) {
   var p1 = one.get(_getCSSRules.CSS_SELECTOR_PRIORITY);
@@ -76,11 +75,14 @@ function mergeCSSRuleStylesToElement(cssRules, el) {
     if (content) {
       if (finderCache[content]) {
         listStyleType = finderCache[content];
-      } else if (content.indexOf(CHAR_CIRCLE) >= 0) {
+      } else if (content.indexOf(_DocsCharacter.CHAR_CIRCLE) >= 0) {
         listStyleType = 'circle';
         finderCache[content] = listStyleType;
-      } else if (content.indexOf(CHAR_BULLET) >= 0) {
+      } else if (content.indexOf(_DocsCharacter.CHAR_BULLET) >= 0) {
         listStyleType = 'disc';
+        finderCache[content] = listStyleType;
+      } else if (content.indexOf(_DocsCharacter.CHAR_SQUARE) >= 0) {
+        listStyleType = 'square';
         finderCache[content] = listStyleType;
       } else {
         var finder = function finder(type) {

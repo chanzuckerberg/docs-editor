@@ -54,6 +54,8 @@ var babelPluginFlowReactPropTypes_proptype_DocsTableEntityData = require('./Type
 
 var babelPluginFlowReactPropTypes_proptype_SafeHTML = require('./getSafeHTML').babelPluginFlowReactPropTypes_proptype_SafeHTML || require('prop-types').any;
 
+var babelPluginFlowReactPropTypes_proptype_CSSRules = require('./getCSSRules').babelPluginFlowReactPropTypes_proptype_CSSRules || require('prop-types').any;
+
 function setDocsTableEntityDataFromCell(safeHTML, row, cell, convertFromHTML, entityData) {
   var newEntityData = entityData;
   var rowIndex = (0, _asNumber2.default)(row.rowIndex);
@@ -68,7 +70,9 @@ function setDocsTableEntityDataFromCell(safeHTML, row, cell, convertFromHTML, en
     newEntityData.topRowBgStyle = 'dark';
     // newEntityData = toggleHeaderBackground(newEntityData, true);
   }
-  var cellEditorState = convertFromHTML(innerHTML);
+  var cellEditorState = convertFromHTML(innerHTML, null, // TODO: Find a way to get the editor state.
+  row.ownerDocument, safeHTML.cssRules);
+
   var id = (0, _DocsTableModifiers.getEntityDataID)(rowIndex, cellIndex);
   newEntityData[id] = (0, _convertToRaw2.default)(cellEditorState);
 
