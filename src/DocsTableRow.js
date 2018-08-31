@@ -47,6 +47,7 @@ class DocsTableRow extends React.PureComponent {
       cellColSpans,
       cellRowSpans,
       cellBgStyles,
+      rowHeights,
     } = entityData;
     let cellsCount = colsCount;
 
@@ -134,8 +135,14 @@ class DocsTableRow extends React.PureComponent {
       [DocsDataAttributes.ELEMENT]: true,
       [DocsDataAttributes.TABLE_ROW]: true,
     };
+
+    let height;
+    if (rowHeights && rowHeights[rowIndex]) {
+      height = rowHeights[rowIndex];
+    }
+
     return (
-      <tr {...attrs} className={className}>
+      <tr {...attrs} className={className} height={height}>
         {cells}
       </tr>
     );

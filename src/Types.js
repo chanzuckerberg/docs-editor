@@ -114,6 +114,7 @@ export type DocsTableEntityData = {
   cellColSpans?: ?{[cellId: string]: number},
   cellRowSpans?: ?{[cellId: string]: number},
   colWidths?: ?Array<number>,
+  rowHeights?: ?{[rowIndex: number]: number},
   colsCount: number,
   leftColBgStyle?: ?string,
   noBorders?: ?boolean,

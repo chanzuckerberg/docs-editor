@@ -8,7 +8,6 @@ import convertToRaw from './convertToRaw';
 import createEmptyEditorState from './createEmptyEditorState';
 import getSafeHTML from './getSafeHTML';
 import invariant from 'invariant';
-
 import {EditorState} from 'draft-js';
 import {getEntityDataID} from './DocsTableModifiers';
 import {toggleHeaderBackground} from './DocsTableModifiers';
@@ -65,17 +64,16 @@ function setDocsTableEntityDataFromCell(
   }
 
   // The table-cell might have a className that can be mapped to the custom
-  // background color. Find out what that className is.
+  // style. Find out what that className is.
   classList.forEach(cellClassName => {
     const selector = `.${cellClassName}`;
-    const rules = safeHTML.cssRules.get(selector);
-    if (rules) {
-      rules.forEach((styleValue, styleName) => {
+    const styleMaps = safeHTML.cssRules.get(selector);
+    if (styleMaps) {
+      styleMaps.forEach((styleValue, styleName) => {
         if (styleName === 'background-color') {
           const customClassName =
             DocsCustomStyleMap.forBackgroundColor(styleValue);
           if (customClassName) {
-            // console.log(customClassName);
             const cellBgStyles = newEntityData.cellBgStyles || {};
             cellBgStyles[id] = customClassName;
             newEntityData.cellBgStyles = cellBgStyles;
@@ -99,7 +97,7 @@ function setDocsTableEntityDataFromRow(
   convertFromHTML: convertFromHTML,
   entityData: DocsTableEntityData
 ): DocsTableEntityData {
-  const {cells} = row;
+  const {cells, classList, rowIndex} = row;
   if (!cells || !cells.length) {
     return entityData;
   }
@@ -116,6 +114,36 @@ function setDocsTableEntityDataFromRow(
       );
     }
   }
+
+  if (!classList || !classList.length) {
+    return newEntityData;
+  }
+
+  // The table-cell might have a className that can be mapped to the custom
+  // style. Find out what that className is.
+  classList.forEach(cellClassName => {
+    const selector = `.${cellClassName}`;
+    const styleMaps = safeHTML.cssRules.get(selector);
+    if (styleMaps) {
+      styleMaps.forEach((styleValue, styleName) => {
+        if (styleName === 'height') {
+          let height = 0;
+          if (styleValue.indexOf('pt') > 0) {
+            height = parseInt(styleValue, 10);
+          } else if (styleValue.indexOf('px') > 0) {
+            height = parseInt(styleValue, 10);
+          }
+
+          if (height) {
+            const rowHeights = newEntityData.rowHeights || {};
+            rowHeights[asNumber(row.rowIndex)] = asNumber(height);
+            newEntityData.rowHeights = rowHeights;
+          }
+        }
+      });
+    }
+  });
+
   return newEntityData;
 }
 

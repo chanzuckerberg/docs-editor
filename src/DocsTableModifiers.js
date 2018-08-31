@@ -56,6 +56,7 @@ function insertRow(
   const {
     colsCount,
     rowsCount,
+    rowHeights,
   } = newEntityData;
 
   const start = before ? rowIndex : rowIndex + 1;
@@ -68,6 +69,13 @@ function insertRow(
       const toID = getEntityDataID(rr, cc);
       newEntityData = shiftCell(newEntityData, fromID, toID);
       cc++;
+    }
+    if (rowHeights) {
+      const prevHeight = rowHeights[rr - 1];
+      if (prevHeight) {
+        rowHeights[rr] = prevHeight;
+        delete rowHeights[rr - 1];
+      }
     }
     rr--;
   }
@@ -107,6 +115,7 @@ function deleteRow(
   const {
     colsCount,
     rowsCount,
+    rowHeights,
   } = newEntityData;
   let rr = rowIndex;
   while (rr < rowsCount) {
@@ -116,6 +125,13 @@ function deleteRow(
       const toID = getEntityDataID(rr, cc);
       newEntityData = shiftCell(newEntityData, fromID, toID);
       cc++;
+    }
+    if (rowHeights) {
+      const nextHeight = rowHeights[rr + 1];
+      if (nextHeight) {
+        rowHeights[rr] = nextHeight ;
+        delete rowHeights[rr + 1];
+      }
     }
     rr++;
   }
