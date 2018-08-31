@@ -138,41 +138,6 @@ function deleteRow(
   return newEntityData;
 }
 
-function xxxxdeleteRow(
-  entityData: DocsTableEntityData,
-  rowIndex: number,
-  colIndex: number,
-): DocsTableEntityData {
-  const {rowsCount, colsCount} = entityData;
-  if (rowsCount <= 1) {
-    return entityData;
-  }
-  const newEntityData = {
-    ...entityData,
-    rowsCount: rowsCount - 1,
-    colsCount,
-  };
-
-  let rr = 0;
-  const kk =  newEntityData.rowsCount;
-  while (rr < kk) {
-    let cc = 0;
-    while (cc < colsCount) {
-      const id = getEntityDataID(rr, cc);
-      const data = {...entityData[id]};
-      if (rr < rowIndex) {
-        newEntityData[id] = data;
-      } else if (rr > rowIndex) {
-        const newID = getEntityDataID(rr - 1, cc);
-        newEntityData[newID] = data;
-      }
-      cc++;
-    }
-    rr++;
-  }
-  return newEntityData;
-}
-
 function deleteColumn(
   entityData: DocsTableEntityData,
   rowIndex: number,

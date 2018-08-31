@@ -6,6 +6,18 @@
   width: 100%;
 }
 
+.docs-table-main::before {
+  /* Covers the top-thick border */
+  background: #fff;
+  content: '';
+  height: 1px;
+  left: 0;
+  position: absolute;
+  right: 1px;
+  top: -2px;
+  z-index: 2;
+}
+
 .docs-table {
   /* Use background-color to present the simulated border-color.`*/
   background-color: #222;
