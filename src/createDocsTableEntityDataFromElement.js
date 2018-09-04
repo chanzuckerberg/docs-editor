@@ -67,9 +67,10 @@ function setDocsTableEntityDataFromCell(
   // style. Find out what that className is.
   classList.forEach(cellClassName => {
     const selector = `.${cellClassName}`;
-    const styleMaps = safeHTML.cssRules.get(selector);
-    if (styleMaps) {
-      styleMaps.forEach((styleValue, styleName) => {
+    const styleMap = safeHTML.cssRules.get(selector);
+    if (styleMap) {
+      let borderColor = undefined;
+      styleMap.forEach((styleValue, styleName) => {
         if (styleName === 'background-color') {
           const customClassName =
             DocsCustomStyleMap.forBackgroundColor(styleValue);
@@ -83,8 +84,30 @@ function setDocsTableEntityDataFromCell(
           const width: any = styleValue;
           colWidths[cellIndex] = width;
           newEntityData.colWidths = colWidths;
+        } else if (
+          styleName === 'border-left-color' ||
+          styleName === 'border-top-color' ||
+          styleName === 'border-right-color' ||
+          styleName === 'border-bottom-color'
+        ) {
+          if (borderColor === undefined) {
+            borderColor = styleValue;
+          } else if (borderColor !== styleValue) {
+            borderColor = null;
+          }
         }
       });
+
+      // If all cells have the same white border, hides the border.
+      if (
+        newEntityData.noBorders !== false &&
+        borderColor &&
+        Color(borderColor).hex() === '#FFFFFF'
+      ) {
+        newEntityData.noBorders = true;
+      } else {
+        newEntityData.noBorders = false;
+      }
     }
   });
 
