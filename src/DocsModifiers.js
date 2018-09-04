@@ -388,8 +388,7 @@ function pasteHTML(
   editorState: EditorState,
   html: string,
 ): EditorState {
-  console.log(html);
-  return convertFromHTML(html, editorState);
+  return convertFromHTML(html, editorState, window.document, null, true);
 }
 
 // Helper function for `ensureAtomicBlocksAreSelectable()`.

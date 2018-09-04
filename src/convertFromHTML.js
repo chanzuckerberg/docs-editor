@@ -54,6 +54,7 @@ function convertFromHTML(
   editorState?: ?EditorState,
   domDocument?: ?DocumentLike,
   cssRules?: ?CSSRules,
+  purgeConsecutiveBlankLines?: ?boolean,
 ): EditorState {
   // See https://github.com/HubSpot/draft-convert#convertfromhtml
   const safeHTML = getSafeHTML(html, domDocument, cssRules);
@@ -74,10 +75,8 @@ function convertFromHTML(
     };
   });
   let contentState = draftConvertFromHTML(handlers)(safeHTML.html);
-
-  if (!editorState && !cssRules) {
-    // Assume this to be a conversion for HTML from external source, we'll do
-    // extra work.
+  if (purgeConsecutiveBlankLines) {
+    // Merge consecutive nlank lines.
     contentState = purgeBlankContentBlocks(contentState);
   }
 
