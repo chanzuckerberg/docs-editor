@@ -90,6 +90,15 @@ const LIST_START_VALUES = numberRange(2, 100);
 const TEXT_ALIGN_KEY = `${STYLE_KEY_PREFIX}_TEXT_ALIGN`;
 const TEXT_ALIGN_VALUES = ['left', 'center', 'right'];
 
+const VERTICAL_ALIGN_KEY = `${STYLE_KEY_PREFIX}_VERTICAL_ALIGN`;
+const VERTICAL_ALIGN_VALUES = [
+  'baseline',
+  'sub',
+  'super',
+  'text-bottom',
+  'text-top',
+];
+
 const TRANSPARENT_COLORS = new Set([
   'default', 'transparent', 'rgba(0, 0, 0, 0)', 'inherit', 'none',
 ]);
@@ -202,6 +211,16 @@ function defineListStyleTypeStyle(
   }
 }
 
+function defineVerticalAlignStyle(
+  styleMap: StyleMapType,
+  align: string,
+): void {
+  const suffix = align.toUpperCase();
+  styleMap[`${VERTICAL_ALIGN_KEY}_${suffix}`] = {
+    'verticalAlign': `${align}`,
+  };
+}
+
 function injectCSSIntoDocument(styleMap: StyleMapType): void {
   if (document.getElementById(STYLES_SHEET_ID)) {
     return;
@@ -282,6 +301,15 @@ function forTextAlign(
   return styleMap[key] ? key : null;
 }
 
+function forVerticalAlign(
+  styleMap: StyleMapType,
+  verticalAlign: string,
+  ): ?string {
+  const suffix = verticalAlign.toUpperCase();
+  const key = `${VERTICAL_ALIGN_KEY}_${suffix}`;
+  return styleMap[key] ? key : null;
+}
+
 function forLineHeight(
   styleMap: StyleMapType,
   lineHeight: string,
@@ -316,6 +344,7 @@ LINE_HEIGHT_VALUES.forEach(defineLineHeightStyle.bind(null, BlockStyles));
 LIST_STYLE_TYPE_VALUES.forEach(defineListStyleTypeStyle.bind(null, BlockStyles));
 LIST_START_VALUES.forEach(defineListStartStyle.bind(null, BlockStyles));
 TEXT_ALIGN_VALUES.forEach(defineTextAlignStyle.bind(null, BlockStyles));
+VERTICAL_ALIGN_VALUES.forEach(defineVerticalAlignStyle.bind(null, InlineStyles));
 
 const AllStyles = {...InlineStyles, ...BlockStyles};
 
@@ -330,6 +359,7 @@ const DocsCustomStyleMap = {
   forListStart: forListStart.bind(null, AllStyles),
   forListStyleType: forListStyleType.bind(null, AllStyles),
   forTextAlign: forTextAlign.bind(null, AllStyles),
+  forVerticalAlign: forVerticalAlign.bind(null, AllStyles),
   injectCSSIntoDocument: injectCSSIntoDocument.bind(null, AllStyles),
 };
 

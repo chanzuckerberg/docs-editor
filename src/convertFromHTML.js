@@ -145,6 +145,7 @@ function htmlToStyle(
       listStart: DocsCustomStyleMap.forListStart,
       listStyleType: DocsCustomStyleMap.forListStyleType,
       textAlign: DocsCustomStyleMap.forTextAlign,
+      verticalAlign: DocsCustomStyleMap.forVerticalAlign,
     };
 
     if (nodeName === 'LI') {
