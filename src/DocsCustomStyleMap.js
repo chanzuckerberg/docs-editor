@@ -144,12 +144,23 @@ function defineFontSizeStyle(
 ): void {
   // 1.5px => 1-5PT.
   const suffix = String(fontSize).replace(/[\.]/, '-');
-  styleMap[`${FONT_SIZE_KEY}_${suffix}PX`] = {
-    'fontSize': `${fontSize}px`,
-  };
-  styleMap[`${FONT_SIZE_KEY}_${suffix}PT`] = {
-    'fontSize': `${fontSize}pt`,
-  };
+  if (fontSize > 24) {
+    styleMap[`${FONT_SIZE_KEY}_${suffix}PX`] = {
+      'fontSize': `${fontSize}px`,
+      'lineHeight': '1.2',
+    };
+    styleMap[`${FONT_SIZE_KEY}_${suffix}PT`] = {
+      'fontSize': `${fontSize}pt`,
+      'lineHeight': '1.2',
+    };
+  } else {
+    styleMap[`${FONT_SIZE_KEY}_${suffix}PX`] = {
+      'fontSize': `${fontSize}px`,
+    };
+    styleMap[`${FONT_SIZE_KEY}_${suffix}PT`] = {
+      'fontSize': `${fontSize}pt`,
+    };
+  }
 }
 
 function defineLineHeightStyle(
