@@ -36,6 +36,8 @@ var _uniqueID = require('./uniqueID');
 
 var _uniqueID2 = _interopRequireDefault(_uniqueID);
 
+var _DocsEditorChangeType = require('./DocsEditorChangeType');
+
 var _immutable = require('immutable');
 
 var _draftJs = require('draft-js');
@@ -160,7 +162,7 @@ function toggleAnnotation(editorState) {
     var contentState = editorState.getCurrentContent();
     var entityKey = null;
     var newContentState = _draftJs.Modifier.applyEntity(contentState, selection, entityKey);
-    return _draftJs.EditorState.push(editorState, newContentState, 'apply-entity');
+    return _draftJs.EditorState.push(editorState, newContentState, _DocsEditorChangeType.APPLY_ENTITY);
   } else {
     var _contentState = editorState.getCurrentContent();
     var contentStateWithEntity = _contentState.createEntity(_DocsDecoratorTypes2.default.DOCS_ANNOTATION, 'MUTABLE', {
@@ -169,7 +171,7 @@ function toggleAnnotation(editorState) {
     });
     var _entityKey = contentStateWithEntity.getLastCreatedEntityKey();
     var _newContentState = _draftJs.Modifier.applyEntity(contentStateWithEntity, selection, _entityKey);
-    return _draftJs.EditorState.push(editorState, _newContentState, 'apply-entity');
+    return _draftJs.EditorState.push(editorState, _newContentState, _DocsEditorChangeType.APPLY_ENTITY);
   }
 }
 
@@ -202,7 +204,7 @@ function insertBlock(editorState, contentBlock, direction) {
     selectionBefore: selection,
     selectionAfter: selection
   });
-  return _draftJs.EditorState.push(editorState, newContentState, 'change-block-data');
+  return _draftJs.EditorState.push(editorState, newContentState, _DocsEditorChangeType.CHANGE_BLOCK_DATA);
 }
 
 // BUGGY!!
@@ -238,7 +240,7 @@ function updateBlockStyle(editorState, contentBlock, className) {
     className: className
   });
   var newContentState = _draftJs.Modifier.mergeBlockData(contentState, newSelection, newBlockData);
-  return _draftJs.EditorState.push(editorState, newContentState, 'apply-entity');
+  return _draftJs.EditorState.push(editorState, newContentState, _DocsEditorChangeType.APPLY_ENTITY);
 }
 
 function ensureAtomicBlocksAreSelectable(editorState) {
@@ -279,7 +281,7 @@ function ensureAtomicBlocksAreSelectable(editorState) {
     selectionBefore: selection,
     selectionAfter: selection
   });
-  return _draftJs.EditorState.push(editorState, newContentState, 'change-block-data');
+  return _draftJs.EditorState.push(editorState, newContentState, _DocsEditorChangeType.CHANGE_BLOCK_DATA);
 }
 
 function pasteHTML(editorState, html) {

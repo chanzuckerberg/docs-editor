@@ -15,6 +15,7 @@ import isContentBlockEmpty from './isContentBlockEmpty';
 import uniqueID from './uniqueID';
 import {CSS_SELECTOR_PRIORITY, CSS_SELECTOR_TEXT} from './getCSSRules';
 import {ContentState, Modifier, EditorState, Entity} from 'draft-js';
+import {INSERT_FRAGMENT} from './DocsEditorChangeType';
 import {OrderedSet} from 'immutable';
 import {convertFromHTML as draftConvertFromHTML} from 'draft-convert';
 
@@ -80,11 +81,21 @@ function convertFromHTML(
     contentState = purgeBlankContentBlocks(contentState);
   }
 
-
-  const decorator = DocsDecorator.get();
-  return editorState ?
-    EditorState.push(editorState, contentState) :
-    EditorState.createWithContent(contentState, decorator);
+  if (editorState) {
+    contentState = Modifier.replaceWithFragment(
+      editorState.getCurrentContent(),
+      editorState.getSelection(),
+      contentState.getBlockMap(),
+    );
+    return EditorState.push(
+      editorState,
+      contentState,
+      INSERT_FRAGMENT,
+    );
+  } else {
+    const decorator = DocsDecorator.get();
+    return EditorState.createWithContent(contentState, decorator);
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
