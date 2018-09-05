@@ -9,6 +9,8 @@ import getCurrentSelectionEntity from './getCurrentSelectionEntity';
 import isContentBlockEmpty from './isContentBlockEmpty';
 import tryInsertAtomicBlock from './tryInsertAtomicBlock';
 import uniqueID from './uniqueID';
+import {APPLY_ENTITY} from './DocsEditorChangeType';
+import {CHANGE_BLOCK_DATA} from './DocsEditorChangeType';
 import {List, Map as ImmutableMap, OrderedMap, Repeat} from 'immutable';
 import {genKey, CharacterMetadata, ContentBlock, Modifier, EditorState, SelectionState, RichUtils} from 'draft-js';
 
@@ -219,7 +221,7 @@ function toggleAnnotation(
       selection,
       entityKey,
     );
-    return EditorState.push(editorState, newContentState, 'apply-entity');
+    return EditorState.push(editorState, newContentState, APPLY_ENTITY);
   } else {
     const contentState = editorState.getCurrentContent();
     const contentStateWithEntity = contentState.createEntity(
@@ -236,7 +238,7 @@ function toggleAnnotation(
       selection,
       entityKey,
     );
-    return EditorState.push(editorState, newContentState, 'apply-entity');
+    return EditorState.push(editorState, newContentState, APPLY_ENTITY);
   }
 }
 
@@ -280,7 +282,7 @@ function insertBlock(
     selectionBefore: selection,
     selectionAfter: selection,
   });
-  return EditorState.push(editorState, newContentState, 'change-block-data');
+  return EditorState.push(editorState, newContentState, CHANGE_BLOCK_DATA);
 }
 
 // BUGGY!!
@@ -324,7 +326,7 @@ function updateBlockStyle(
     newSelection,
     newBlockData,
   );
-  return EditorState.push(editorState, newContentState, 'apply-entity');
+  return EditorState.push(editorState, newContentState, APPLY_ENTITY);
 }
 
 function ensureAtomicBlocksAreSelectable(
@@ -381,7 +383,7 @@ function ensureAtomicBlocksAreSelectable(
     selectionBefore: selection,
     selectionAfter: selection,
   });
-  return EditorState.push(editorState, newContentState, 'change-block-data');
+  return EditorState.push(editorState, newContentState, CHANGE_BLOCK_DATA);
 }
 
 function pasteHTML(
