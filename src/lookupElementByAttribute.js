@@ -3,7 +3,7 @@
 import type {ElementLike} from './Types';
 
 function lookupElementByAttribute(
-  element: ElementLike,
+  element: ElementLike | Element,
   attr: string,
   value: ?string,
 ): ?ElementLike {

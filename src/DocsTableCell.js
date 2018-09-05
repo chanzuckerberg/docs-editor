@@ -102,7 +102,7 @@ class DocsTableCell extends React.PureComponent {
 
     const effectiveColspan = colSpan || 1;
     const rightHandle =
-      (resizable && (cellIndex + effectiveColspan - 1) < (colsCount - 1)) ?
+      (canEdit && resizable && (cellIndex < (colsCount - 1))) ?
       <DocsTableCellResizeHandle
         key="r2"
         onColumnResizeEnd={onColumnResizeEnd}

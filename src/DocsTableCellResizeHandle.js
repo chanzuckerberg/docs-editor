@@ -2,9 +2,12 @@
 
 import DocsDataAttributes from './DocsDataAttributes';
 import React from 'react';
+import asElement from './asElement';
+import asNumber from './asNumber';
 import captureDocumentEvents from './captureDocumentEvents';
 import cx from 'classnames';
 import lookupElementByAttribute from './lookupElementByAttribute';
+import lookupResizeableTableCellElement from './lookupResizeableTableCellElement';
 
 type Props = {
   onColumnResizeEnd: (w: Array<number>) => void,
@@ -47,31 +50,34 @@ class DocsTableCellResizeHandle extends React.PureComponent {
       return;
     }
     const {position} = this.props;
-    const {target} = e;
-    let td: any = lookupElementByAttribute(
-      target,
-      DocsDataAttributes.TABLE_CELL,
-    );
-    if (!td) {
-      return;
+    if (position === 'left' || position === 'right') {
+      this._blockEvent(e);
+      this._onHorizontalResizeStart(e);
     }
-    if (position === 'left') {
-      td = td.previousElementSibling;
-    }
-    if (!td) {
-      return;
-    }
-    const table: any = lookupElementByAttribute(td, DocsDataAttributes.TABLE);
-    const tr: any =
-      (table && table.rows && table.rows[0]) ||
-      null;
-    td = (tr && td && tr.cells && tr.cells[td.cellIndex]) || null;
-    if (!td || !tr || !table) {
-      return;
-    }
-    this._blockEvent(e);
+  };
 
-    const tds = Array.from(tr.cells);
+  _onHorizontalResizeStart(e: any): void {
+    let targetCell = lookupResizeableTableCellElement(asElement(e.target));
+    if (!targetCell) {
+      return;
+    }
+    const {position} = this.props;
+    if (position === 'left') {
+      targetCell = targetCell.previousElementSibling;
+      if (!targetCell) {
+        return;
+      }
+    } else {
+      // position === 'right'
+      if (!targetCell.nextElementSibling) {
+        return;
+      }
+    }
+
+    const td = asElement(targetCell);
+    const tr = asElement(td.parentElement);
+    const tds =  Array.from(tr.cells || []);
+    const table = lookupElementByAttribute(tr, DocsDataAttributes.TABLE);
     const initialStyles = [];
     const initialRects = tds.map((cell: any) => {
       const rect = cell.getBoundingClientRect();
@@ -83,9 +89,10 @@ class DocsTableCellResizeHandle extends React.PureComponent {
         y: rect.y,
       };
     });
+    const cellIndex = asNumber(td.cellIndex);
     const newRects = initialRects;
-    const minRect = initialRects[td.cellIndex];
-    const maxRect = initialRects[td.cellIndex + 1];
+    const minRect = initialRects[cellIndex ];
+    const maxRect = initialRects[cellIndex  + 1];
     const minXDelta = minRect ? -Math.max(minRect.width - MIN_WIDTH, 0) : 0;
     const maxXDelta = maxRect ? Math.max(0, maxRect.width - MIN_WIDTH) : 0;
 
@@ -108,7 +115,7 @@ class DocsTableCellResizeHandle extends React.PureComponent {
       mousemove: this._onMouseMove,
       mouseup: this._onMouseUp,
     });
-  };
+  }
 
   _onMouseMove = (e: any): void => {
     this._blockEvent(e);
@@ -155,7 +162,11 @@ class DocsTableCellResizeHandle extends React.PureComponent {
 
     newRects.forEach((rect, ii) => {
       if (initialRects[ii] !== rect) {
-        tds[ii].style.width = rect.width + 'px';
+        const tdEl = tds[ii];
+        const style = tdEl ? tdEl.style : null;
+        if (style) {
+          style.width = rect.width + 'px';
+        }
       }
     });
     resizeContext.moved = true;

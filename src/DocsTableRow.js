@@ -84,7 +84,6 @@ class DocsTableRow extends React.PureComponent {
       }
     }
 
-
     const cells = [];
     const rr = rowIndex;
     let cc = 0;

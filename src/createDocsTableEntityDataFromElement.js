@@ -12,7 +12,7 @@ import {EditorState} from 'draft-js';
 import {getEntityDataID} from './DocsTableModifiers';
 import {toggleHeaderBackground} from './DocsTableModifiers';
 
-import type {DocsTableEntityData, ElementLike, DocumentLike} from './Types';
+import type {DocsTableEntityData, ElementLike, DocumentLike, HTMLCollectionLike} from './Types';
 import type {SafeHTML} from './getSafeHTML';
 import type {CSSRules} from './getCSSRules';
 
@@ -31,6 +31,7 @@ function setDocsTableEntityDataFromCell(
   entityData: DocsTableEntityData
 ): DocsTableEntityData {
   let newEntityData = entityData;
+  const {colsCount, rowsCount} = entityData;
   const rowIndex = asNumber(row.rowIndex);
   const cellIndex = asNumber(cell.cellIndex);
   const {classList, nodeName, innerHTML, colSpan, rowSpan} = cell;
@@ -49,13 +50,19 @@ function setDocsTableEntityDataFromCell(
 
   if (colSpan && colSpan > 1) {
     const cellColSpans = newEntityData.cellColSpans || {};
-    cellColSpans[id] = colSpan;
+    cellColSpans[id] = Math.min(
+      colSpan,
+      colsCount - cellIndex,
+    );
     newEntityData.cellColSpans = cellColSpans;
   }
 
   if (rowSpan && rowSpan > 1) {
     const cellRowSpans = newEntityData.cellRowSpans || {};
-    cellRowSpans[id] = rowSpan;
+    cellRowSpans[id] = Math.min(
+      rowSpan,
+      rowsCount - rowIndex,
+    );
     newEntityData.cellRowSpans = cellRowSpans;
   }
 
@@ -170,6 +177,29 @@ function setDocsTableEntityDataFromRow(
   return newEntityData;
 }
 
+function getRowsCount(rows: ?HTMLCollectionLike): number {
+  return (rows && rows.length) || 0;
+}
+
+function getColsCount(rows: ?HTMLCollectionLike): number {
+  const firstRow = rows ? rows[0] : null;
+  if (!firstRow) {
+    return 0;
+  }
+  const {cells} = firstRow;
+  if (!cells || !cells.length) {
+    return 0;
+  }
+  return Array.from(cells).reduce((sum, cell) => {
+    sum++;
+    if (cell && cell.colSpan && cell.colSpan > 1) {
+      sum += cell.colSpan - 1;
+    }
+    return sum;
+  }, 0);
+}
+
+
 function createDocsTableEntityDataFromElement(
   safeHTML: SafeHTML,
   table: ElementLike,
@@ -192,44 +222,30 @@ function createDocsTableEntityDataFromElement(
   // colsSpan, rowsSpan...etc?
   const {rows} = el;
 
-  if (
-    !rows ||
-    !rows[0] ||
-    !rows[0].cells ||
-    rows[0].cells.length === 0
-  ) {
+  const rowsCount = getRowsCount(rows);
+  const colsCount = getColsCount(rows);
+  if (rowsCount === 0 || colsCount === 0) {
     return entityData;
   }
-
-  const rowsCount = rows ? rows.length : 0;
-  const colsCount = Array.from(rows).reduce(
-    (max, row) => {
-      if (row && row.cells) {
-        const len = row.cells.length;
-        return len > max ? len : max;
-      }
-      return max;
-    },
-    0,
-  );
 
   entityData.rowsCount = rowsCount;
   entityData.colsCount = colsCount;
   let rr = 0;
   let useHeader = false;
-  while (rr < rowsCount) {
-    const row =  rows[rr];
-    if (row) {
-      entityData = setDocsTableEntityDataFromRow(
-        safeHTML,
-        row,
-        convertFromHTML,
-        entityData,
-      );
+  if (rows) {
+    while (rr < rowsCount) {
+      const row =  rows[rr];
+      if (row) {
+        entityData = setDocsTableEntityDataFromRow(
+          safeHTML,
+          row,
+          convertFromHTML,
+          entityData,
+        );
+      }
+      rr++;
     }
-    rr++;
   }
-
   entityData.colWidths = convertColumnWidthToPercentageNumbers(entityData);
   return entityData;
 }

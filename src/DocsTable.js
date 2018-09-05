@@ -8,6 +8,7 @@ import DocsTableToolbar from './DocsTableToolbar';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import cx from 'classnames';
+import uniqueID from './uniqueID';
 import withDocsContext from './withDocsContext';
 import {ContentBlock, EditorState, Entity} from 'draft-js';
 
@@ -32,6 +33,7 @@ class DocsTable extends React.PureComponent {
   _element = null;
   _nodeListening: null;
   _table = null;
+  _id = uniqueID();
 
   props: Props;
 
@@ -45,6 +47,7 @@ class DocsTable extends React.PureComponent {
     const entityData = entity.getData();
     const {colsCount, rowsCount, colWidths} = entityData;
     const activeEditor = this._activeEditor;
+    const tableID = this._id;
 
     let editorRowIndex = -1;
     let editorCellIndex = -1;
@@ -117,10 +120,11 @@ class DocsTable extends React.PureComponent {
         <table
           {...tableAttrs}
           className="docs-table"
+          id={tableID}
           ref={this._onTableRef}>
           <tbody
             aria-hidden="true"
-            className="docs-table-resize-placeholder-footer">
+            className="docs-table-resize-placeholder-body">
             <tr className="docs-table-resize-placeholder-row">
               {resizePlaceholderCells}
             </tr>
