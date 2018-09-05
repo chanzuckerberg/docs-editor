@@ -62,22 +62,23 @@ class DocsTableMenu extends React.PureComponent {
   }
 
   _onMenuItemClick = (option: Object) => {
-    this._onAction(option.modifier);
+    this._onAction(option);
   };
 
-  _onAction(modifier: Function): void {
+  _onAction(option: Object): void {
+    const {modifier, action} = option;
     const {getEditor, entityKey, entity, editorState, onChange} = this.props;
     const editor = getEditor();
     if (!editor) {
       return;
     }
     const editorProps: Object = editor.props;
-    const {rowIndex: rr, cellIndex: cc} = editorProps;
-    if (rr === undefined || cc === undefined) {
+    let {rowIndex, cellIndex, id} = editorProps;
+    if (rowIndex === undefined || cellIndex === undefined) {
       return;
     }
     const entityData = entity.getData();
-    const newEntityData = modifier(entityData, rr, cc);
+    const newEntityData = modifier(entityData, rowIndex, cellIndex);
     onChange(updateEntityData(editorState, entityKey, newEntityData));
   }
 }

@@ -55,7 +55,7 @@ var DocsTableMenu = function (_React$PureComponent) {
     }
 
     return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = DocsTableMenu.__proto__ || (0, _getPrototypeOf2.default)(DocsTableMenu)).call.apply(_ref, [this].concat(args))), _this), _this._mouseDownTarget = null, _this._onMenuItemClick = function (option) {
-      _this._onAction(option.modifier);
+      _this._onAction(option);
     }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
   }
 
@@ -98,7 +98,9 @@ var DocsTableMenu = function (_React$PureComponent) {
     }
   }, {
     key: '_onAction',
-    value: function _onAction(modifier) {
+    value: function _onAction(option) {
+      var modifier = option.modifier,
+          action = option.action;
       var _props2 = this.props,
           getEditor = _props2.getEditor,
           entityKey = _props2.entityKey,
@@ -111,14 +113,15 @@ var DocsTableMenu = function (_React$PureComponent) {
         return;
       }
       var editorProps = editor.props;
-      var rr = editorProps.rowIndex,
-          cc = editorProps.cellIndex;
+      var rowIndex = editorProps.rowIndex,
+          cellIndex = editorProps.cellIndex,
+          id = editorProps.id;
 
-      if (rr === undefined || cc === undefined) {
+      if (rowIndex === undefined || cellIndex === undefined) {
         return;
       }
       var entityData = entity.getData();
-      var newEntityData = modifier(entityData, rr, cc);
+      var newEntityData = modifier(entityData, rowIndex, cellIndex);
       onChange((0, _DocsModifiers.updateEntityData)(editorState, entityKey, newEntityData));
     }
   }]);

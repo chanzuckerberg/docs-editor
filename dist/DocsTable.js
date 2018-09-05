@@ -60,6 +60,10 @@ var _classnames = require('classnames');
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
+var _uniqueID = require('./uniqueID');
+
+var _uniqueID2 = _interopRequireDefault(_uniqueID);
+
 var _withDocsContext = require('./withDocsContext');
 
 var _withDocsContext2 = _interopRequireDefault(_withDocsContext);
@@ -88,7 +92,7 @@ var DocsTable = function (_React$PureComponent) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = DocsTable.__proto__ || (0, _getPrototypeOf2.default)(DocsTable)).call.apply(_ref, [this].concat(args))), _this), _this._activeEditor = null, _this._element = null, _this._table = null, _this._onElementRef = function (ref) {
+    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = DocsTable.__proto__ || (0, _getPrototypeOf2.default)(DocsTable)).call.apply(_ref, [this].concat(args))), _this), _this._activeEditor = null, _this._element = null, _this._table = null, _this._id = (0, _uniqueID2.default)(), _this._onElementRef = function (ref) {
       _this._unlisten();
       _this._element = ref;
       _this._listen();
@@ -166,6 +170,7 @@ var DocsTable = function (_React$PureComponent) {
           colWidths = entityData.colWidths;
 
       var activeEditor = this._activeEditor;
+      var tableID = this._id;
 
       var editorRowIndex = -1;
       var editorCellIndex = -1;
@@ -228,12 +233,13 @@ var DocsTable = function (_React$PureComponent) {
           'table',
           (0, _extends3.default)({}, tableAttrs, {
             className: 'docs-table',
+            id: tableID,
             ref: this._onTableRef }),
           _react2.default.createElement(
             'tbody',
             {
               'aria-hidden': 'true',
-              className: 'docs-table-resize-placeholder-footer' },
+              className: 'docs-table-resize-placeholder-body' },
             _react2.default.createElement(
               'tr',
               { className: 'docs-table-resize-placeholder-row' },

@@ -1,12 +1,12 @@
 'use strict';
 
-var _extends2 = require('babel-runtime/helpers/extends');
-
-var _extends3 = _interopRequireDefault(_extends2);
-
 var _from = require('babel-runtime/core-js/array/from');
 
 var _from2 = _interopRequireDefault(_from);
+
+var _extends2 = require('babel-runtime/helpers/extends');
+
+var _extends3 = _interopRequireDefault(_extends2);
 
 var _getPrototypeOf = require('babel-runtime/core-js/object/get-prototype-of');
 
@@ -36,6 +36,14 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _asElement = require('./asElement');
+
+var _asElement2 = _interopRequireDefault(_asElement);
+
+var _asNumber = require('./asNumber');
+
+var _asNumber2 = _interopRequireDefault(_asNumber);
+
 var _captureDocumentEvents = require('./captureDocumentEvents');
 
 var _captureDocumentEvents2 = _interopRequireDefault(_captureDocumentEvents);
@@ -47,6 +55,10 @@ var _classnames2 = _interopRequireDefault(_classnames);
 var _lookupElementByAttribute = require('./lookupElementByAttribute');
 
 var _lookupElementByAttribute2 = _interopRequireDefault(_lookupElementByAttribute);
+
+var _lookupResizeableTableCellElement = require('./lookupResizeableTableCellElement');
+
+var _lookupResizeableTableCellElement2 = _interopRequireDefault(_lookupResizeableTableCellElement);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -72,63 +84,11 @@ var DocsTableCellResizeHandle = function (_React$PureComponent) {
         return;
       }
       var position = _this.props.position;
-      var target = e.target;
 
-      var td = (0, _lookupElementByAttribute2.default)(target, _DocsDataAttributes2.default.TABLE_CELL);
-      if (!td) {
-        return;
+      if (position === 'left' || position === 'right') {
+        _this._blockEvent(e);
+        _this._onHorizontalResizeStart(e);
       }
-      if (position === 'left') {
-        td = td.previousElementSibling;
-      }
-      if (!td) {
-        return;
-      }
-      var table = (0, _lookupElementByAttribute2.default)(td, _DocsDataAttributes2.default.TABLE);
-      var tr = table && table.rows && table.rows[0] || null;
-      td = tr && td && tr.cells && tr.cells[td.cellIndex] || null;
-      if (!td || !tr || !table) {
-        return;
-      }
-      _this._blockEvent(e);
-
-      var tds = (0, _from2.default)(tr.cells);
-      var initialStyles = [];
-      var initialRects = tds.map(function (cell) {
-        var rect = cell.getBoundingClientRect();
-        initialStyles.push(cell.style.cssText);
-        return {
-          height: rect.height,
-          width: rect.width,
-          x: rect.x,
-          y: rect.y
-        };
-      });
-      var newRects = initialRects;
-      var minRect = initialRects[td.cellIndex];
-      var maxRect = initialRects[td.cellIndex + 1];
-      var minXDelta = minRect ? -Math.max(minRect.width - MIN_WIDTH, 0) : 0;
-      var maxXDelta = maxRect ? Math.max(0, maxRect.width - MIN_WIDTH) : 0;
-
-      _this._resizeContext = {
-        initialRects: initialRects,
-        initialStyles: initialStyles,
-        initialX: e.clientX,
-        maxXDelta: maxXDelta,
-        minXDelta: minXDelta,
-        moved: false,
-        newRects: newRects,
-        table: table,
-        td: td,
-        tds: tds,
-        tr: tr
-      };
-
-      _this._eventsCapture && _this._eventsCapture.dispose();
-      _this._eventsCapture = (0, _captureDocumentEvents2.default)({
-        mousemove: _this._onMouseMove,
-        mouseup: _this._onMouseUp
-      });
     }, _this._onMouseMove = function (e) {
       _this._blockEvent(e);
       var resizeContext = _this._resizeContext;
@@ -176,7 +136,11 @@ var DocsTableCellResizeHandle = function (_React$PureComponent) {
 
       newRects.forEach(function (rect, ii) {
         if (initialRects[ii] !== rect) {
-          tds[ii].style.width = rect.width + 'px';
+          var tdEl = tds[ii];
+          var style = tdEl ? tdEl.style : null;
+          if (style) {
+            style.width = rect.width + 'px';
+          }
         }
       });
       resizeContext.moved = true;
@@ -250,6 +214,69 @@ var DocsTableCellResizeHandle = function (_React$PureComponent) {
         className: className,
         'data-docs-tool': 'true',
         onMouseDown: this._onMouseDown
+      });
+    }
+  }, {
+    key: '_onHorizontalResizeStart',
+    value: function _onHorizontalResizeStart(e) {
+      var targetCell = (0, _lookupResizeableTableCellElement2.default)((0, _asElement2.default)(e.target));
+      if (!targetCell) {
+        return;
+      }
+      var position = this.props.position;
+
+      if (position === 'left') {
+        targetCell = targetCell.previousElementSibling;
+        if (!targetCell) {
+          return;
+        }
+      } else {
+        // position === 'right'
+        if (!targetCell.nextElementSibling) {
+          return;
+        }
+      }
+
+      var td = (0, _asElement2.default)(targetCell);
+      var tr = (0, _asElement2.default)(td.parentElement);
+      var tds = (0, _from2.default)(tr.cells || []);
+      var table = (0, _lookupElementByAttribute2.default)(tr, _DocsDataAttributes2.default.TABLE);
+      var initialStyles = [];
+      var initialRects = tds.map(function (cell) {
+        var rect = cell.getBoundingClientRect();
+        initialStyles.push(cell.style.cssText);
+        return {
+          height: rect.height,
+          width: rect.width,
+          x: rect.x,
+          y: rect.y
+        };
+      });
+      var cellIndex = (0, _asNumber2.default)(td.cellIndex);
+      var newRects = initialRects;
+      var minRect = initialRects[cellIndex];
+      var maxRect = initialRects[cellIndex + 1];
+      var minXDelta = minRect ? -Math.max(minRect.width - MIN_WIDTH, 0) : 0;
+      var maxXDelta = maxRect ? Math.max(0, maxRect.width - MIN_WIDTH) : 0;
+
+      this._resizeContext = {
+        initialRects: initialRects,
+        initialStyles: initialStyles,
+        initialX: e.clientX,
+        maxXDelta: maxXDelta,
+        minXDelta: minXDelta,
+        moved: false,
+        newRects: newRects,
+        table: table,
+        td: td,
+        tds: tds,
+        tr: tr
+      };
+
+      this._eventsCapture && this._eventsCapture.dispose();
+      this._eventsCapture = (0, _captureDocumentEvents2.default)({
+        mousemove: this._onMouseMove,
+        mouseup: this._onMouseUp
       });
     }
   }, {

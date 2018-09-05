@@ -58,7 +58,8 @@ function insertRow(entityData, rowIndex, colIndex, before) {
 
   var _newEntityData = newEntityData,
       colsCount = _newEntityData.colsCount,
-      rowsCount = _newEntityData.rowsCount;
+      rowsCount = _newEntityData.rowsCount,
+      rowHeights = _newEntityData.rowHeights;
 
 
   var start = before ? rowIndex : rowIndex + 1;
@@ -71,6 +72,13 @@ function insertRow(entityData, rowIndex, colIndex, before) {
       var toID = getEntityDataID(rr, cc);
       newEntityData = shiftCell(newEntityData, fromID, toID);
       cc++;
+    }
+    if (rowHeights) {
+      var prevHeight = rowHeights[rr - 1];
+      if (prevHeight) {
+        rowHeights[rr] = prevHeight;
+        delete rowHeights[rr - 1];
+      }
     }
     rr--;
   }
@@ -95,7 +103,8 @@ function deleteRow(entityData, rowIndex, colIndex, before) {
   });
   var _newEntityData2 = newEntityData,
       colsCount = _newEntityData2.colsCount,
-      rowsCount = _newEntityData2.rowsCount;
+      rowsCount = _newEntityData2.rowsCount,
+      rowHeights = _newEntityData2.rowHeights;
 
   var rr = rowIndex;
   while (rr < rowsCount) {
@@ -106,37 +115,12 @@ function deleteRow(entityData, rowIndex, colIndex, before) {
       newEntityData = shiftCell(newEntityData, fromID, toID);
       cc++;
     }
-    rr++;
-  }
-  return newEntityData;
-}
-
-function xxxxdeleteRow(entityData, rowIndex, colIndex) {
-  var rowsCount = entityData.rowsCount,
-      colsCount = entityData.colsCount;
-
-  if (rowsCount <= 1) {
-    return entityData;
-  }
-  var newEntityData = (0, _extends5.default)({}, entityData, {
-    rowsCount: rowsCount - 1,
-    colsCount: colsCount
-  });
-
-  var rr = 0;
-  var kk = newEntityData.rowsCount;
-  while (rr < kk) {
-    var cc = 0;
-    while (cc < colsCount) {
-      var id = getEntityDataID(rr, cc);
-      var data = (0, _extends5.default)({}, entityData[id]);
-      if (rr < rowIndex) {
-        newEntityData[id] = data;
-      } else if (rr > rowIndex) {
-        var newID = getEntityDataID(rr - 1, cc);
-        newEntityData[newID] = data;
+    if (rowHeights) {
+      var nextHeight = rowHeights[rr + 1];
+      if (nextHeight) {
+        rowHeights[rr] = nextHeight;
+        delete rowHeights[rr + 1];
       }
-      cc++;
     }
     rr++;
   }

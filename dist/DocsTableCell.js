@@ -192,7 +192,7 @@ var DocsTableCell = function (_React$PureComponent) {
       }) : null;
 
       var effectiveColspan = colSpan || 1;
-      var rightHandle = resizable && cellIndex + effectiveColspan - 1 < colsCount - 1 ? _react2.default.createElement(_DocsTableCellResizeHandle2.default, {
+      var rightHandle = canEdit && resizable && cellIndex < colsCount - 1 ? _react2.default.createElement(_DocsTableCellResizeHandle2.default, {
         key: 'r2',
         onColumnResizeEnd: onColumnResizeEnd,
         position: 'right'

@@ -46,6 +46,8 @@ var _DocsTableModifiers = require('./DocsTableModifiers');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var babelPluginFlowReactPropTypes_proptype_HTMLCollectionLike = require('./Types').babelPluginFlowReactPropTypes_proptype_HTMLCollectionLike || require('prop-types').any;
+
 var babelPluginFlowReactPropTypes_proptype_DocumentLike = require('./Types').babelPluginFlowReactPropTypes_proptype_DocumentLike || require('prop-types').any;
 
 var babelPluginFlowReactPropTypes_proptype_ElementLike = require('./Types').babelPluginFlowReactPropTypes_proptype_ElementLike || require('prop-types').any;
@@ -58,6 +60,9 @@ var babelPluginFlowReactPropTypes_proptype_CSSRules = require('./getCSSRules').b
 
 function setDocsTableEntityDataFromCell(safeHTML, row, cell, convertFromHTML, entityData) {
   var newEntityData = entityData;
+  var colsCount = entityData.colsCount,
+      rowsCount = entityData.rowsCount;
+
   var rowIndex = (0, _asNumber2.default)(row.rowIndex);
   var cellIndex = (0, _asNumber2.default)(cell.cellIndex);
   var classList = cell.classList,
@@ -77,13 +82,13 @@ function setDocsTableEntityDataFromCell(safeHTML, row, cell, convertFromHTML, en
 
   if (colSpan && colSpan > 1) {
     var cellColSpans = newEntityData.cellColSpans || {};
-    cellColSpans[id] = colSpan;
+    cellColSpans[id] = Math.min(colSpan, colsCount - cellIndex);
     newEntityData.cellColSpans = cellColSpans;
   }
 
   if (rowSpan && rowSpan > 1) {
     var cellRowSpans = newEntityData.cellRowSpans || {};
-    cellRowSpans[id] = rowSpan;
+    cellRowSpans[id] = Math.min(rowSpan, rowsCount - rowIndex);
     newEntityData.cellRowSpans = cellRowSpans;
   }
 
@@ -92,16 +97,16 @@ function setDocsTableEntityDataFromCell(safeHTML, row, cell, convertFromHTML, en
   }
 
   // The table-cell might have a className that can be mapped to the custom
-  // background color. Find out what that className is.
+  // style. Find out what that className is.
   classList.forEach(function (cellClassName) {
     var selector = '.' + cellClassName;
-    var rules = safeHTML.cssRules.get(selector);
-    if (rules) {
-      rules.forEach(function (styleValue, styleName) {
+    var styleMap = safeHTML.cssRules.get(selector);
+    if (styleMap) {
+      var borderColor = undefined;
+      styleMap.forEach(function (styleValue, styleName) {
         if (styleName === 'background-color') {
           var customClassName = _DocsCustomStyleMap2.default.forBackgroundColor(styleValue);
           if (customClassName) {
-            // console.log(customClassName);
             var cellBgStyles = newEntityData.cellBgStyles || {};
             cellBgStyles[id] = customClassName;
             newEntityData.cellBgStyles = cellBgStyles;
@@ -111,8 +116,21 @@ function setDocsTableEntityDataFromCell(safeHTML, row, cell, convertFromHTML, en
           var width = styleValue;
           colWidths[cellIndex] = width;
           newEntityData.colWidths = colWidths;
+        } else if (styleName === 'border-left-color' || styleName === 'border-top-color' || styleName === 'border-right-color' || styleName === 'border-bottom-color') {
+          if (borderColor === undefined) {
+            borderColor = styleValue;
+          } else if (borderColor !== styleValue) {
+            borderColor = null;
+          }
         }
       });
+
+      // If all cells have the same white border, hides the border.
+      if (newEntityData.noBorders !== false && borderColor && (0, _color2.default)(borderColor).hex() === '#FFFFFF') {
+        newEntityData.noBorders = true;
+      } else {
+        newEntityData.noBorders = false;
+      }
     }
   });
 
@@ -120,7 +138,9 @@ function setDocsTableEntityDataFromCell(safeHTML, row, cell, convertFromHTML, en
 }
 
 function setDocsTableEntityDataFromRow(safeHTML, row, convertFromHTML, entityData) {
-  var cells = row.cells;
+  var cells = row.cells,
+      classList = row.classList,
+      rowIndex = row.rowIndex;
 
   if (!cells || !cells.length) {
     return entityData;
@@ -132,7 +152,60 @@ function setDocsTableEntityDataFromRow(safeHTML, row, convertFromHTML, entityDat
       newEntityData = setDocsTableEntityDataFromCell(safeHTML, row, cell, convertFromHTML, entityData);
     }
   }
+
+  if (!classList || !classList.length) {
+    return newEntityData;
+  }
+
+  // The table-cell might have a className that can be mapped to the custom
+  // style. Find out what that className is.
+  classList.forEach(function (cellClassName) {
+    var selector = '.' + cellClassName;
+    var styleMaps = safeHTML.cssRules.get(selector);
+    if (styleMaps) {
+      styleMaps.forEach(function (styleValue, styleName) {
+        if (styleName === 'height') {
+          var height = 0;
+          if (styleValue.indexOf('pt') > 0) {
+            height = parseInt(styleValue, 10);
+          } else if (styleValue.indexOf('px') > 0) {
+            height = parseInt(styleValue, 10);
+          }
+
+          if (height) {
+            var rowHeights = newEntityData.rowHeights || {};
+            rowHeights[(0, _asNumber2.default)(row.rowIndex)] = (0, _asNumber2.default)(height);
+            newEntityData.rowHeights = rowHeights;
+          }
+        }
+      });
+    }
+  });
+
   return newEntityData;
+}
+
+function getRowsCount(rows) {
+  return rows && rows.length || 0;
+}
+
+function getColsCount(rows) {
+  var firstRow = rows ? rows[0] : null;
+  if (!firstRow) {
+    return 0;
+  }
+  var cells = firstRow.cells;
+
+  if (!cells || !cells.length) {
+    return 0;
+  }
+  return (0, _from2.default)(cells).reduce(function (sum, cell) {
+    sum++;
+    if (cell && cell.colSpan && cell.colSpan > 1) {
+      sum += cell.colSpan - 1;
+    }
+    return sum;
+  }, 0);
 }
 
 function createDocsTableEntityDataFromElement(safeHTML, table, convertFromHTML) {
@@ -154,31 +227,25 @@ function createDocsTableEntityDataFromElement(safeHTML, table, convertFromHTML) 
   var rows = el.rows;
 
 
-  if (!rows || !rows[0] || !rows[0].cells || rows[0].cells.length === 0) {
+  var rowsCount = getRowsCount(rows);
+  var colsCount = getColsCount(rows);
+  if (rowsCount === 0 || colsCount === 0) {
     return entityData;
   }
-
-  var rowsCount = rows ? rows.length : 0;
-  var colsCount = (0, _from2.default)(rows).reduce(function (max, row) {
-    if (row && row.cells) {
-      var len = row.cells.length;
-      return len > max ? len : max;
-    }
-    return max;
-  }, 0);
 
   entityData.rowsCount = rowsCount;
   entityData.colsCount = colsCount;
   var rr = 0;
   var useHeader = false;
-  while (rr < rowsCount) {
-    var row = rows[rr];
-    if (row) {
-      entityData = setDocsTableEntityDataFromRow(safeHTML, row, convertFromHTML, entityData);
+  if (rows) {
+    while (rr < rowsCount) {
+      var row = rows[rr];
+      if (row) {
+        entityData = setDocsTableEntityDataFromRow(safeHTML, row, convertFromHTML, entityData);
+      }
+      rr++;
     }
-    rr++;
   }
-
   entityData.colWidths = convertColumnWidthToPercentageNumbers(entityData);
   return entityData;
 }

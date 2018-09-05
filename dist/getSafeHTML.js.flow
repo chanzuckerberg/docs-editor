@@ -88,27 +88,39 @@ function getSafeHTML(
 // margin-left. This function is to enforce the nested structure that can
 // be correctly parsed by draft-convert.
 function monkeyPatchNestedListElements(el: Element): void {
-  const {previousElementSibling, style} = asElement(el);
-  if (!style || !previousElementSibling) {
+  const listNodeName = el.nodeName;
+  if (listNodeName !== 'UL' && listNodeName !== 'OL') {
     return;
   }
 
-  const prevNodeName = previousElementSibling.nodeName;
-  if (prevNodeName !== 'UL' && prevNodeName !== 'OL') {
-    return;
-  }
+  Array.from(el.children).forEach(item => {
+    const {nodeName, parentElement, style} = item;
+    if (
+      nodeName !== 'LI' ||
+      !style.marginLeft ||
+      style.marginLeft.indexOf('pt') < 0
+    ) {
+      return;
+    }
+    const marginLeft = Math.round(parseFloat(style.marginLeft));
+    let depth = Math.round(marginLeft / 36);
 
-  const items = Array.from(el.children);
-  const hasNoMargin = items.some(item => {
-    if (item.nodeName !== 'LI' || !item.style.marginLeft) {
-      return true;
+    if (!depth) {
+      return;
+    }
+    const doc = item.ownerDocument;
+
+    let currentEl = item;
+    while (depth > 0) {
+      const parentEl = el.cloneNode(false);
+      parentEl.appendChild(currentEl);
+      currentEl = parentEl;
+      depth--;
+    }
+    if (currentEl !== item) {
+      el.appendChild(currentEl);
     }
   });
-
-  if (hasNoMargin) {
-    return;
-  }
-  previousElementSibling.appendChild(el);
 }
 
 export default getSafeHTML;

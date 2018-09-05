@@ -56,6 +56,7 @@ function insertRow(
   const {
     colsCount,
     rowsCount,
+    rowHeights,
   } = newEntityData;
 
   const start = before ? rowIndex : rowIndex + 1;
@@ -68,6 +69,13 @@ function insertRow(
       const toID = getEntityDataID(rr, cc);
       newEntityData = shiftCell(newEntityData, fromID, toID);
       cc++;
+    }
+    if (rowHeights) {
+      const prevHeight = rowHeights[rr - 1];
+      if (prevHeight) {
+        rowHeights[rr] = prevHeight;
+        delete rowHeights[rr - 1];
+      }
     }
     rr--;
   }
@@ -107,6 +115,7 @@ function deleteRow(
   const {
     colsCount,
     rowsCount,
+    rowHeights,
   } = newEntityData;
   let rr = rowIndex;
   while (rr < rowsCount) {
@@ -117,40 +126,12 @@ function deleteRow(
       newEntityData = shiftCell(newEntityData, fromID, toID);
       cc++;
     }
-    rr++;
-  }
-  return newEntityData;
-}
-
-function xxxxdeleteRow(
-  entityData: DocsTableEntityData,
-  rowIndex: number,
-  colIndex: number,
-): DocsTableEntityData {
-  const {rowsCount, colsCount} = entityData;
-  if (rowsCount <= 1) {
-    return entityData;
-  }
-  const newEntityData = {
-    ...entityData,
-    rowsCount: rowsCount - 1,
-    colsCount,
-  };
-
-  let rr = 0;
-  const kk =  newEntityData.rowsCount;
-  while (rr < kk) {
-    let cc = 0;
-    while (cc < colsCount) {
-      const id = getEntityDataID(rr, cc);
-      const data = {...entityData[id]};
-      if (rr < rowIndex) {
-        newEntityData[id] = data;
-      } else if (rr > rowIndex) {
-        const newID = getEntityDataID(rr - 1, cc);
-        newEntityData[newID] = data;
+    if (rowHeights) {
+      const nextHeight = rowHeights[rr + 1];
+      if (nextHeight) {
+        rowHeights[rr] = nextHeight ;
+        delete rowHeights[rr + 1];
       }
-      cc++;
     }
     rr++;
   }

@@ -3,6 +3,11 @@
 var _draftJs = require('draft-js');
 
 // e.g. {'color': 'red'}
+if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginFlowReactPropTypes_proptype_HTMLCollectionLike', {
+  value: require('prop-types').shape({
+    length: require('prop-types').number.isRequired
+  })
+});
 if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginFlowReactPropTypes_proptype_CSSStyleDeclarationLike', {
   value: require('prop-types').shape({})
 });
@@ -31,10 +36,12 @@ if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginF
     colSpan: require('prop-types').number,
     dispatchEvent: require('prop-types').func.isRequired,
     getAttribute: require('prop-types').func.isRequired,
+    getBoundingClientRect: require('prop-types').func.isRequired,
     hasAttribute: require('prop-types').func.isRequired,
     href: require('prop-types').string.isRequired,
     id: require('prop-types').string.isRequired,
     innerHTML: require('prop-types').string.isRequired,
+    nextElementSibling: require('prop-types').any,
     nodeName: require('prop-types').string.isRequired,
     nodeType: require('prop-types').number.isRequired,
     outerHTML: require('prop-types').string.isRequired,
@@ -49,6 +56,7 @@ if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginF
     parentElement: require('prop-types').any,
     parentNode: require('prop-types').any,
     previousElementSibling: require('prop-types').any,
+    querySelectorAll: require('prop-types').func.isRequired,
     removeAttribute: require('prop-types').func.isRequired,
     rowIndex: require('prop-types').number,
     rowSpan: require('prop-types').number,
@@ -56,12 +64,17 @@ if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginF
       length: require('prop-types').number.isRequired
     }),
     setAttribute: require('prop-types').func.isRequired,
-    style: require('prop-types').shape({}).isRequired
+    style: require('prop-types').shape({}).isRequired,
+    tBodies: require('prop-types').shape({
+      length: require('prop-types').number.isRequired
+    }).isRequired
   })
 });
 if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginFlowReactPropTypes_proptype_ClientRectLike', {
   value: require('prop-types').shape({
     height: require('prop-types').number.isRequired,
+    left: require('prop-types').number.isRequired,
+    right: require('prop-types').number.isRequired,
     width: require('prop-types').number.isRequired,
     x: require('prop-types').number.isRequired,
     y: require('prop-types').number.isRequired
@@ -127,6 +140,7 @@ if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginF
     cellColSpans: require('prop-types').shape({}),
     cellRowSpans: require('prop-types').shape({}),
     colWidths: require('prop-types').arrayOf(require('prop-types').number),
+    rowHeights: require('prop-types').shape({}),
     colsCount: require('prop-types').number.isRequired,
     leftColBgStyle: require('prop-types').string,
     noBorders: require('prop-types').bool,

@@ -91,6 +91,9 @@ var LIST_START_VALUES = (0, _numberRange2.default)(2, 100);
 var TEXT_ALIGN_KEY = STYLE_KEY_PREFIX + '_TEXT_ALIGN';
 var TEXT_ALIGN_VALUES = ['left', 'center', 'right'];
 
+var VERTICAL_ALIGN_KEY = STYLE_KEY_PREFIX + '_VERTICAL_ALIGN';
+var VERTICAL_ALIGN_VALUES = ['baseline', 'sub', 'super', 'text-bottom', 'text-top'];
+
 var TRANSPARENT_COLORS = new _set2.default(['default', 'transparent', 'rgba(0, 0, 0, 0)', 'inherit', 'none']);
 
 function defineListStartStyle(styleMap, listStart) {
@@ -126,12 +129,23 @@ function defineBackgroundColorStyle(styleMap, color) {
 function defineFontSizeStyle(styleMap, fontSize) {
   // 1.5px => 1-5PT.
   var suffix = String(fontSize).replace(/[\.]/, '-');
-  styleMap[FONT_SIZE_KEY + '_' + suffix + 'PX'] = {
-    'fontSize': fontSize + 'px'
-  };
-  styleMap[FONT_SIZE_KEY + '_' + suffix + 'PT'] = {
-    'fontSize': fontSize + 'pt'
-  };
+  if (fontSize > 24) {
+    styleMap[FONT_SIZE_KEY + '_' + suffix + 'PX'] = {
+      'fontSize': fontSize + 'px',
+      'lineHeight': '1.2'
+    };
+    styleMap[FONT_SIZE_KEY + '_' + suffix + 'PT'] = {
+      'fontSize': fontSize + 'pt',
+      'lineHeight': '1.2'
+    };
+  } else {
+    styleMap[FONT_SIZE_KEY + '_' + suffix + 'PX'] = {
+      'fontSize': fontSize + 'px'
+    };
+    styleMap[FONT_SIZE_KEY + '_' + suffix + 'PT'] = {
+      'fontSize': fontSize + 'pt'
+    };
+  }
 }
 
 function defineLineHeightStyle(styleMap, lineHeight) {
@@ -158,6 +172,13 @@ function defineListStyleTypeStyle(styleMap, listStyleType) {
     };
     dd++;
   }
+}
+
+function defineVerticalAlignStyle(styleMap, align) {
+  var suffix = align.toUpperCase();
+  styleMap[VERTICAL_ALIGN_KEY + '_' + suffix] = {
+    'verticalAlign': '' + align
+  };
 }
 
 function injectCSSIntoDocument(styleMap) {
@@ -222,6 +243,12 @@ function forTextAlign(styleMap, textAlign) {
   return styleMap[key] ? key : null;
 }
 
+function forVerticalAlign(styleMap, verticalAlign) {
+  var suffix = verticalAlign.toUpperCase();
+  var key = VERTICAL_ALIGN_KEY + '_' + suffix;
+  return styleMap[key] ? key : null;
+}
+
 function forLineHeight(styleMap, lineHeight) {
   var suffix = String(lineHeight).replace(/[\.]/, '-');
   var key = LINE_HEIGHT_KEY + '_' + suffix;
@@ -247,6 +274,7 @@ LINE_HEIGHT_VALUES.forEach(defineLineHeightStyle.bind(null, BlockStyles));
 LIST_STYLE_TYPE_VALUES.forEach(defineListStyleTypeStyle.bind(null, BlockStyles));
 LIST_START_VALUES.forEach(defineListStartStyle.bind(null, BlockStyles));
 TEXT_ALIGN_VALUES.forEach(defineTextAlignStyle.bind(null, BlockStyles));
+VERTICAL_ALIGN_VALUES.forEach(defineVerticalAlignStyle.bind(null, InlineStyles));
 
 var AllStyles = (0, _extends3.default)({}, InlineStyles, BlockStyles);
 
@@ -259,6 +287,7 @@ var DocsCustomStyleMap = (0, _extends3.default)({}, InlineStyles, {
   forListStart: forListStart.bind(null, AllStyles),
   forListStyleType: forListStyleType.bind(null, AllStyles),
   forTextAlign: forTextAlign.bind(null, AllStyles),
+  forVerticalAlign: forVerticalAlign.bind(null, AllStyles),
   injectCSSIntoDocument: injectCSSIntoDocument.bind(null, AllStyles)
 });
 

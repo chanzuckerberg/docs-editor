@@ -2,13 +2,6 @@
 
 import {EditorState} from 'draft-js';
 
-type HTMLCollectionLike = {
-  [index: number]: ElementLike,
-  length: number,
-};
-
-
-
 type EventLike = {
 
 };
@@ -17,6 +10,12 @@ type ArrayLike<T> = {
   length: number,
   forEach: ((T, number) => void) => void,
 };
+
+export type HTMLCollectionLike = {
+  [index: number]: ElementLike,
+  length: number,
+};
+
 
 // e.g. {'color': 'red'}
 export type CSSStyleDeclarationLike = {
@@ -43,10 +42,12 @@ export type ElementLike = {
   colSpan: ?number,
   dispatchEvent: (e: EventLike | Element) => void,
   getAttribute: (attr: string) => string,
+  getBoundingClientRect: () => ClientRectLike,
   hasAttribute: (attr: string) => boolean,
   href: string,
   id: string,
   innerHTML: string,
+  nextElementSibling: ?ElementLike,
   nodeName: string,
   nodeType: number,
   outerHTML: string,
@@ -54,16 +55,20 @@ export type ElementLike = {
   parentElement: ?ElementLike,
   parentNode: ?ElementLike,
   previousElementSibling: ?ElementLike,
+  querySelectorAll: (s: string) => HTMLCollectionLike,
   removeAttribute: (attr: string) => void,
   rowIndex: ?number,
   rowSpan: ?number,
   rows: ?HTMLCollectionLike,
   setAttribute: (attr: string, value: string) => void,
   style: CSSStyleDeclarationLike,
+  tBodies: HTMLCollectionLike,
 };
 
 export type ClientRectLike = {
   height: number,
+  left: number,
+  right: number,
   width: number,
   x: number,
   y: number,
@@ -114,6 +119,7 @@ export type DocsTableEntityData = {
   cellColSpans?: ?{[cellId: string]: number},
   cellRowSpans?: ?{[cellId: string]: number},
   colWidths?: ?Array<number>,
+  rowHeights?: ?{[rowIndex: number]: number},
   colsCount: number,
   leftColBgStyle?: ?string,
   noBorders?: ?boolean,

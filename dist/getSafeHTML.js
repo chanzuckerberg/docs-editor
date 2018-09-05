@@ -20,9 +20,9 @@ var _DocsDecoratorTypes = require('./DocsDecoratorTypes');
 
 var _DocsDecoratorTypes2 = _interopRequireDefault(_DocsDecoratorTypes);
 
-var _asElement2 = require('./asElement');
+var _asElement = require('./asElement');
 
-var _asElement3 = _interopRequireDefault(_asElement2);
+var _asElement2 = _interopRequireDefault(_asElement);
 
 var _convertImageElementToPlaceholderElement = require('./convertImageElementToPlaceholderElement');
 
@@ -117,30 +117,38 @@ function getSafeHTML(html, domDocument, defaultCSSRules) {
 // margin-left. This function is to enforce the nested structure that can
 // be correctly parsed by draft-convert.
 function monkeyPatchNestedListElements(el) {
-  var _asElement = (0, _asElement3.default)(el),
-      previousElementSibling = _asElement.previousElementSibling,
-      style = _asElement.style;
-
-  if (!style || !previousElementSibling) {
+  var listNodeName = el.nodeName;
+  if (listNodeName !== 'UL' && listNodeName !== 'OL') {
     return;
   }
 
-  var prevNodeName = previousElementSibling.nodeName;
-  if (prevNodeName !== 'UL' && prevNodeName !== 'OL') {
-    return;
-  }
+  (0, _from2.default)(el.children).forEach(function (item) {
+    var nodeName = item.nodeName,
+        parentElement = item.parentElement,
+        style = item.style;
 
-  var items = (0, _from2.default)(el.children);
-  var hasNoMargin = items.some(function (item) {
-    if (item.nodeName !== 'LI' || !item.style.marginLeft) {
-      return true;
+    if (nodeName !== 'LI' || !style.marginLeft || style.marginLeft.indexOf('pt') < 0) {
+      return;
+    }
+    var marginLeft = Math.round(parseFloat(style.marginLeft));
+    var depth = Math.round(marginLeft / 36);
+
+    if (!depth) {
+      return;
+    }
+    var doc = item.ownerDocument;
+
+    var currentEl = item;
+    while (depth > 0) {
+      var parentEl = el.cloneNode(false);
+      parentEl.appendChild(currentEl);
+      currentEl = parentEl;
+      depth--;
+    }
+    if (currentEl !== item) {
+      el.appendChild(currentEl);
     }
   });
-
-  if (hasNoMargin) {
-    return;
-  }
-  previousElementSibling.appendChild(el);
 }
 
 exports.default = getSafeHTML;

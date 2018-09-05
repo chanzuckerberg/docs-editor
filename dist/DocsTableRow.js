@@ -124,7 +124,8 @@ var DocsTableRow = function (_React$PureComponent) {
           colWidths = entityData.colWidths,
           cellColSpans = entityData.cellColSpans,
           cellRowSpans = entityData.cellRowSpans,
-          cellBgStyles = entityData.cellBgStyles;
+          cellBgStyles = entityData.cellBgStyles,
+          rowHeights = entityData.rowHeights;
 
       var cellsCount = colsCount;
 
@@ -201,9 +202,15 @@ var DocsTableRow = function (_React$PureComponent) {
         'docs-table-row-header': rr === 0 && !!entityData[DocsTableEntityDataKeys.TOP_ROW_BG_STYLE]
       });
       var attrs = (_attrs = {}, (0, _defineProperty3.default)(_attrs, _DocsDataAttributes2.default.ELEMENT, true), (0, _defineProperty3.default)(_attrs, _DocsDataAttributes2.default.TABLE_ROW, true), _attrs);
+
+      var height = void 0;
+      if (rowHeights && rowHeights[rowIndex]) {
+        height = rowHeights[rowIndex];
+      }
+
       return _react2.default.createElement(
         'tr',
-        (0, _extends3.default)({}, attrs, { className: className }),
+        (0, _extends3.default)({}, attrs, { className: className, height: height }),
         cells
       );
     }

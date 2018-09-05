@@ -129,7 +129,7 @@ var NODE_TYPE_ELEMENT = Node.ELEMENT_NODE;
 // https://github.com/facebook/draft-js/issues/787
 // https://github.com/HubSpot/draft-convert#convertfromhtml
 // https://zhuanlan.zhihu.com/p/24951621
-function convertFromHTML(html, editorState, domDocument, cssRules) {
+function convertFromHTML(html, editorState, domDocument, cssRules, purgeConsecutiveBlankLines) {
   // See https://github.com/HubSpot/draft-convert#convertfromhtml
   var safeHTML = (0, _getSafeHTML2.default)(html, domDocument, cssRules);
   var handlers = {
@@ -145,10 +145,8 @@ function convertFromHTML(html, editorState, domDocument, cssRules) {
     };
   });
   var contentState = (0, _draftConvert.convertFromHTML)(handlers)(safeHTML.html);
-
-  if (!editorState && !cssRules) {
-    // Assume this to be a conversion for HTML from external source, we'll do
-    // extra work.
+  if (purgeConsecutiveBlankLines) {
+    // Merge consecutive nlank lines.
     contentState = purgeBlankContentBlocks(contentState);
   }
 
@@ -214,7 +212,8 @@ function htmlToStyle(safeHTML, nodeName, node, currentStyle) {
       lineHeight: _DocsCustomStyleMap2.default.forLineHeight,
       listStart: _DocsCustomStyleMap2.default.forListStart,
       listStyleType: _DocsCustomStyleMap2.default.forListStyleType,
-      textAlign: _DocsCustomStyleMap2.default.forTextAlign
+      textAlign: _DocsCustomStyleMap2.default.forTextAlign,
+      verticalAlign: _DocsCustomStyleMap2.default.forVerticalAlign
     };
 
     if (nodeName === 'LI') {
