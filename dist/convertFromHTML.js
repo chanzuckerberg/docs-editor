@@ -84,6 +84,8 @@ var _getCSSRules = require('./getCSSRules');
 
 var _draftJs = require('draft-js');
 
+var _DocsEditorChangeType = require('./DocsEditorChangeType');
+
 var _immutable = require('immutable');
 
 var _draftConvert = require('draft-convert');
@@ -150,8 +152,13 @@ function convertFromHTML(html, editorState, domDocument, cssRules, purgeConsecut
     contentState = purgeBlankContentBlocks(contentState);
   }
 
-  var decorator = _DocsDecorator2.default.get();
-  return editorState ? _draftJs.EditorState.push(editorState, contentState) : _draftJs.EditorState.createWithContent(contentState, decorator);
+  if (editorState) {
+    contentState = _draftJs.Modifier.replaceWithFragment(editorState.getCurrentContent(), editorState.getSelection(), contentState.getBlockMap());
+    return _draftJs.EditorState.push(editorState, contentState, _DocsEditorChangeType.INSERT_FRAGMENT);
+  } else {
+    var decorator = _DocsDecorator2.default.get();
+    return _draftJs.EditorState.createWithContent(contentState, decorator);
+  }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
