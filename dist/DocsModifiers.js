@@ -283,7 +283,7 @@ function ensureAtomicBlocksAreSelectable(editorState) {
 }
 
 function pasteHTML(editorState, html) {
-  return (0, _convertFromHTML2.default)(html, editorState, window.document, null, true);
+  return (0, _convertFromHTML2.default)(html, editorState, null, null, true);
 }
 
 // Helper function for `ensureAtomicBlocksAreSelectable()`.
