@@ -72,3 +72,14 @@ body, html {
 #app figure {
   margin: 0;
 }
+
+#app label.checkbox {
+  cursor: pointer;
+  display: inline-block;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+#app label.checkbox > input {
+  margin: 0 4px;
+}

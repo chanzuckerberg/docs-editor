@@ -82,6 +82,7 @@ function getInitialState(): Object {
     editorState,
     initialEditorState: editorState,
     debugValue,
+    debugMode: false,
   };
 }
 
@@ -100,7 +101,9 @@ class DemoApp extends React.PureComponent<any, any, any> {
   }
 
   render(): React.Element<any> {
-    const {docsContext, editorState, debugValue, debugKey} = this.state;
+    const {
+      docsContext, editorState, debugValue, debugKey, debugMode,
+    } = this.state;
     return (
       <div id="app">
         <div className="main-column">
@@ -126,6 +129,14 @@ class DemoApp extends React.PureComponent<any, any, any> {
               <Button onClick={this._importHTML}>Import HTML</Button>
               <Button onClick={this._reset}>Reset</Button>
             </ButtonGroup>
+            <label className="checkbox">
+              <input
+                type="checkbox"
+                checked={debugMode}
+                onChange={this._toggleDebugMode}
+              />
+              debug mode
+            </label>
           </div>
           <textarea
             defaultValue={debugValue}
@@ -139,9 +150,9 @@ class DemoApp extends React.PureComponent<any, any, any> {
   }
 
   applyJSON = (raw: Object): void => {
-    const {editorState} = this.state;
+    const {editorState, debugMode} = this.state;
     this.setState({
-      debugValue: '',
+      debugValue: debugMode ? JSON.stringify(raw, null, 2) : '',
       editorState: convertFromRaw(raw, editorState),
     });
   };
@@ -155,7 +166,16 @@ class DemoApp extends React.PureComponent<any, any, any> {
   };
 
   _onChange = (editorState: Object): void => {
-    this.setState({editorState});
+    const {debugValue, debugMode, debugKey} = this.state;
+    this.setState({
+      editorState,
+      debugKey: debugMode ?
+        uniqueID() :
+        debugKey,
+      debugValue: debugMode ?
+        JSON.stringify(convertToRaw(editorState), null, 2) :
+        debugValue,
+    });
   };
 
   _importHTML = (): void => {
@@ -240,6 +260,12 @@ class DemoApp extends React.PureComponent<any, any, any> {
       reader && reader.readAsText(file);
     });
     return;
+  };
+
+  _toggleDebugMode = () => {
+    this.setState({
+      debugMode: !this.state.debugMode,
+    });
   };
 }
 
