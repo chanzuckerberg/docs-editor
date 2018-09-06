@@ -63,7 +63,7 @@
     "classnames": "2.2.3",
     "color": "3.0.0",
     "draft-convert": "2.1.4",
-    "draft-js": "0.10.0",
+    "draft-js": "0.10.5",
     "fbjs": "0.8.16",
     "immutable": "3.8.1",
     "invariant": "2.2.4",
