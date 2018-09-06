@@ -91,6 +91,9 @@ function noop(): void {
 }
 
 class DemoApp extends React.PureComponent<any, any, any> {
+
+  _dropping = false;
+
   state = getInitialState();
 
   componentDidMount() {
@@ -239,6 +242,13 @@ class DemoApp extends React.PureComponent<any, any, any> {
 
   _onDrop = (e: any): void => {
     e.preventDefault();
+
+    if (this._dropping) {
+      return;
+    }
+    this._dropping = true;
+
+
     const {debugKey} = this.state;
     const el: any = document.getElementById(debugKey);
     const file = e.dataTransfer.files[0];
@@ -251,15 +261,12 @@ class DemoApp extends React.PureComponent<any, any, any> {
       const html = el.value = onload.target.result;
       this.applyHTML(html);
       reader = null;
+      this._dropping = false;
     };
     this.applyHTML('<div>Load: ' + file.name + '</div>');
     el.readOnly = true;
-    setTimeout(() => {
-      el.readOnly = true;
-      el.value = 'Load: ' + file.name;
-      reader && reader.readAsText(file);
-    });
-    return;
+    el.value = 'Load: ' + file.name;
+    reader && reader.readAsText(file);
   };
 
   _toggleDebugMode = () => {
