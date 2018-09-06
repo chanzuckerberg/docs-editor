@@ -5,6 +5,8 @@ import DocsBlockTypes from './DocsBlockTypes';
 import DocsDecorator from './DocsDecorator';
 import DocsDecoratorTypes from './DocsDecoratorTypes';
 import convertFromHTML from './convertFromHTML';
+import convertFromRaw from './convertFromRaw';
+import convertToRaw from './convertToRaw';
 import getCurrentSelectionEntity from './getCurrentSelectionEntity';
 import isContentBlockEmpty from './isContentBlockEmpty';
 import tryInsertAtomicBlock from './tryInsertAtomicBlock';
@@ -195,12 +197,26 @@ function updateEntityData(
   entityKey: string,
   entityData: Object,
 ): EditorState {
+  // calling `contentState.replaceEntityData` mutates the linked enity data
+  // that is mutable. The problem is that it will not work with the history
+  // action. For example, click "undo" will roll back to an old `editorState`
+  // that is unfortunately linked to an new updated entity state.
+  const TODO_ENTITY_DATA_IS_IMMUTABLE = false;
   const contentState = editorState.getCurrentContent();
-  contentState.replaceEntityData(entityKey, entityData);
-  return EditorState.createWithContent(
-    contentState,
-    DocsDecorator.get(),
-  );
+  const entity = contentState.getEntity(entityKey);
+  if (entity && TODO_ENTITY_DATA_IS_IMMUTABLE) {
+    const entityMap = contentState.get('entityMap');
+    let nextContentState = contentState.set('entityMap', {});
+    nextContentState = nextContentState.set('entityMap', entityMap);
+    nextContentState.replaceEntityData(entityKey, entityData);
+    const ne = EditorState.push(editorState, nextContentState, APPLY_ENTITY);
+  } else {
+    contentState.replaceEntityData(entityKey, entityData);
+    return EditorState.createWithContent(
+      contentState,
+      DocsDecorator.get(),
+    );
+  }
 }
 
 function toggleAnnotation(
@@ -464,8 +480,6 @@ function createContentBlock(text: string, className?: string): ContentBlock {
     data: className ? ImmutableMap({className}) : undefined,
   });
 }
-
-
 
 module.exports = {
   ensureAtomicBlocksAreSelectable,

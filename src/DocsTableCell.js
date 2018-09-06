@@ -157,6 +157,7 @@ class DocsTableCell extends React.PureComponent {
     if (!this.context.docsContext.canEdit) {
       return;
     }
+    this._timer.clear();
     this._timer.set(this._notifyChangeImmediate, 250);
   };
 
