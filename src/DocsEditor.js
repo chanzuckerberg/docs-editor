@@ -162,7 +162,9 @@ class DocsEditor extends React.PureComponent {
             <DocsEditorToolBar
               {...this.props}
               {...this.state}
+              editorState={editorState}
               getEditor={this._getEditor}
+              onChange={this._onChange}
             />
           </div>
           <div className="docs-editor-frame-body">

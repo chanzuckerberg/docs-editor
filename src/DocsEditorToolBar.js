@@ -24,7 +24,9 @@ import type {Spec} from './DocsEditorToolBarButton';
 import type {ModalHandle} from './showModalDialog';
 
 type Props = {
+  editorState: EditorState,
   getEditor: () => ?DocsEditorLike,
+  onChange: (e: EditorState) => void,
 };
 
 function showLinkEditorModalDialog(url: ?string, callback: Function): ModalHandle {
@@ -180,14 +182,26 @@ class DocsEditorToolBar extends React.PureComponent {
     );
   }
 
-  _renderHistoryButton = (spec: Spec): React.Element<any> => {
-    const {history} = this._editCapability;
+  _renderHistoryButton = (spec: Spec): ?React.Element<any> => {
+    const {editorState} = this.props;
+    let disabled = true;
+    switch (spec.action) {
+      case DocsActionTypes.HISTORY_REDO:
+        disabled = editorState.getRedoStack().size === 0;
+        break;
+      case DocsActionTypes.HISTORY_UNDO:
+        disabled = editorState.getUndoStack().size === 0;
+        break;
+      default:
+        return null;
+    }
+
     return (
       <DocsEditorToolBarButton
         active={false}
-        disabled={!history || !history.has(spec.action)}
+        disabled={disabled}
         key={spec.action}
-        onClick={this._onButtonClick}
+        onClick={this._onHistoryButtonClick}
         spec={spec}
       />
     );
@@ -252,6 +266,18 @@ class DocsEditorToolBar extends React.PureComponent {
         spec={spec}
       />
     );
+  };
+
+  _onHistoryButtonClick = (spec: Spec): void => {
+    const {editorState, onChange} = this.props;
+    switch (spec.action) {
+      case DocsActionTypes.HISTORY_REDO:
+        onChange(EditorState.redo(editorState));
+        break;
+      case DocsActionTypes.HISTORY_UNDO:
+        onChange(EditorState.undo(editorState));
+        break;
+    }
   };
 
   _onButtonClick = (spec: Spec): void => {
