@@ -94,7 +94,7 @@ var DocsTableCell = function (_React$PureComponent) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = DocsTableCell.__proto__ || (0, _getPrototypeOf2.default)(DocsTableCell)).call.apply(_ref, [this].concat(args))), _this), _this._editor = null, _this._editorID = (0, _uniqueID2.default)(), _this._localRawContentState = null, _this._timer = new _Timer2.default(), _this.state = {
+    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = DocsTableCell.__proto__ || (0, _getPrototypeOf2.default)(DocsTableCell)).call.apply(_ref, [this].concat(args))), _this), _this._editor = null, _this._editorID = (0, _uniqueID2.default)(), _this._localChangeID = null, _this._timer = new _Timer2.default(), _this.state = {
       localEditorState: getLocalEditorState(_this.props)
     }, _this._onEditorRef = function (ref) {
       _this._editor = ref;
@@ -103,12 +103,14 @@ var DocsTableCell = function (_React$PureComponent) {
         return;
       }
       // Effectively and optimistically commit change locally then sync later.
+      _this._localChangeID = (0, _uniqueID2.default)();
       _this.setState({ localEditorState: localEditorState }, _this._notifyChange);
     }, _this._notifyChange = function () {
       if (!_this.context.docsContext.canEdit) {
         return;
       }
-      _this._timer.set(_this._notifyChangeImmediate, 250);
+      _this._timer.clear();
+      _this._timer.set(_this._notifyChangeImmediate, 160);
     }, _this._notifyChangeImmediate = function () {
       _this._timer.clear();
       if (!_this._editor) {
@@ -122,8 +124,7 @@ var DocsTableCell = function (_React$PureComponent) {
       var localEditorState = _this.state.localEditorState;
 
       var rawContentState = (0, _convertToRaw2.default)(localEditorState);
-      rawContentState[_DocsTableModifiers.LOCAL_CHANGE_ID] = (0, _uniqueID2.default)();
-      _this._localRawContentState = rawContentState;
+      rawContentState[_DocsTableModifiers.LOCAL_CHANGE_ID] = _this._localChangeID;
       onChange(rowIndex, cellIndex, rawContentState);
     }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
   }
@@ -137,19 +138,19 @@ var DocsTableCell = function (_React$PureComponent) {
       if (this.props.rawContentState === rawContentState) {
         return;
       }
-      var localRawContentState = this._localRawContentState;
-      if (localRawContentState === rawContentState) {
-        return;
-      }
-      var id1 = localRawContentState && localRawContentState[_DocsTableModifiers.LOCAL_CHANGE_ID];
-      var id2 = rawContentState && rawContentState[_DocsTableModifiers.LOCAL_CHANGE_ID];
-      if (id2 && id2 && id1 === id2) {
+
+      if (this._localChangeID && rawContentState && rawContentState[_DocsTableModifiers.LOCAL_CHANGE_ID] === this._localChangeID) {
         return;
       }
       this._timer.clear();
       this.setState({
         localEditorState: getLocalEditorState(nextProps)
       });
+    }
+  }, {
+    key: 'componentDidUpdate',
+    value: function componentDidUpdate() {
+      this._localChangeID = (0, _uniqueID2.default)();
     }
   }, {
     key: 'componentWillUnmount',

@@ -152,6 +152,10 @@ var DocsEditor = function (_React$PureComponent) {
       key: (0, _uniqueID2.default)()
     }, _this._getEditor = function () {
       return _this._activeEditor;
+    }, _this._onChange = function (editorState) {
+      var onChange = _this.props.onChange;
+
+      onChange && onChange(editorState);
     }, _this._onEditorRef = function (ref) {
       if (ref) {
         // Mounting
@@ -291,7 +295,9 @@ var DocsEditor = function (_React$PureComponent) {
             { className: 'docs-editor-frame-head' },
             header,
             _react2.default.createElement(_DocsEditorToolBar2.default, (0, _extends3.default)({}, this.props, this.state, {
-              getEditor: this._getEditor
+              editorState: editorState,
+              getEditor: this._getEditor,
+              onChange: this._onChange
             }))
           ),
           _react2.default.createElement(
@@ -305,7 +311,7 @@ var DocsEditor = function (_React$PureComponent) {
               _react2.default.createElement(_DocsBaseEditor2.default, {
                 editorState: editorState,
                 id: editorId,
-                onChange: onChange,
+                onChange: this._onChange,
                 placeholder: placeholderText,
                 ref: this._onEditorRef
               })

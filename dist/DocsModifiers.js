@@ -20,6 +20,14 @@ var _convertFromHTML = require('./convertFromHTML');
 
 var _convertFromHTML2 = _interopRequireDefault(_convertFromHTML);
 
+var _convertFromRaw = require('./convertFromRaw');
+
+var _convertFromRaw2 = _interopRequireDefault(_convertFromRaw);
+
+var _convertToRaw = require('./convertToRaw');
+
+var _convertToRaw2 = _interopRequireDefault(_convertToRaw);
+
 var _getCurrentSelectionEntity = require('./getCurrentSelectionEntity');
 
 var _getCurrentSelectionEntity2 = _interopRequireDefault(_getCurrentSelectionEntity);
@@ -144,10 +152,44 @@ function updateLink(editorState, url) {
   return _draftJs.RichUtils.toggleLink(editorState, selection, url ? entityKey : null);
 }
 
+// This method should only be used for atomic block.
 function updateEntityData(editorState, entityKey, entityData) {
   var contentState = editorState.getCurrentContent();
-  contentState.replaceEntityData(entityKey, entityData);
-  return _draftJs.EditorState.createWithContent(contentState, _DocsDecorator2.default.get());
+  var entity = contentState.getEntity(entityKey);
+  if (entity) {
+    var blocks = contentState.getBlocksAsArray();
+    var nextContentState = contentState;
+    blocks.some(function (contentBlock) {
+      if (contentBlock.getEntityAt(0) === entityKey && contentBlock.getType() === 'atomic') {
+        var contentBlockKey = contentBlock.getKey();
+        // Create a fake selection to that we can update the entity data
+        // with `Modifier.applyEntity.`
+        var selection = editorState.getSelection().merge({
+          focusKey: contentBlockKey,
+          anchorKey: contentBlockKey,
+          anchorOffset: 0,
+          focusOffset: 1,
+          isBackward: false,
+          hasFocus: false
+        });
+
+        // Remove the old entity.
+        nextContentState = _draftJs.Modifier.applyEntity(nextContentState, selection, null);
+
+        // Create a new entity.
+        nextContentState = nextContentState.createEntity(entity.getType(), entity.getMutability(), entityData);
+
+        nextContentState = _draftJs.Modifier.applyEntity(nextContentState, selection, nextContentState.getLastCreatedEntityKey());
+        return true;
+      }
+    });
+    return _draftJs.EditorState.push(editorState, nextContentState, _DocsEditorChangeType.APPLY_ENTITY);
+  } else {
+    // calling `contentState.replaceEntityData` mutates the linked enity data
+    // that is mutable directly.
+    contentState.replaceEntityData(entityKey, entityData);
+    return _draftJs.EditorState.createWithContent(contentState, _DocsDecorator2.default.get());
+  }
 }
 
 function toggleAnnotation(editorState) {
@@ -162,6 +204,7 @@ function toggleAnnotation(editorState) {
     var contentState = editorState.getCurrentContent();
     var entityKey = null;
     var newContentState = _draftJs.Modifier.applyEntity(contentState, selection, entityKey);
+    console.log(selection);
     return _draftJs.EditorState.push(editorState, newContentState, _DocsEditorChangeType.APPLY_ENTITY);
   } else {
     var _contentState = editorState.getCurrentContent();

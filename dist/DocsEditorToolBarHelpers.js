@@ -268,7 +268,6 @@ function getEditCapability(editor) {
     annotation: isAnnotationEnabled(editor),
     blockStyles: getEditableBlockStyles(editor),
     default: isEditEnabled(editor),
-    history: getEditableHistory(editor),
     inlineStyles: getEditableInlineStyles(editor),
     table: isInsertTableEnabled(editor),
     insert: isInsertEnabled(editor)
