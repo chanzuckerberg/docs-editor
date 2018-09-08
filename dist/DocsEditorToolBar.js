@@ -161,13 +161,25 @@ var DocsEditorToolBar = function (_React$PureComponent) {
     return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = DocsEditorToolBar.__proto__ || (0, _getPrototypeOf2.default)(DocsEditorToolBar)).call.apply(_ref, [this].concat(args))), _this), _this._editCapability = (0, _DocsEditorToolBarHelpers.getEditCapability)(null), _this._eventsCapture = null, _this._imageEditorModal = null, _this._linkEditorModal = null, _this._mathEditorModal = null, _this._timer = new _Timer2.default(), _this._timerID = 0, _this.state = {
       editorState: null
     }, _this._renderHistoryButton = function (spec) {
-      var history = _this._editCapability.history;
+      var editorState = _this.props.editorState;
+
+      var disabled = true;
+      switch (spec.action) {
+        case _DocsActionTypes2.default.HISTORY_REDO:
+          disabled = editorState.getRedoStack().size === 0;
+          break;
+        case _DocsActionTypes2.default.HISTORY_UNDO:
+          disabled = editorState.getUndoStack().size === 0;
+          break;
+        default:
+          return null;
+      }
 
       return _react2.default.createElement(_DocsEditorToolBarButton2.default, {
         active: false,
-        disabled: !history || !history.has(spec.action),
+        disabled: disabled,
         key: spec.action,
-        onClick: _this._onButtonClick,
+        onClick: _this._onHistoryButtonClick,
         spec: spec
       });
     }, _this._renderAnnotationButton = function (spec) {
@@ -218,6 +230,19 @@ var DocsEditorToolBar = function (_React$PureComponent) {
         onClick: _this._onButtonClick,
         spec: spec
       });
+    }, _this._onHistoryButtonClick = function (spec) {
+      var _this$props = _this.props,
+          editorState = _this$props.editorState,
+          onChange = _this$props.onChange;
+
+      switch (spec.action) {
+        case _DocsActionTypes2.default.HISTORY_REDO:
+          onChange(_draftJs.EditorState.redo(editorState));
+          break;
+        case _DocsActionTypes2.default.HISTORY_UNDO:
+          onChange(_draftJs.EditorState.undo(editorState));
+          break;
+      }
     }, _this._onButtonClick = function (spec) {
       var editor = _this.props.getEditor();
       if (!editor) {
@@ -274,9 +299,9 @@ var DocsEditorToolBar = function (_React$PureComponent) {
       _this._timerID = 0;
       var editor = _this.props.getEditor();
       if (editor) {
-        var editorState = editor.props.editorState;
+        var _editorState = editor.props.editorState;
 
-        _this.setState({ editorState: editorState || null });
+        _this.setState({ editorState: _editorState || null });
       }
     }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
   }

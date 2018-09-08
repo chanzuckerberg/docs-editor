@@ -295,7 +295,9 @@ var DocsEditor = function (_React$PureComponent) {
             { className: 'docs-editor-frame-head' },
             header,
             _react2.default.createElement(_DocsEditorToolBar2.default, (0, _extends3.default)({}, this.props, this.state, {
-              getEditor: this._getEditor
+              editorState: editorState,
+              getEditor: this._getEditor,
+              onChange: this._onChange
             }))
           ),
           _react2.default.createElement(

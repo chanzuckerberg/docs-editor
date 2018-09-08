@@ -38,7 +38,7 @@ class DocsTableCell extends React.PureComponent {
 
   _editor = null;
   _editorID = uniqueID();
-  _localRawContentState = null;
+  _localChangeID = null;
   _timer = new Timer();
 
   props: Props;
@@ -53,19 +53,22 @@ class DocsTableCell extends React.PureComponent {
     if (this.props.rawContentState === rawContentState) {
       return;
     }
-    const localRawContentState = this._localRawContentState;
-    if (localRawContentState === rawContentState) {
-      return;
-    }
-    const id1 = localRawContentState && localRawContentState[LOCAL_CHANGE_ID];
-    const id2 = rawContentState && rawContentState[LOCAL_CHANGE_ID];
-    if (id2 && id2 && id1 === id2) {
+
+    if (
+      this._localChangeID &&
+      rawContentState &&
+      rawContentState[LOCAL_CHANGE_ID] === this._localChangeID
+    ) {
       return;
     }
     this._timer.clear();
     this.setState({
       localEditorState: getLocalEditorState(nextProps),
     });
+  }
+
+  componentDidUpdate(): void {
+    this._localChangeID = uniqueID();
   }
 
   componentWillUnmount(): void {
@@ -150,6 +153,7 @@ class DocsTableCell extends React.PureComponent {
       return;
     }
     // Effectively and optimistically commit change locally then sync later.
+    this._localChangeID = uniqueID();
     this.setState({localEditorState}, this._notifyChange);
   };
 
@@ -158,7 +162,7 @@ class DocsTableCell extends React.PureComponent {
       return;
     }
     this._timer.clear();
-    this._timer.set(this._notifyChangeImmediate, 250);
+    this._timer.set(this._notifyChangeImmediate, 160);
   };
 
   _notifyChangeImmediate = () => {
@@ -170,8 +174,7 @@ class DocsTableCell extends React.PureComponent {
     const {cellIndex, onChange, rowIndex} = this.props;
     const {localEditorState} = this.state;
     const rawContentState = convertToRaw(localEditorState);
-    rawContentState[LOCAL_CHANGE_ID] = uniqueID();
-    this._localRawContentState = rawContentState;
+    rawContentState[LOCAL_CHANGE_ID] = this._localChangeID;
     onChange(rowIndex, cellIndex, rawContentState);
   };
 }
