@@ -108,6 +108,7 @@ var DocsTableCell = function (_React$PureComponent) {
       if (!_this.context.docsContext.canEdit) {
         return;
       }
+      _this._timer.clear();
       _this._timer.set(_this._notifyChangeImmediate, 250);
     }, _this._notifyChangeImmediate = function () {
       _this._timer.clear();

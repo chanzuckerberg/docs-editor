@@ -175,7 +175,7 @@ class DocsEditor extends React.PureComponent {
               <DocsBaseEditor
                 editorState={editorState}
                 id={editorId}
-                onChange={onChange}
+                onChange={this._onChange}
                 placeholder={placeholderText}
                 ref={this._onEditorRef}
               />
@@ -191,6 +191,11 @@ class DocsEditor extends React.PureComponent {
 
   _getEditor = (): ?DocsEditorLike => {
     return this._activeEditor;
+  };
+
+  _onChange = (editorState: EditorState): void => {
+    const {onChange} = this.props;
+    onChange && onChange(editorState);
   };
 
   _onEditorRef = (ref: any) => {
