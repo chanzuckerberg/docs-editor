@@ -5,10 +5,10 @@ import DocsTableCell from './DocsTableCell';
 import DocsTableModifiers from './DocsTableModifiers';
 import React from 'react';
 import cx from 'classnames';
+import updateEntityData from './updateEntityData';
 import withDocsContext from './withDocsContext';
 import {EditorState} from 'draft-js';
 import {getEntityDataID} from './DocsTableModifiers';
-import {updateEntityData} from './DocsModifiers';
 
 import type {DocsTableEntityData} from './Types';
 

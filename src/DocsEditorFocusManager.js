@@ -11,7 +11,7 @@ import nullthrows from 'nullthrows';
 import tryBlur from './tryBlur';
 import tryFindDOMNode from './tryFindDOMNode';
 import tryFocus from './tryFocus';
-import {updateEntityData} from './DocsModifiers';
+import updateEntityData from './updateEntityData';
 
 import type {DocsEditorLike} from './Types';
 

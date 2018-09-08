@@ -3,8 +3,8 @@
 import DocsDropdownButton from './DocsDropdownButton';
 import DocsMenuItem from './DocsMenuItem';
 import React from 'react';
+import updateEntityData from './updateEntityData';
 import {EditorState} from 'draft-js';
-import {updateEntityData} from './DocsModifiers';
 
 import type {DocsEditorLike} from './Types';
 
