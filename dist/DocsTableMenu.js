@@ -32,9 +32,11 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _draftJs = require('draft-js');
+var _updateEntityData = require('./updateEntityData');
 
-var _DocsModifiers = require('./DocsModifiers');
+var _updateEntityData2 = _interopRequireDefault(_updateEntityData);
+
+var _draftJs = require('draft-js');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -122,7 +124,7 @@ var DocsTableMenu = function (_React$PureComponent) {
       }
       var entityData = entity.getData();
       var newEntityData = modifier(entityData, rowIndex, cellIndex);
-      onChange((0, _DocsModifiers.updateEntityData)(editorState, entityKey, newEntityData));
+      onChange((0, _updateEntityData2.default)(editorState, entityKey, newEntityData));
     }
   }]);
   return DocsTableMenu;

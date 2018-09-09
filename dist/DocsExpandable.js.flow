@@ -13,9 +13,9 @@ import convertToRaw from './convertToRaw';
 import cx from 'classnames';
 import showModalDialog from './showModalDialog';
 import uniqueID from './uniqueID';
+import updateEntityData from './updateEntityData';
 import withDocsContext from './withDocsContext';
 import {ContentBlock, EditorState, Entity} from 'draft-js';
-import {updateEntityData} from './DocsModifiers';
 import {updateLabel} from './DocsExpandableModifiers';
 
 import './DocsExpandable.css';

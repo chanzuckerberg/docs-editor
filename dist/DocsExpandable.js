@@ -80,13 +80,15 @@ var _uniqueID = require('./uniqueID');
 
 var _uniqueID2 = _interopRequireDefault(_uniqueID);
 
+var _updateEntityData = require('./updateEntityData');
+
+var _updateEntityData2 = _interopRequireDefault(_updateEntityData);
+
 var _withDocsContext = require('./withDocsContext');
 
 var _withDocsContext2 = _interopRequireDefault(_withDocsContext);
 
 var _draftJs = require('draft-js');
-
-var _DocsModifiers = require('./DocsModifiers');
 
 var _DocsExpandableModifiers = require('./DocsExpandableModifiers');
 
@@ -203,7 +205,7 @@ var DocsExpandable = function (_React$PureComponent) {
 
       var entityData = entity.getData();
       var newEntityData = (0, _DocsExpandableModifiers.updateLabel)(entityData, label || '');
-      var newEditorState = (0, _DocsModifiers.updateEntityData)(editorState, entityKey, newEntityData);
+      var newEditorState = (0, _updateEntityData2.default)(editorState, entityKey, newEntityData);
       onChange(newEditorState);
     }, _this._getEditor = function () {
       return _this._activeEditor;
@@ -238,7 +240,7 @@ var DocsExpandable = function (_React$PureComponent) {
         body: (0, _convertToRaw2.default)(localEditorState),
         show: _this.state.expanded
       }, LOCAL_CHANGE_ID, localChangeID));
-      var newEditorState = (0, _DocsModifiers.updateEntityData)(editorState, entityKey, newEntityData);
+      var newEditorState = (0, _updateEntityData2.default)(editorState, entityKey, newEntityData);
       _this._localChangeID = localChangeID;
       onChange(newEditorState);
     }, _this._autoFocus = function () {

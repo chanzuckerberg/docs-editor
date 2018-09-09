@@ -48,13 +48,15 @@ var _classnames = require('classnames');
 
 var _classnames2 = _interopRequireDefault(_classnames);
 
+var _updateEntityData = require('./updateEntityData');
+
+var _updateEntityData2 = _interopRequireDefault(_updateEntityData);
+
 var _withDocsContext = require('./withDocsContext');
 
 var _withDocsContext2 = _interopRequireDefault(_withDocsContext);
 
 var _draftJs = require('draft-js');
-
-var _DocsModifiers = require('./DocsModifiers');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -87,7 +89,7 @@ var DocsTableRow = function (_React$PureComponent) {
       var newEntityData = (0, _extends3.default)({}, entityData);
       var id = (0, _DocsTableModifiers.getEntityDataID)(rowIndex, colIndex);
       newEntityData[id] = cellData;
-      var newEditorState = (0, _DocsModifiers.updateEntityData)(editorState, entityKey, newEntityData);
+      var newEditorState = (0, _updateEntityData2.default)(editorState, entityKey, newEntityData);
       onChange(newEditorState);
     }, _this._onColumnResizeEnd = function (colWidths) {
       var _this$props2 = _this.props,
@@ -100,7 +102,7 @@ var DocsTableRow = function (_React$PureComponent) {
       var newEntityData = (0, _extends3.default)({}, entityData, {
         colWidths: colWidths
       });
-      var newEditorState = (0, _DocsModifiers.updateEntityData)(editorState, entityKey, newEntityData);
+      var newEditorState = (0, _updateEntityData2.default)(editorState, entityKey, newEntityData);
       onChange(newEditorState);
     }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
   }
