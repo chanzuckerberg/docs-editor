@@ -15,7 +15,8 @@ import {ButtonGroup} from 'react-bootstrap';
 import {EditorState} from 'draft-js';
 import getCurrentSelectionEntity from './getCurrentSelectionEntity';
 import {getEditCapability, maybeUpdateAnnotation, maybeInsertBlock, maybeFormatInlineText, maybeUpdateHistory, maybeFormatBlockText, ANNOTATION_SPECS, INSERT_SPECS, INLINE_SPECS, BLOCK_SPECS, HISTORY_SPECS} from './DocsEditorToolBarHelpers';
-import {updateLink, updateEntityData} from './DocsModifiers';
+import {updateLink} from './DocsModifiers';
+import updateEntityData from './updateEntityData';
 
 import './DocsEditorToolBar.css';
 
@@ -85,6 +86,8 @@ function showMathEditorModalDialog(
     },
     (newEntityData) => {
       if (newEntityData) {
+        // TODO: This is wrong. It should not call `updateEntityData`
+        // which is for atomic block only.
         const newEditorState = updateEntityData(
           editorState,
           entityKey,

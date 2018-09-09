@@ -76,6 +76,10 @@ var _DocsEditorToolBarHelpers = require('./DocsEditorToolBarHelpers');
 
 var _DocsModifiers = require('./DocsModifiers');
 
+var _updateEntityData = require('./updateEntityData');
+
+var _updateEntityData2 = _interopRequireDefault(_updateEntityData);
+
 require('./DocsEditorToolBar.css');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -105,7 +109,7 @@ function showImageEditorModalDialog(docsContext, editorState, onChange) {
     title: 'Edit Image'
   }, function (newEntityData) {
     if (newEntityData) {
-      var newEditorState = (0, _DocsModifiers.updateEntityData)(editorState, entityKey, newEntityData);
+      var newEditorState = (0, _updateEntityData2.default)(editorState, entityKey, newEntityData);
       onChange(newEditorState);
     }
   });
@@ -123,7 +127,9 @@ function showMathEditorModalDialog(docsContext, editorState, onChange) {
     entityData: entityData
   }, function (newEntityData) {
     if (newEntityData) {
-      var newEditorState = (0, _DocsModifiers.updateEntityData)(editorState, entityKey, newEntityData);
+      // TODO: This is wrong. It should not call `updateEntityData`
+      // which is for atomic block only.
+      var newEditorState = (0, _updateEntityData2.default)(editorState, entityKey, newEntityData);
       onChange(newEditorState);
     }
   });

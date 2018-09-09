@@ -64,7 +64,9 @@ var _tryFocus = require('./tryFocus');
 
 var _tryFocus2 = _interopRequireDefault(_tryFocus);
 
-var _DocsModifiers = require('./DocsModifiers');
+var _updateEntityData = require('./updateEntityData');
+
+var _updateEntityData2 = _interopRequireDefault(_updateEntityData);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -134,7 +136,7 @@ var DocsEditorFocusManager = function () {
           onChange = _nullthrows2.onChange,
           editorState = _nullthrows2.editorState;
 
-      onChange((0, _DocsModifiers.updateEntityData)(editorState, entityKey, entityData));
+      onChange((0, _updateEntityData2.default)(editorState, entityKey, entityData));
     };
 
     this._onMouseDown = function (e) {
