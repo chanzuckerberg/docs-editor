@@ -2,7 +2,7 @@
 Rich Text Editor for education purpose.
 
 ## DEMO
-http://cdn.summitlearning.org/assets/index_docs_editor_0_0_5_8.html
+http://cdn.summitlearning.org/assets/index_docs_editor_0_0_6_2.html
 
 ## Getting start
 
@@ -25,3 +25,28 @@ http://cdn.summitlearning.org/assets/index_docs_editor_0_0_5_8.html
 4. Build deploy command `python generate_deploy_script.py`
 5. Execute the command `sh deploy_to_s3.sh`
 6. Verify that the files are available on s3.
+
+## For Your own (React) application
+
+```
+import {DocsEditor, convertFromRaw, convertToRaw}  from 'docs-editor';
+
+class DemoApp extends React.PureComponent<any, any, any> {
+
+  state = convertFromRaw();
+
+  render(): React.Element<any> {
+    return (
+      <DocsEditor
+        editorState={this.state.editorState}
+        onChange={this._onChange}
+      />
+    );
+  }
+
+  _onChange = (editorState: Object): void => {
+    this.setState({editorState});
+    console.log(convertToRaw(editorState));
+  };
+}
+```
