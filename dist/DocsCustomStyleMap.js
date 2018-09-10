@@ -94,7 +94,7 @@ var TEXT_ALIGN_VALUES = ['left', 'center', 'right'];
 var VERTICAL_ALIGN_KEY = STYLE_KEY_PREFIX + '_VERTICAL_ALIGN';
 var VERTICAL_ALIGN_VALUES = ['baseline', 'sub', 'super', 'text-bottom', 'text-top'];
 
-var TRANSPARENT_COLORS = new _set2.default(['default', 'transparent', 'rgba(0, 0, 0, 0)', 'inherit', 'none']);
+var TRANSPARENT_COLORS = new _set2.default(['default', 'transparent', 'rgba(0, 0, 0, 0)', 'inherit', 'none', 'initial']);
 
 function defineListStartStyle(styleMap, listStart) {
   var suffix = listStart.toString();

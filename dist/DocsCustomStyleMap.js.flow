@@ -100,7 +100,7 @@ const VERTICAL_ALIGN_VALUES = [
 ];
 
 const TRANSPARENT_COLORS = new Set([
-  'default', 'transparent', 'rgba(0, 0, 0, 0)', 'inherit', 'none',
+  'default', 'transparent', 'rgba(0, 0, 0, 0)', 'inherit', 'none', 'initial',
 ]);
 
 function defineListStartStyle(

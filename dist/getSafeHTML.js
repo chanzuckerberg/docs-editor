@@ -62,6 +62,10 @@ if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginF
 
 
 function getSafeHTML(html, domDocument, defaultCSSRules) {
+  // This forces an extra space between consecutive <span />, which naively
+  // fixes the problem of missing spacing between inline elements.
+  html = html.replace(/<\/span><span/g, '</span> <span');
+
   var documentElement = (0, _getSafeDocumentElementFromHTML2.default)(html, domDocument);
   var body = documentElement ? documentElement.querySelector('body') : null;
   var ownerDocument = body && body.ownerDocument;

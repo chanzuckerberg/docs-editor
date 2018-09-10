@@ -4,6 +4,10 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _map = require('babel-runtime/core-js/map');
+
+var _map2 = _interopRequireDefault(_map);
+
 var _color = require('color');
 
 var _color2 = _interopRequireDefault(_color);
@@ -48,4 +52,16 @@ function getNearestColor(color, palleteColors) {
   return result;
 }
 
-exports.default = getNearestColor;
+var resultCache = new _map2.default();
+
+function getNearestColorFromCache(color, palleteColors) {
+  var cacheForPalleteColors = resultCache.get(palleteColors) || new _map2.default();
+  var cacheKey = color.hex();
+  var result = cacheForPalleteColors.has(cacheKey) ? cacheForPalleteColors.get(cacheKey) : getNearestColor(color, palleteColors);
+
+  cacheForPalleteColors.set(cacheKey, result);
+  resultCache.set(palleteColors, cacheForPalleteColors);
+  return result;
+}
+
+exports.default = getNearestColorFromCache;
