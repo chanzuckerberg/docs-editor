@@ -381,7 +381,6 @@ function pasteHTML(
   editorState: EditorState,
   html: string,
 ): EditorState {
-  console.log(html);
   return convertFromHTML(html, editorState, null, null, true);
 }
 
