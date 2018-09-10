@@ -50,4 +50,21 @@ function getNearestColor(
   return result;
 }
 
-export default getNearestColor;
+const resultCache = new Map();
+
+function getNearestColorFromCache(
+  color: Color,
+  palleteColors: Array<Color>,
+): ?Color {
+  const cacheForPalleteColors = resultCache.get(palleteColors) || new Map();
+  const cacheKey = color.hex();
+  const result = cacheForPalleteColors.has(cacheKey) ?
+    cacheForPalleteColors.get(cacheKey) :
+    getNearestColor(color, palleteColors);
+
+  cacheForPalleteColors.set(cacheKey, result);
+  resultCache.set(palleteColors, cacheForPalleteColors);
+  return result;
+}
+
+export default getNearestColorFromCache;
