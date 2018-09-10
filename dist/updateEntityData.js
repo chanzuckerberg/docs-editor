@@ -53,22 +53,48 @@ function updateContentBlockEntityData(editorState, entityKey, entityData, conten
   return _draftJs.EditorState.push(editorState, contentState, _DocsEditorChangeType.APPLY_ENTITY);
 }
 
+function updateDecoratorEntityData(editorState, entityKey, entityData, contentBlock) {
+  var contentLength = contentBlock.getLength();
+  for (var kk = 0; kk < contentLength; kk++) {
+    var entity = contentBlock.getEntityAt(kk);
+    if (entity === entityKey) {
+      return updateContentBlockEntityData(editorState, entityKey, entityData, contentBlock, kk);
+    }
+  }
+}
+
 function updateEntityData(editorState, entityKey, entityData) {
   var contentState = editorState.getCurrentContent();
   var contentEntity = contentState.getEntity(entityKey);
   if (!contentEntity) {
     return createEntityData(editorState, entityKey, entityData);
   }
-
+  var selection = editorState.getSelection();
+  var anchorKey = selection.getAnchorKey();
   var blocks = contentState.getBlocksAsArray();
-  for (var ii = 0, jj = blocks.length; ii < jj; ii++) {
-    var contentBlock = blocks[ii];
+  var contentBlock = blocks.find(function (b) {
+    return b.getKey() === anchorKey;
+  });
+  if (contentBlock) {
     var contentLength = contentBlock.getLength();
     for (var kk = 0; kk < contentLength; kk++) {
       var entity = contentBlock.getEntityAt(kk);
       if (entity === entityKey) {
+        // This happens when the entity belongs to a decorator component.
         return updateContentBlockEntityData(editorState, entityKey, entityData, contentBlock, kk);
       }
+    }
+  }
+
+  for (var ii = 0, jj = blocks.length; ii < jj; ii++) {
+    var _contentBlock = blocks[ii];
+    if (_contentBlock.getType() !== 'atomic') {
+      continue;
+    }
+    // This happens when the entity belongs to a atomic component.
+    var _entity = _contentBlock.getEntityAt(0);
+    if (_entity === entityKey) {
+      return updateContentBlockEntityData(editorState, entityKey, entityData, _contentBlock, 0);
     }
   }
 

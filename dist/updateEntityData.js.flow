@@ -68,6 +68,28 @@ function updateContentBlockEntityData(
   return EditorState.push(editorState, contentState, APPLY_ENTITY);
 }
 
+function updateDecoratorEntityData(
+  editorState: EditorState,
+  entityKey: string,
+  entityData: Object,
+  contentBlock: ContentBlock,
+): EditorState {
+  const contentLength = contentBlock.getLength();
+  for (let kk = 0; kk < contentLength; kk++) {
+    const entity = contentBlock.getEntityAt(kk);
+    if (entity === entityKey) {
+      return updateContentBlockEntityData(
+        editorState,
+        entityKey,
+        entityData,
+        contentBlock,
+        kk,
+      );
+    }
+  }
+}
+
+
 function updateEntityData(
   editorState: EditorState,
   entityKey: string,
@@ -78,14 +100,16 @@ function updateEntityData(
   if (!contentEntity) {
     return createEntityData(editorState, entityKey, entityData);
   }
-
+  const selection = editorState.getSelection();
+  const anchorKey = selection.getAnchorKey();
   const blocks = contentState.getBlocksAsArray();
-  for (let ii = 0, jj = blocks.length; ii < jj; ii++) {
-    const contentBlock = blocks[ii];
+  const contentBlock = blocks.find(b => b.getKey() === anchorKey);
+  if (contentBlock) {
     const contentLength = contentBlock.getLength();
     for (let kk = 0; kk < contentLength; kk++) {
       const entity = contentBlock.getEntityAt(kk);
       if (entity === entityKey) {
+        // This happens when the entity belongs to a decorator component.
         return updateContentBlockEntityData(
           editorState,
           entityKey,
@@ -94,6 +118,24 @@ function updateEntityData(
           kk,
         );
       }
+    }
+  }
+
+  for (let ii = 0, jj = blocks.length; ii < jj; ii++) {
+    const contentBlock = blocks[ii];
+    if (contentBlock.getType() !== 'atomic') {
+      continue;
+    }
+    // This happens when the entity belongs to a atomic component.
+    const entity = contentBlock.getEntityAt(0);
+    if (entity === entityKey) {
+      return updateContentBlockEntityData(
+        editorState,
+        entityKey,
+        entityData,
+        contentBlock,
+        0,
+      );
     }
   }
 
