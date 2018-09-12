@@ -115,6 +115,8 @@ var ATOMIC_ELEMENT_NODE_NAME = 'FIGURE';
 
 // See https://draftjs.org/docs/advanced-topics-inline-styles.html
 var STYLE_BOLD = 'BOLD';
+var STYLE_ITALIC = 'ITALIC';
+var STYLE_STRIKETHROUGH = 'STRIKETHROUGH';
 
 // See https://www.w3schools.com/jsref/prop_node_nodetype.asp
 // See https://msdn.microsoft.com/en-us/library/windows/desktop/ms649015
@@ -244,13 +246,15 @@ function htmlToStyle(safeHTML, nodeName, node, currentStyle) {
       }
     });
 
-    if (style.fontWeight) {
-      var fontWeight = style.fontWeight;
+    var fontWeight = style.fontWeight,
+        fontStyle = style.fontStyle,
+        textDecoration = style.textDecoration;
+
+    if (fontWeight) {
       // When content is copied from google doc, its HTML may use a tag
       // like `<b style="font-weight: normal">...</b>` which should not make the
       // text bold. This block handles such case.
       // See related issue: https://github.com/facebook/draft-js/issues/481
-
       if (CSS_BOLD_VALUES.has(fontWeight)) {
         nextStyle = nextStyle.add(STYLE_BOLD);
       } else if (CSS_NOT_BOLD_VALUES.has(fontWeight)) {
@@ -258,6 +262,14 @@ function htmlToStyle(safeHTML, nodeName, node, currentStyle) {
       } else if (CSS_BOLD_MIN_NUMERIC_VALUE_PATTERN.test(fontWeight)) {
         nextStyle = parseInt(fontWeight, 10) >= CSS_BOLD_MIN_NUMERIC_VALUE ? nextStyle.add(STYLE_BOLD) : nextStyle.remove(STYLE_BOLD);
       }
+    }
+
+    if (textDecoration === 'line-through') {
+      nextStyle.add(STYLE_STRIKETHROUGH);
+    }
+
+    if (fontStyle === 'italic') {
+      nextStyle.add(STYLE_ITALIC);
     }
   });
 }
