@@ -20,25 +20,21 @@ var _inherits2 = require('babel-runtime/helpers/inherits');
 
 var _inherits3 = _interopRequireDefault(_inherits2);
 
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
 var _DocsButton = require('./DocsButton');
 
 var _DocsButton2 = _interopRequireDefault(_DocsButton);
 
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _draftJs = require('draft-js');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginFlowReactPropTypes_proptype_Spec', {
-  value: require('prop-types').shape({
-    action: require('prop-types').string.isRequired,
-    icon: require('prop-types').string,
-    label: require('prop-types').string.isRequired,
-    modifier: require('prop-types').func,
-    style: require('prop-types').string
-  })
-});
+var babelPluginFlowReactPropTypes_proptype_DocsEditorLike = require('./Types').babelPluginFlowReactPropTypes_proptype_DocsEditorLike || require('prop-types').any;
+
+var babelPluginFlowReactPropTypes_proptype_EditorToolbarFeature = require('./DocsEditorToolBarFeatures').babelPluginFlowReactPropTypes_proptype_EditorToolbarFeature || require('prop-types').any;
 
 var DocsEditorToolBarButton = function (_React$PureComponent) {
   (0, _inherits3.default)(DocsEditorToolBarButton, _React$PureComponent);
@@ -52,22 +48,23 @@ var DocsEditorToolBarButton = function (_React$PureComponent) {
     key: 'render',
     value: function render() {
       var _props = this.props,
+          feature = _props.feature,
+          onClick = _props.onClick,
           id = _props.id,
-          disabled = _props.disabled,
-          spec = _props.spec,
           active = _props.active,
-          onClick = _props.onClick;
-      var label = spec.label,
-          icon = spec.icon;
+          disabled = _props.disabled;
+      var label = feature.label,
+          icon = feature.icon;
+
 
       return _react2.default.createElement(_DocsButton2.default, {
         active: active,
         disabled: disabled,
-        icon: icon,
+        icon: feature.icon,
         id: id,
         label: label,
         onClick: onClick,
-        value: spec
+        value: feature
       });
     }
   }]);
