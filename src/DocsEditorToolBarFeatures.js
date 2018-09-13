@@ -132,7 +132,7 @@ export const HIGHLIGHT: Feature = {
   update: noop,
 };
 
-export const UNORDERED_LIST = {
+export const UNORDERED_LIST: Feature = {
   action: DocsActionTypes.TEXT_UL,
   icon: 'format_list_bulleted',
   label: 'Unordered List',
@@ -142,7 +142,7 @@ export const UNORDERED_LIST = {
   update: toggleBlockStyle,
 };
 
-export const ORDERED_LIST ={
+export const ORDERED_LIST: Feature = {
   action: DocsActionTypes.TEXT_OL,
   icon: 'format_list_numbered',
   label: 'Ordered List',
@@ -150,6 +150,24 @@ export const ORDERED_LIST ={
   isActive: hasBlockStyle,
   isEnabled: returnTrue,
   update: toggleBlockStyle,
+};
+
+export const INDENT_MORE: Feature = {
+  action: DocsActionTypes.INDENT_MORE,
+  icon: 'format_indent_increase',
+  label: 'Indent More',
+  isActive: returnFalse,
+  isEnabled: returnTrue,
+  update: noop,
+};
+
+export const INDENT_LESS: Feature = {
+  action: DocsActionTypes.INDENT_LESS,
+  icon: 'format_indent_decrease',
+  label: 'Indent Less',
+  isActive: returnFalse,
+  isEnabled: returnTrue,
+  update: noop,
 };
 
 export const BLOCK_QUOTE: Feature = {
@@ -189,7 +207,7 @@ export const H3: Feature = {
   update: toggleBlockStyle,
 };
 
-export const H4 = {
+export const H4: Feature = {
   action: DocsActionTypes.TEXT_H4,
   label: 'H4',
   style: 'header-four',
