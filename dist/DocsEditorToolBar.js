@@ -180,7 +180,7 @@ var DocsEditorToolBar = function (_React$PureComponent) {
           _react2.default.createElement(
             _reactBootstrap.ButtonGroup,
             { className: 'docs-buttons-group', key: 'inline' },
-            [_DocsEditorToolBarFeatures.LINK, _DocsEditorToolBarFeatures.BOLD, _DocsEditorToolBarFeatures.ITALIC, _DocsEditorToolBarFeatures.UNDERLINE, _DocsEditorToolBarFeatures.STRIKE, _DocsEditorToolBarFeatures.CODE, _DocsEditorToolBarFeatures.HIGHLIGHT].map(this._renderButton)
+            [_DocsEditorToolBarFeatures.LINK, _DocsEditorToolBarFeatures.BOLD, _DocsEditorToolBarFeatures.ITALIC, _DocsEditorToolBarFeatures.UNDERLINE, _DocsEditorToolBarFeatures.STRIKE, _DocsEditorToolBarFeatures.CODE].map(this._renderButton)
           ),
           _react2.default.createElement(
             _reactBootstrap.ButtonGroup,

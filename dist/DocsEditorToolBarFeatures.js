@@ -145,7 +145,7 @@ var CODE = exports.CODE = {
 };
 
 var HIGHLIGHT = exports.HIGHLIGHT = {
-  action: _DocsActionTypes2.default.TEXT_ANNOTATION,
+  action: _DocsActionTypes2.default.TEXT_HIGHLIGHT,
   icon: 'format_color_text',
   label: 'Highlight',
   isActive: returnFalse,

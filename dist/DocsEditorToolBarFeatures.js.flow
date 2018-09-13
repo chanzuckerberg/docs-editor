@@ -124,7 +124,7 @@ export const CODE: Feature = {
 };
 
 export const HIGHLIGHT: Feature = {
-  action: DocsActionTypes.TEXT_ANNOTATION,
+  action: DocsActionTypes.TEXT_HIGHLIGHT,
   icon: 'format_color_text',
   label: 'Highlight',
   isActive: returnFalse,
