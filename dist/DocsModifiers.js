@@ -167,7 +167,7 @@ function toggleAnnotation(editorState) {
     // part.
     var contentState = editorState.getCurrentContent();
     var entityKey = null;
-    var newContentState = _draftJs.Modifier.applyEntity(contentState, selection, null);
+    var newContentState = _draftJs.Modifier.applyEntity(contentState, selection, entityKey);
     return _draftJs.EditorState.push(editorState, newContentState, _DocsEditorChangeType.APPLY_ENTITY);
   } else {
     var _contentState = editorState.getCurrentContent();
@@ -256,7 +256,6 @@ function ensureAtomicBlocksAreSelectable(editorState) {
   var contentState = editorState.getCurrentContent();
   var blockMap = contentState.getBlockMap();
   var newBlockMap = new _immutable.OrderedMap().withMutations(function (mutableBlock) {
-
     var blocks = blockMap.toArray();
     blocks.forEach(function (block, ii) {
       if (block.getType() !== 'atomic') {
@@ -292,6 +291,7 @@ function ensureAtomicBlocksAreSelectable(editorState) {
 }
 
 function pasteHTML(editorState, html) {
+  console.log(html);
   return (0, _convertFromHTML2.default)(html, editorState, null, null, true);
 }
 
@@ -309,27 +309,30 @@ function maybeInsertSiblingBlock(siblingBlock, currentBlock, before, blockMap) {
   if (siblingBlock && (0, _isContentBlockEmpty2.default)(siblingBlock)) {
     // No need to inject extra blank line since siblingBlock is already empty.
     // blockMap.set(currentBlock.getKey(), currentBlock);
-    return;
+    // return;
   }
 
   var className = before ? 'docs-before-atomic-block' : 'docs-after-atomic-block';
 
-  if (!siblingBlock || siblingBlock.getData().get('className') !== className) {
-    var newBlock = createContentBlock('', className);
-    if (before) {
-      if (siblingBlock) {
-        blockMap.set(siblingBlock.getKey(), siblingBlock);
+  if (0
+  // !siblingBlock ||
+  // siblingBlock.getData().get('className') !== className
+  ) {
+      var newBlock = createContentBlock('', className);
+      if (before) {
+        if (siblingBlock) {
+          blockMap.set(siblingBlock.getKey(), siblingBlock);
+        }
+        blockMap.set(newBlock.getKey(), newBlock);
+        blockMap.set(currentBlock.getKey(), currentBlock);
+      } else {
+        blockMap.set(currentBlock.getKey(), currentBlock);
+        blockMap.set(newBlock.getKey(), newBlock);
+        if (siblingBlock) {
+          blockMap.set(siblingBlock.getKey(), siblingBlock);
+        }
       }
-      blockMap.set(newBlock.getKey(), newBlock);
-      blockMap.set(currentBlock.getKey(), currentBlock);
     } else {
-      blockMap.set(currentBlock.getKey(), currentBlock);
-      blockMap.set(newBlock.getKey(), newBlock);
-      if (siblingBlock) {
-        blockMap.set(siblingBlock.getKey(), siblingBlock);
-      }
-    }
-  } else {
     blockMap.set(currentBlock.getKey(), currentBlock);
   }
 }

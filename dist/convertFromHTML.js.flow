@@ -34,8 +34,6 @@ const ATOMIC_ELEMENT_NODE_NAME = 'FIGURE';
 
 // See https://draftjs.org/docs/advanced-topics-inline-styles.html
 const STYLE_BOLD = 'BOLD';
-const STYLE_ITALIC = 'ITALIC';
-const STYLE_STRIKETHROUGH = 'STRIKETHROUGH';
 
 // See https://www.w3schools.com/jsref/prop_node_nodetype.asp
 // See https://msdn.microsoft.com/en-us/library/windows/desktop/ms649015
@@ -182,8 +180,8 @@ function htmlToStyle(
       }
     });
 
-    const {fontWeight, fontStyle, textDecoration} = style;
-    if (fontWeight) {
+    if (style.fontWeight) {
+      const {fontWeight} = style;
       // When content is copied from google doc, its HTML may use a tag
       // like `<b style="font-weight: normal">...</b>` which should not make the
       // text bold. This block handles such case.
@@ -197,14 +195,6 @@ function htmlToStyle(
           nextStyle.add(STYLE_BOLD) :
           nextStyle.remove(STYLE_BOLD);
       }
-    }
-
-    if (textDecoration === 'line-through') {
-      nextStyle.add(STYLE_STRIKETHROUGH);
-    }
-
-    if (fontStyle === 'italic') {
-      nextStyle.add(STYLE_ITALIC);
     }
   });
 }

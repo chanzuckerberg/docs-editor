@@ -329,7 +329,6 @@ function ensureAtomicBlocksAreSelectable(
   const contentState = editorState.getCurrentContent();
   const blockMap = contentState.getBlockMap();
   let newBlockMap = (new OrderedMap()).withMutations((mutableBlock) => {
-
     const blocks = blockMap.toArray();
     blocks.forEach((block, ii) => {
       if (block.getType() !== 'atomic') {
