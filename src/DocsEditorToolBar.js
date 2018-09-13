@@ -1,28 +1,18 @@
 // @flow
 
-import DocsActionTypes from './DocsActionTypes';
-import DocsContext from './DocsContext';
 import DocsEditorToolBarButton from './DocsEditorToolBarButton';
-import DocsImageEditor from './DocsImageEditor';
-import DocsMathEditor from './DocsMathEditor';
-import DocsTextInputEditor from './DocsTextInputEditor';
 import React from 'react';
 import Timer from './Timer';
 import captureDocumentEvents from './captureDocumentEvents';
 import withDocsContext from './withDocsContext';
-import showModalDialog from './showModalDialog';
 import {ButtonGroup} from 'react-bootstrap';
 import {EditorState} from 'draft-js';
-import getCurrentSelectionEntity from './getCurrentSelectionEntity';
-import {getEditCapability, maybeUpdateAnnotation, maybeInsertBlock, maybeFormatInlineText, maybeUpdateHistory, maybeFormatBlockText, ANNOTATION_SPECS, INSERT_SPECS, INLINE_SPECS, BLOCK_SPECS, HISTORY_SPECS} from './DocsEditorToolBarHelpers';
-import {updateLink} from './DocsModifiers';
-import updateEntityData from './updateEntityData';
-
-import './DocsEditorToolBar.css';
+import {UNORDERED_LIST, ORDERED_LIST, BLOCK_QUOTE, H1, H2, H3, H4, LINK, BOLD, ITALIC, UNDERLINE, STRIKE, CODE, HIGHLIGHT, IMAGE, TABLE, MATH, EXPANDABLE, UNDO, REDO} from './DocsEditorToolBarFeatures';
 
 import type {DocsEditorLike} from './Types';
-import type {Spec} from './DocsEditorToolBarButton';
-import type {ModalHandle} from './showModalDialog';
+import type {EditorToolbarFeature} from './DocsEditorToolBarFeatures';
+
+import './DocsEditorToolBar.css';
 
 type Props = {
   editorState: EditorState,
@@ -30,103 +20,16 @@ type Props = {
   onChange: (e: EditorState) => void,
 };
 
-function showLinkEditorModalDialog(url: ?string, callback: Function): ModalHandle {
-  return showModalDialog(DocsTextInputEditor, {
-    title: 'Enter link URL or leave it empty to remove the link',
-    value: url,
-  }, callback);
-}
-
-// This opens an image editor for the image that was just inserted by user.
-function showImageEditorModalDialog(
-  docsContext: DocsContext,
-  editorState: EditorState,
-  onChange: (e: EditorState) => void,
-): ModalHandle {
-  const contentState = editorState.getCurrentContent();
-  const entityKey = contentState.getLastCreatedEntityKey();
-  const entity = contentState.getEntity(entityKey);
-  const entityData = entity.getData();
-  return showModalDialog(
-    DocsImageEditor,
-    {
-      docsContext,
-      entityData,
-      title: 'Edit Image',
-    },
-    (newEntityData) => {
-      if (newEntityData) {
-        const newEditorState = updateEntityData(
-          editorState,
-          entityKey,
-          newEntityData,
-        );
-        onChange(newEditorState);
-      }
-    },
-  );
-}
-
-// This opens an math editor for the math placeholder that was just inserted by
-// user.
-function showMathEditorModalDialog(
-  docsContext: DocsContext,
-  editorState: EditorState,
-  onChange: (e: EditorState) => void,
-): ModalHandle {
-  const contentState = editorState.getCurrentContent();
-  const entityKey = contentState.getLastCreatedEntityKey();
-  const entity = contentState.getEntity(entityKey);
-  const entityData = entity.getData();
-  return showModalDialog(
-    DocsMathEditor,
-    {
-      docsContext,
-      entityData,
-    },
-    (newEntityData) => {
-      if (newEntityData) {
-        // TODO: This is wrong. It should not call `updateEntityData`
-        // which is for atomic block only.
-        const newEditorState = updateEntityData(
-          editorState,
-          entityKey,
-          newEntityData,
-        );
-        onChange(newEditorState);
-      }
-    },
-  );
-}
-
-
-function updateEditorLink(editor: DocsEditorLike, url: ?string): void {
-  if (url === undefined) {
-    return;
-  }
-  url = url || null;
-  const {editorState, onChange} = editor.props;
-  const newEditorState = updateLink(editorState, url);
-  if (newEditorState && newEditorState !== editorState) {
-    onChange(newEditorState);
-  }
-}
-
 class DocsEditorToolBar extends React.PureComponent {
-
-  _editCapability = getEditCapability(null);
-  _eventsCapture = null;
-  _imageEditorModal = null;
-  _linkEditorModal = null;
-  _mathEditorModal = null;
-  _timer = new Timer();
-  _timerID = 0;
-
   state = {
-    editorState: null,
+    focusedEditorState: null,
   };
 
   props: Props;
+
+  _eventsCapture = null;
+  _timer = new Timer();
+  _modalHandle = null;
 
   componentDidMount(): void {
     // Need to observe Selection change.
@@ -139,9 +42,8 @@ class DocsEditorToolBar extends React.PureComponent {
 
   componentWillUnmount(): void {
     this._timer.dispose();
-    this._imageEditorModal && this._imageEditorModal.dispose();
-    this._linkEditorModal && this._linkEditorModal.dispose();
     this._eventsCapture && this._eventsCapture.dispose();
+    this._closeModal();
   }
 
   render(): ?React.Element<any> {
@@ -150,199 +52,82 @@ class DocsEditorToolBar extends React.PureComponent {
     if (!canEdit) {
       return null;
     }
-
-    const editor = this.props.getEditor();
-    this._editCapability = getEditCapability(editor);
-    const specFilter = (({action}) => allowedActions.has(action));
-    const insertButtons =
-      INSERT_SPECS.filter(specFilter).map(this._renderInsertButton);
-    const inlineButtons =
-      INLINE_SPECS.filter(specFilter).map(this._renderInlineStyleButton);
-    const blockButtons =
-      BLOCK_SPECS.filter(specFilter).map(this._renderBlockStyleButton);
-    const historyButtons =
-      HISTORY_SPECS.filter(specFilter).map(this._renderHistoryButton);
-    const annotationButtons =
-      ANNOTATION_SPECS.filter(specFilter).map(this._renderAnnotationButton);
+    const {editorState, onChange} = this.props;
     return (
       <div className="docs-editor-toolbar" data-docs-tool="true">
         <div className="docs-editor-toolbar-body">
           <ButtonGroup className="docs-buttons-group" key="block">
-            {blockButtons}
+            {
+              [
+                UNORDERED_LIST,
+                ORDERED_LIST,
+                BLOCK_QUOTE,
+                H1,
+                H2,
+                H3,
+                H4,
+              ].map(this._renderButton)
+            }
           </ButtonGroup>
           <ButtonGroup className="docs-buttons-group" key="inline">
-            {inlineButtons}
-            {annotationButtons}
+            {
+              [
+                LINK,
+                BOLD,
+                ITALIC,
+                UNDERLINE,
+                STRIKE,
+                CODE,
+              ].map(this._renderButton)
+            }
           </ButtonGroup>
           <ButtonGroup className="docs-buttons-group" key="insert">
-            {insertButtons}
+          {
+            [
+              IMAGE,
+              TABLE,
+              MATH,
+              EXPANDABLE,
+            ].map(this._renderButton)
+          }
           </ButtonGroup>
           <ButtonGroup className="docs-buttons-group" key="history">
-            {historyButtons}
+            <DocsEditorToolBarButton
+              active={false}
+              disabled={!UNDO.isEnabled(UNDO, editorState)}
+              feature={UNDO}
+              onClick={this._onHistoryButtonClick}
+            />
+            <DocsEditorToolBarButton
+              active={false}
+              disabled={!REDO.isEnabled(REDO, editorState)}
+              feature={REDO}
+              onClick={this._onHistoryButtonClick}
+            />
           </ButtonGroup>
         </div>
       </div>
     );
   }
 
-  _renderHistoryButton = (spec: Spec): ?React.Element<any> => {
-    const {editorState} = this.props;
-    let disabled = true;
-    switch (spec.action) {
-      case DocsActionTypes.HISTORY_REDO:
-        disabled = editorState.getRedoStack().size === 0;
-        break;
-      case DocsActionTypes.HISTORY_UNDO:
-        disabled = editorState.getUndoStack().size === 0;
-        break;
-      default:
-        return null;
+  _renderButton = (feature: EditorToolbarFeature): ?React.Element<any> => {
+    const {allowedActions} = this.context.docsContext;
+    if (!allowedActions.has(feature.action)) {
+      return null;
     }
-
+    const disabled = false;
+    const active = false;
+    // active={editorState ? feature.isActive(feature, editorState) : false}
+    // disabled={editorState ? !feature.isEnabled(feature, editorState) : true}
     return (
       <DocsEditorToolBarButton
-        active={false}
         disabled={disabled}
-        key={spec.action}
-        onClick={this._onHistoryButtonClick}
-        spec={spec}
-      />
-    );
-  };
-
-  _renderAnnotationButton = (spec: Spec): React.Element<any> => {
-    const {annotation} = this._editCapability;
-    return (
-      <DocsEditorToolBarButton
-        active={false}
-        disabled={!annotation}
-        key={spec.action}
-        onClick={this._onButtonClick}
-        spec={spec}
-      />
-    );
-  };
-
-  _renderBlockStyleButton = (spec: Spec): React.Element<any> => {
-    const {blockStyles} = this._editCapability;
-    return (
-      <DocsEditorToolBarButton
-        active={blockStyles ? blockStyles.has(spec.style) : false}
-        disabled={!blockStyles}
-        key={spec.action}
-        onClick={this._onButtonClick}
-        spec={spec}
-      />
-    );
-  };
-
-  _renderInlineStyleButton = (spec: Spec): React.Element<any> => {
-    const {inlineStyles} = this._editCapability;
-    const active = inlineStyles ? inlineStyles.has(spec.style) : false;
-    return (
-      <DocsEditorToolBarButton
         active={active}
-        disabled={inlineStyles === null}
-        key={spec.action}
+        feature={feature}
+        key={feature.action}
         onClick={this._onButtonClick}
-        spec={spec}
       />
     );
-  };
-
-  _renderInsertButton = (spec: Spec): React.Element<any> => {
-    const editCapability = this._editCapability;
-    let disabled = true;
-    switch (spec.action) {
-      case DocsActionTypes.TABLE_INSERT:
-        disabled = !editCapability.table;
-        break;
-      default:
-        disabled = !editCapability.insert;
-        break;
-    }
-    return (
-      <DocsEditorToolBarButton
-        disabled={disabled}
-        key={spec.action}
-        onClick={this._onButtonClick}
-        spec={spec}
-      />
-    );
-  };
-
-  _onHistoryButtonClick = (spec: Spec): void => {
-    const {editorState, onChange} = this.props;
-    switch (spec.action) {
-      case DocsActionTypes.HISTORY_REDO:
-        onChange(EditorState.redo(editorState));
-        break;
-      case DocsActionTypes.HISTORY_UNDO:
-        onChange(EditorState.undo(editorState));
-        break;
-    }
-  };
-
-  _onButtonClick = (spec: Spec): void => {
-    const editor = this.props.getEditor();
-    if (!editor) {
-      return;
-    }
-    const {onChange, editorState} = editor.props;
-    if (!onChange  || !editorState) {
-      return;
-    }
-
-    if (spec.action === DocsActionTypes.TEXT_LINK) {
-      const linkEntity = getCurrentSelectionEntity(editorState);
-      const url = (linkEntity && linkEntity.getData().url) || '';
-      this._linkEditorModal && this._linkEditorModal.dispose();
-      this._linkEditorModal = showLinkEditorModalDialog(
-        url,
-        updateEditorLink.bind(null, editor),
-      );
-      return;
-    }
-
-    if (spec.action === DocsActionTypes.IMAGE_INSERT && spec.modifier) {
-      // Insert an empty image placeholder.
-      const {docsContext} = this.context;
-      const newEditorState = spec.modifier(editorState);
-      // Opens a modal to edit it.
-      this._imageEditorModal && this._imageEditorModal.dispose();
-      this._imageEditorModal = showImageEditorModalDialog(
-        docsContext,
-        newEditorState,
-        onChange,
-      );
-      return;
-    }
-
-    if (spec.action === DocsActionTypes.MATH_INSERT && spec.modifier) {
-      // Insert an empty math placeholder.
-      const {docsContext} = this.context;
-      const newEditorState = spec.modifier(editorState);
-      // Opens a modal to edit it.
-      this._mathEditorModal && this._mathEditorModal.dispose();
-      this._mathEditorModal = showMathEditorModalDialog(
-        docsContext,
-        newEditorState,
-        onChange,
-      );
-      return;
-    }
-
-
-    const newEditorState =
-      maybeInsertBlock(spec, editorState) ||
-      maybeFormatInlineText(spec, editorState) ||
-      maybeFormatBlockText(spec, editorState) ||
-      maybeUpdateHistory(spec, editorState) ||
-      maybeUpdateAnnotation(spec, editorState);
-
-    if (newEditorState && newEditorState !== editorState) {
-      onChange(newEditorState);
-    }
   };
 
   _maybeWillRerender = (): void => {
@@ -351,14 +136,60 @@ class DocsEditorToolBar extends React.PureComponent {
   };
 
   _maybyRerender = (): void => {
-    // If editorState changed, re-render.
-    this._timerID = 0;
+    // If editorState changed, force re-render.
     const editor = this.props.getEditor();
     if (editor) {
-      const {editorState} = editor.props;
-      this.setState({editorState: editorState || null});
+      const {editorState, onChange} = editor.props;
+      if (editorState !== this.state.focusedEditorState) {
+        this.setState({
+          focusedEditorState: editorState,
+        });
+      }
     }
   };
+
+  _onHistoryButtonClick = (feature: EditorToolbarFeature): void => {
+    const {docsContext} = this.context;
+    const {editorState, onChange} = this.props;
+    feature.update(
+      feature,
+      editorState,
+      (nextEditorState) => {
+        if (nextEditorState && nextEditorState !== editorState) {
+          onChange(nextEditorState);
+        }
+      },
+      docsContext,
+    );
+  };
+
+  _onButtonClick = (feature: EditorToolbarFeature): void => {
+    this._closeModal();
+
+    const editor: any = this.props.getEditor() || {props: {}};
+
+    const {editorState, onChange} = (feature === REDO || feature === UNDO) ?
+      this.props :
+      editor.props;
+
+    if (!onChange  || !editorState) {
+      return;
+    }
+
+    const {docsContext} = this.context;
+
+    this._modalHandle = feature.update(
+      feature,
+      editorState,
+      onChange,
+      docsContext,
+    );
+  };
+
+  _closeModal(): void {
+    this._modalHandle && this._modalHandle.dispose();
+    this._modalHandle = null;
+  }
 }
 
 module.exports = withDocsContext(DocsEditorToolBar);

@@ -93,7 +93,7 @@ export type DocsEditorRuntime = {
 };
 
 export type DocsEditorProps = {
-  docsContext: ?Object,
+  docsContext?: ?Object,
   editorState: EditorState,
   id?: ?string,
   onChange: (e: EditorState) => void,

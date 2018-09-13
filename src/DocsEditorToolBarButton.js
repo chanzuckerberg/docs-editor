@@ -1,22 +1,18 @@
 // @flow
 
-import React from 'react';
 import DocsButton from './DocsButton';
+import React from 'react';
+import {EditorState} from 'draft-js';
 
-export type Spec = {
-  action: string,
-  icon?: string,
-  label: string,
-  modifier?: Function,
-  style?: string,
-};
+import type {DocsEditorLike} from './Types';
+import type {EditorToolbarFeature} from './DocsEditorToolBarFeatures';
 
 type Props = {
-  active?: ?boolean,
+  active: boolean,
   disabled: boolean,
+  feature: EditorToolbarFeature,
   id?: ?string,
-  onClick: (s: Spec) => void,
-  spec: Spec,
+  onClick: (feature: EditorToolbarFeature) => void,
 };
 
 class DocsEditorToolBarButton extends React.PureComponent {
@@ -24,17 +20,18 @@ class DocsEditorToolBarButton extends React.PureComponent {
   props: Props;
 
   render(): React.Element<any> {
-    const {id, disabled, spec, active, onClick} = this.props;
-    const {label, icon} = spec;
+    const {feature, onClick, id, active, disabled} = this.props;
+    const {label, icon} = feature;
+
     return (
       <DocsButton
         active={active}
         disabled={disabled}
-        icon={icon}
+        icon={feature.icon}
         id={id}
         label={label}
         onClick={onClick}
-        value={spec}
+        value={feature}
       />
     );
   }

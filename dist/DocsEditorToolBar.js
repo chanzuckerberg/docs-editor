@@ -20,29 +20,9 @@ var _inherits2 = require('babel-runtime/helpers/inherits');
 
 var _inherits3 = _interopRequireDefault(_inherits2);
 
-var _DocsActionTypes = require('./DocsActionTypes');
-
-var _DocsActionTypes2 = _interopRequireDefault(_DocsActionTypes);
-
-var _DocsContext = require('./DocsContext');
-
-var _DocsContext2 = _interopRequireDefault(_DocsContext);
-
 var _DocsEditorToolBarButton = require('./DocsEditorToolBarButton');
 
 var _DocsEditorToolBarButton2 = _interopRequireDefault(_DocsEditorToolBarButton);
-
-var _DocsImageEditor = require('./DocsImageEditor');
-
-var _DocsImageEditor2 = _interopRequireDefault(_DocsImageEditor);
-
-var _DocsMathEditor = require('./DocsMathEditor');
-
-var _DocsMathEditor2 = _interopRequireDefault(_DocsMathEditor);
-
-var _DocsTextInputEditor = require('./DocsTextInputEditor');
-
-var _DocsTextInputEditor2 = _interopRequireDefault(_DocsTextInputEditor);
 
 var _react = require('react');
 
@@ -60,25 +40,11 @@ var _withDocsContext = require('./withDocsContext');
 
 var _withDocsContext2 = _interopRequireDefault(_withDocsContext);
 
-var _showModalDialog = require('./showModalDialog');
-
-var _showModalDialog2 = _interopRequireDefault(_showModalDialog);
-
 var _reactBootstrap = require('react-bootstrap');
 
 var _draftJs = require('draft-js');
 
-var _getCurrentSelectionEntity = require('./getCurrentSelectionEntity');
-
-var _getCurrentSelectionEntity2 = _interopRequireDefault(_getCurrentSelectionEntity);
-
-var _DocsEditorToolBarHelpers = require('./DocsEditorToolBarHelpers');
-
-var _DocsModifiers = require('./DocsModifiers');
-
-var _updateEntityData = require('./updateEntityData');
-
-var _updateEntityData2 = _interopRequireDefault(_updateEntityData);
+var _DocsEditorToolBarFeatures = require('./DocsEditorToolBarFeatures');
 
 require('./DocsEditorToolBar.css');
 
@@ -86,69 +52,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var babelPluginFlowReactPropTypes_proptype_DocsEditorLike = require('./Types').babelPluginFlowReactPropTypes_proptype_DocsEditorLike || require('prop-types').any;
 
-var babelPluginFlowReactPropTypes_proptype_Spec = require('./DocsEditorToolBarButton').babelPluginFlowReactPropTypes_proptype_Spec || require('prop-types').any;
-
-var babelPluginFlowReactPropTypes_proptype_ModalHandle = require('./showModalDialog').babelPluginFlowReactPropTypes_proptype_ModalHandle || require('prop-types').any;
-
-function showLinkEditorModalDialog(url, callback) {
-  return (0, _showModalDialog2.default)(_DocsTextInputEditor2.default, {
-    title: 'Enter link URL or leave it empty to remove the link',
-    value: url
-  }, callback);
-}
-
-// This opens an image editor for the image that was just inserted by user.
-function showImageEditorModalDialog(docsContext, editorState, onChange) {
-  var contentState = editorState.getCurrentContent();
-  var entityKey = contentState.getLastCreatedEntityKey();
-  var entity = contentState.getEntity(entityKey);
-  var entityData = entity.getData();
-  return (0, _showModalDialog2.default)(_DocsImageEditor2.default, {
-    docsContext: docsContext,
-    entityData: entityData,
-    title: 'Edit Image'
-  }, function (newEntityData) {
-    if (newEntityData) {
-      var newEditorState = (0, _updateEntityData2.default)(editorState, entityKey, newEntityData);
-      onChange(newEditorState);
-    }
-  });
-}
-
-// This opens an math editor for the math placeholder that was just inserted by
-// user.
-function showMathEditorModalDialog(docsContext, editorState, onChange) {
-  var contentState = editorState.getCurrentContent();
-  var entityKey = contentState.getLastCreatedEntityKey();
-  var entity = contentState.getEntity(entityKey);
-  var entityData = entity.getData();
-  return (0, _showModalDialog2.default)(_DocsMathEditor2.default, {
-    docsContext: docsContext,
-    entityData: entityData
-  }, function (newEntityData) {
-    if (newEntityData) {
-      // TODO: This is wrong. It should not call `updateEntityData`
-      // which is for atomic block only.
-      var newEditorState = (0, _updateEntityData2.default)(editorState, entityKey, newEntityData);
-      onChange(newEditorState);
-    }
-  });
-}
-
-function updateEditorLink(editor, url) {
-  if (url === undefined) {
-    return;
-  }
-  url = url || null;
-  var _editor$props = editor.props,
-      editorState = _editor$props.editorState,
-      onChange = _editor$props.onChange;
-
-  var newEditorState = (0, _DocsModifiers.updateLink)(editorState, url);
-  if (newEditorState && newEditorState !== editorState) {
-    onChange(newEditorState);
-  }
-}
+var babelPluginFlowReactPropTypes_proptype_EditorToolbarFeature = require('./DocsEditorToolBarFeatures').babelPluginFlowReactPropTypes_proptype_EditorToolbarFeature || require('prop-types').any;
 
 var DocsEditorToolBar = function (_React$PureComponent) {
   (0, _inherits3.default)(DocsEditorToolBar, _React$PureComponent);
@@ -164,151 +68,70 @@ var DocsEditorToolBar = function (_React$PureComponent) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = DocsEditorToolBar.__proto__ || (0, _getPrototypeOf2.default)(DocsEditorToolBar)).call.apply(_ref, [this].concat(args))), _this), _this._editCapability = (0, _DocsEditorToolBarHelpers.getEditCapability)(null), _this._eventsCapture = null, _this._imageEditorModal = null, _this._linkEditorModal = null, _this._mathEditorModal = null, _this._timer = new _Timer2.default(), _this._timerID = 0, _this.state = {
-      editorState: null
-    }, _this._renderHistoryButton = function (spec) {
-      var editorState = _this.props.editorState;
+    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = DocsEditorToolBar.__proto__ || (0, _getPrototypeOf2.default)(DocsEditorToolBar)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+      focusedEditorState: null
+    }, _this._eventsCapture = null, _this._timer = new _Timer2.default(), _this._modalHandle = null, _this._renderButton = function (feature) {
+      var allowedActions = _this.context.docsContext.allowedActions;
 
-      var disabled = true;
-      switch (spec.action) {
-        case _DocsActionTypes2.default.HISTORY_REDO:
-          disabled = editorState.getRedoStack().size === 0;
-          break;
-        case _DocsActionTypes2.default.HISTORY_UNDO:
-          disabled = editorState.getUndoStack().size === 0;
-          break;
-        default:
-          return null;
+      if (!allowedActions.has(feature.action)) {
+        return null;
       }
-
+      var disabled = false;
+      var active = false;
+      // active={editorState ? feature.isActive(feature, editorState) : false}
+      // disabled={editorState ? !feature.isEnabled(feature, editorState) : true}
       return _react2.default.createElement(_DocsEditorToolBarButton2.default, {
-        active: false,
         disabled: disabled,
-        key: spec.action,
-        onClick: _this._onHistoryButtonClick,
-        spec: spec
-      });
-    }, _this._renderAnnotationButton = function (spec) {
-      var annotation = _this._editCapability.annotation;
-
-      return _react2.default.createElement(_DocsEditorToolBarButton2.default, {
-        active: false,
-        disabled: !annotation,
-        key: spec.action,
-        onClick: _this._onButtonClick,
-        spec: spec
-      });
-    }, _this._renderBlockStyleButton = function (spec) {
-      var blockStyles = _this._editCapability.blockStyles;
-
-      return _react2.default.createElement(_DocsEditorToolBarButton2.default, {
-        active: blockStyles ? blockStyles.has(spec.style) : false,
-        disabled: !blockStyles,
-        key: spec.action,
-        onClick: _this._onButtonClick,
-        spec: spec
-      });
-    }, _this._renderInlineStyleButton = function (spec) {
-      var inlineStyles = _this._editCapability.inlineStyles;
-
-      var active = inlineStyles ? inlineStyles.has(spec.style) : false;
-      return _react2.default.createElement(_DocsEditorToolBarButton2.default, {
         active: active,
-        disabled: inlineStyles === null,
-        key: spec.action,
-        onClick: _this._onButtonClick,
-        spec: spec
+        feature: feature,
+        key: feature.action,
+        onClick: _this._onButtonClick
       });
-    }, _this._renderInsertButton = function (spec) {
-      var editCapability = _this._editCapability;
-      var disabled = true;
-      switch (spec.action) {
-        case _DocsActionTypes2.default.TABLE_INSERT:
-          disabled = !editCapability.table;
-          break;
-        default:
-          disabled = !editCapability.insert;
-          break;
+    }, _this._maybeWillRerender = function () {
+      _this._timer.clear();
+      _this._timer.set(_this._maybyRerender, 150);
+    }, _this._maybyRerender = function () {
+      // If editorState changed, force re-render.
+      var editor = _this.props.getEditor();
+      if (editor) {
+        var _editor$props = editor.props,
+            _editorState = _editor$props.editorState,
+            _onChange = _editor$props.onChange;
+
+        if (_editorState !== _this.state.focusedEditorState) {
+          _this.setState({
+            focusedEditorState: _editorState
+          });
+        }
       }
-      return _react2.default.createElement(_DocsEditorToolBarButton2.default, {
-        disabled: disabled,
-        key: spec.action,
-        onClick: _this._onButtonClick,
-        spec: spec
-      });
-    }, _this._onHistoryButtonClick = function (spec) {
+    }, _this._onHistoryButtonClick = function (feature) {
+      var docsContext = _this.context.docsContext;
       var _this$props = _this.props,
           editorState = _this$props.editorState,
           onChange = _this$props.onChange;
 
-      switch (spec.action) {
-        case _DocsActionTypes2.default.HISTORY_REDO:
-          onChange(_draftJs.EditorState.redo(editorState));
-          break;
-        case _DocsActionTypes2.default.HISTORY_UNDO:
-          onChange(_draftJs.EditorState.undo(editorState));
-          break;
-      }
-    }, _this._onButtonClick = function (spec) {
-      var editor = _this.props.getEditor();
-      if (!editor) {
-        return;
-      }
-      var _editor$props2 = editor.props,
-          onChange = _editor$props2.onChange,
-          editorState = _editor$props2.editorState;
+      feature.update(feature, editorState, function (nextEditorState) {
+        if (nextEditorState && nextEditorState !== editorState) {
+          onChange(nextEditorState);
+        }
+      }, docsContext);
+    }, _this._onButtonClick = function (feature) {
+      _this._closeModal();
+
+      var editor = _this.props.getEditor() || { props: {} };
+
+      var _ref2 = feature === _DocsEditorToolBarFeatures.REDO || feature === _DocsEditorToolBarFeatures.UNDO ? _this.props : editor.props,
+          editorState = _ref2.editorState,
+          onChange = _ref2.onChange;
 
       if (!onChange || !editorState) {
         return;
       }
 
-      if (spec.action === _DocsActionTypes2.default.TEXT_LINK) {
-        var linkEntity = (0, _getCurrentSelectionEntity2.default)(editorState);
-        var url = linkEntity && linkEntity.getData().url || '';
-        _this._linkEditorModal && _this._linkEditorModal.dispose();
-        _this._linkEditorModal = showLinkEditorModalDialog(url, updateEditorLink.bind(null, editor));
-        return;
-      }
+      var docsContext = _this.context.docsContext;
 
-      if (spec.action === _DocsActionTypes2.default.IMAGE_INSERT && spec.modifier) {
-        // Insert an empty image placeholder.
-        var docsContext = _this.context.docsContext;
 
-        var _newEditorState = spec.modifier(editorState);
-        // Opens a modal to edit it.
-        _this._imageEditorModal && _this._imageEditorModal.dispose();
-        _this._imageEditorModal = showImageEditorModalDialog(docsContext, _newEditorState, onChange);
-        return;
-      }
-
-      if (spec.action === _DocsActionTypes2.default.MATH_INSERT && spec.modifier) {
-        // Insert an empty math placeholder.
-        var _docsContext = _this.context.docsContext;
-
-        var _newEditorState2 = spec.modifier(editorState);
-        // Opens a modal to edit it.
-        _this._mathEditorModal && _this._mathEditorModal.dispose();
-        _this._mathEditorModal = showMathEditorModalDialog(_docsContext, _newEditorState2, onChange);
-        return;
-      }
-
-      var newEditorState = (0, _DocsEditorToolBarHelpers.maybeInsertBlock)(spec, editorState) || (0, _DocsEditorToolBarHelpers.maybeFormatInlineText)(spec, editorState) || (0, _DocsEditorToolBarHelpers.maybeFormatBlockText)(spec, editorState) || (0, _DocsEditorToolBarHelpers.maybeUpdateHistory)(spec, editorState) || (0, _DocsEditorToolBarHelpers.maybeUpdateAnnotation)(spec, editorState);
-
-      if (newEditorState && newEditorState !== editorState) {
-        onChange(newEditorState);
-      }
-    }, _this._maybeWillRerender = function () {
-      _this._timer.clear();
-      _this._timer.set(_this._maybyRerender, 150);
-    }, _this._maybyRerender = function () {
-      // If editorState changed, re-render.
-      _this._timerID = 0;
-      var editor = _this.props.getEditor();
-      if (editor) {
-        var _editorState = editor.props.editorState;
-
-        _this.setState({ editorState: _editorState || null });
-      }
+      _this._modalHandle = feature.update(feature, editorState, onChange, docsContext);
     }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
   }
 
@@ -326,9 +149,8 @@ var DocsEditorToolBar = function (_React$PureComponent) {
     key: 'componentWillUnmount',
     value: function componentWillUnmount() {
       this._timer.dispose();
-      this._imageEditorModal && this._imageEditorModal.dispose();
-      this._linkEditorModal && this._linkEditorModal.dispose();
       this._eventsCapture && this._eventsCapture.dispose();
+      this._closeModal();
     }
   }, {
     key: 'render',
@@ -340,18 +162,10 @@ var DocsEditorToolBar = function (_React$PureComponent) {
       if (!canEdit) {
         return null;
       }
+      var _props = this.props,
+          editorState = _props.editorState,
+          onChange = _props.onChange;
 
-      var editor = this.props.getEditor();
-      this._editCapability = (0, _DocsEditorToolBarHelpers.getEditCapability)(editor);
-      var specFilter = function specFilter(_ref2) {
-        var action = _ref2.action;
-        return allowedActions.has(action);
-      };
-      var insertButtons = _DocsEditorToolBarHelpers.INSERT_SPECS.filter(specFilter).map(this._renderInsertButton);
-      var inlineButtons = _DocsEditorToolBarHelpers.INLINE_SPECS.filter(specFilter).map(this._renderInlineStyleButton);
-      var blockButtons = _DocsEditorToolBarHelpers.BLOCK_SPECS.filter(specFilter).map(this._renderBlockStyleButton);
-      var historyButtons = _DocsEditorToolBarHelpers.HISTORY_SPECS.filter(specFilter).map(this._renderHistoryButton);
-      var annotationButtons = _DocsEditorToolBarHelpers.ANNOTATION_SPECS.filter(specFilter).map(this._renderAnnotationButton);
       return _react2.default.createElement(
         'div',
         { className: 'docs-editor-toolbar', 'data-docs-tool': 'true' },
@@ -361,26 +175,42 @@ var DocsEditorToolBar = function (_React$PureComponent) {
           _react2.default.createElement(
             _reactBootstrap.ButtonGroup,
             { className: 'docs-buttons-group', key: 'block' },
-            blockButtons
+            [_DocsEditorToolBarFeatures.UNORDERED_LIST, _DocsEditorToolBarFeatures.ORDERED_LIST, _DocsEditorToolBarFeatures.BLOCK_QUOTE, _DocsEditorToolBarFeatures.H1, _DocsEditorToolBarFeatures.H2, _DocsEditorToolBarFeatures.H3, _DocsEditorToolBarFeatures.H4].map(this._renderButton)
           ),
           _react2.default.createElement(
             _reactBootstrap.ButtonGroup,
             { className: 'docs-buttons-group', key: 'inline' },
-            inlineButtons,
-            annotationButtons
+            [_DocsEditorToolBarFeatures.LINK, _DocsEditorToolBarFeatures.BOLD, _DocsEditorToolBarFeatures.ITALIC, _DocsEditorToolBarFeatures.UNDERLINE, _DocsEditorToolBarFeatures.STRIKE, _DocsEditorToolBarFeatures.CODE].map(this._renderButton)
           ),
           _react2.default.createElement(
             _reactBootstrap.ButtonGroup,
             { className: 'docs-buttons-group', key: 'insert' },
-            insertButtons
+            [_DocsEditorToolBarFeatures.IMAGE, _DocsEditorToolBarFeatures.TABLE, _DocsEditorToolBarFeatures.MATH, _DocsEditorToolBarFeatures.EXPANDABLE].map(this._renderButton)
           ),
           _react2.default.createElement(
             _reactBootstrap.ButtonGroup,
             { className: 'docs-buttons-group', key: 'history' },
-            historyButtons
+            _react2.default.createElement(_DocsEditorToolBarButton2.default, {
+              active: false,
+              disabled: !_DocsEditorToolBarFeatures.UNDO.isEnabled(_DocsEditorToolBarFeatures.UNDO, editorState),
+              feature: _DocsEditorToolBarFeatures.UNDO,
+              onClick: this._onHistoryButtonClick
+            }),
+            _react2.default.createElement(_DocsEditorToolBarButton2.default, {
+              active: false,
+              disabled: !_DocsEditorToolBarFeatures.REDO.isEnabled(_DocsEditorToolBarFeatures.REDO, editorState),
+              feature: _DocsEditorToolBarFeatures.REDO,
+              onClick: this._onHistoryButtonClick
+            })
           )
         )
       );
+    }
+  }, {
+    key: '_closeModal',
+    value: function _closeModal() {
+      this._modalHandle && this._modalHandle.dispose();
+      this._modalHandle = null;
     }
   }]);
   return DocsEditorToolBar;
