@@ -4,6 +4,7 @@ import DocsBlockTypeToComponent from './DocsBlockTypeToComponent';
 import DocsBlockTypes from './DocsBlockTypes';
 import DocsDecorator from './DocsDecorator';
 import DocsDecoratorTypes from './DocsDecoratorTypes';
+import adjustBlockDepthForContentState from './adjustBlockDepthForContentState';
 import convertFromHTML from './convertFromHTML';
 import convertFromRaw from './convertFromRaw';
 import convertToRaw from './convertToRaw';
@@ -12,14 +13,63 @@ import isContentBlockEmpty from './isContentBlockEmpty';
 import tryInsertAtomicBlock from './tryInsertAtomicBlock';
 import uniqueID from './uniqueID';
 import updateEntityData from './updateEntityData';
-import {APPLY_ENTITY, CHANGE_BLOCK_DATA} from './DocsEditorChangeType';
+import {ADJUST_DEPTH, APPLY_ENTITY, CHANGE_BLOCK_DATA} from './DocsEditorChangeType';
+import {DOCS_INDENTED_BLOCK} from './DocsBlockTypes';
 import {List, Map as ImmutableMap, OrderedMap, Repeat} from 'immutable';
 import {genKey, CharacterMetadata, ContentBlock, Modifier, EditorState, SelectionState, RichUtils} from 'draft-js';
 
 const CHAR_ZERO_WIDTH = '\u200B';
+const MAX_DEPTH = 8;
 
 // All the modifiers in this file muss have the same interface like this:
 //   `function modifyXY(editorState: EditorState, ...rest): EditorState {}``
+
+function updateIndent(editorState: EditorState, adjustment: number): EditorState {
+  const selectionState = editorState.getSelection();
+  const contentState = editorState.getCurrentContent();
+  const startKey = editorState.getSelection().getStartKey();
+  const startOffset = editorState.getSelection().getStartOffset();
+  const block = contentState.getBlockForKey(startKey);
+  const blockType = block.getType();
+  if (
+    blockType === 'unordered-list-item' ||
+    blockType === 'ordered-list-item'
+  ) {
+    const nextContentState = adjustBlockDepthForContentState(
+      contentState,
+      selectionState,
+      adjustment,
+      4,
+    );
+    return EditorState.push(
+      editorState,
+      nextContentState,
+      ADJUST_DEPTH,
+    );
+  } else if (blockType === 'unstyled') {
+    const nextContentState = adjustBlockDepthForContentState(
+      contentState,
+      selectionState,
+      adjustment,
+      MAX_DEPTH,
+    );
+    return EditorState.push(
+      editorState,
+      nextContentState,
+      ADJUST_DEPTH,
+    );
+  }
+
+  return editorState;
+}
+
+function indentMore(editorState: EditorState): EditorState {
+  return updateIndent(editorState, 1);
+}
+
+function indentLess(editorState: EditorState): EditorState {
+  return updateIndent(editorState, -1);
+}
 
 function insertTable(editorState: EditorState): EditorState {
   return insertCustomBlock(
@@ -191,8 +241,6 @@ function updateLink(
     url ? entityKey : null,
   );
 }
-
-
 
 function toggleAnnotation(
   editorState: EditorState,
@@ -457,6 +505,8 @@ function createContentBlock(text: string, className?: string): ContentBlock {
 
 module.exports = {
   ensureAtomicBlocksAreSelectable,
+  indentLess,
+  indentMore,
   insertBlock,
   insertCustomBlock,
   insertExpandable,

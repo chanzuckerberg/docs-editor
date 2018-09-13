@@ -20,6 +20,11 @@ type Props = {
   onChange: (e: EditorState) => void,
 };
 
+const DUMMY_EDITOR = {
+  props: {
+  },
+};
+
 class DocsEditorToolBar extends React.PureComponent {
   state = {
     focusedEditorState: null,
@@ -98,13 +103,13 @@ class DocsEditorToolBar extends React.PureComponent {
               active={false}
               disabled={!UNDO.isEnabled(UNDO, editorState)}
               feature={UNDO}
-              onClick={this._onHistoryButtonClick}
+              onClick={this._onButtonClick}
             />
             <DocsEditorToolBarButton
               active={false}
               disabled={!REDO.isEnabled(REDO, editorState)}
               feature={REDO}
-              onClick={this._onHistoryButtonClick}
+              onClick={this._onButtonClick}
             />
           </ButtonGroup>
         </div>
@@ -117,10 +122,21 @@ class DocsEditorToolBar extends React.PureComponent {
     if (!allowedActions.has(feature.action)) {
       return null;
     }
-    const disabled = false;
-    const active = false;
-    // active={editorState ? feature.isActive(feature, editorState) : false}
-    // disabled={editorState ? !feature.isEnabled(feature, editorState) : true}
+
+    const editor: any = this.props.getEditor() || DUMMY_EDITOR;
+    const {editorState} = (feature === REDO || feature === UNDO) ?
+      this.props :
+      editor.props;
+
+
+    const disabled = editorState ?
+      !feature.isEnabled(feature, editorState) :
+      true;
+
+    const active = editorState ?
+      feature.isActive(feature, editorState) :
+      false;
+
     return (
       <DocsEditorToolBarButton
         disabled={disabled}
@@ -150,25 +166,10 @@ class DocsEditorToolBar extends React.PureComponent {
     }
   };
 
-  _onHistoryButtonClick = (feature: EditorToolbarFeature): void => {
-    const {docsContext} = this.context;
-    const {editorState, onChange} = this.props;
-    feature.update(
-      feature,
-      editorState,
-      (nextEditorState) => {
-        if (nextEditorState && nextEditorState !== editorState) {
-          onChange(nextEditorState);
-        }
-      },
-      docsContext,
-    );
-  };
-
   _onButtonClick = (feature: EditorToolbarFeature): void => {
     this._closeModal();
 
-    const editor: any = this.props.getEditor() || {props: {}};
+    const editor: any = this.props.getEditor() || DUMMY_EDITOR;
 
     const {editorState, onChange} = (feature === REDO || feature === UNDO) ?
       this.props :

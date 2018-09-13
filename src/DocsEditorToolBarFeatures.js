@@ -9,7 +9,7 @@ import getCurrentSelectionEntity from './getCurrentSelectionEntity';
 import showModalDialog from './showModalDialog';
 import updateEntityData from './updateEntityData';
 import {EditorState, RichUtils} from 'draft-js';
-import {insertImage, insertTable, insertMath, toggleAnnotation, insertExpandable, updateLink} from './DocsModifiers';
+import {insertImage, insertTable, insertMath, toggleAnnotation, insertExpandable, updateLink, indentMore, indentLess} from './DocsModifiers';
 
 import type {ModalHandle} from './showModalDialog';
 
@@ -68,7 +68,7 @@ export const LINK: Feature = {
   action: DocsActionTypes.TEXT_LINK,
   icon: 'link',
   label: 'Add link',
-  isActive: returnFalse,
+  isActive: (f, editorState) => RichUtils.currentBlockContainsLink(editorState),
   isEnabled: hasSelection,
   update: showLinkEditorModalDialog,
 };
@@ -139,7 +139,7 @@ export const UNORDERED_LIST: Feature = {
   style: 'unordered-list-item',
   isActive: hasBlockStyle,
   isEnabled: returnTrue,
-  update: toggleBlockStyle,
+  update: toggleBlockType,
 };
 
 export const ORDERED_LIST: Feature = {
@@ -149,7 +149,7 @@ export const ORDERED_LIST: Feature = {
   style: 'ordered-list-item',
   isActive: hasBlockStyle,
   isEnabled: returnTrue,
-  update: toggleBlockStyle,
+  update: toggleBlockType,
 };
 
 export const INDENT_MORE: Feature = {
@@ -158,7 +158,7 @@ export const INDENT_MORE: Feature = {
   label: 'Indent More',
   isActive: returnFalse,
   isEnabled: returnTrue,
-  update: noop,
+  update: (f, editorState, onChange) => onChange(indentMore(editorState)),
 };
 
 export const INDENT_LESS: Feature = {
@@ -167,7 +167,7 @@ export const INDENT_LESS: Feature = {
   label: 'Indent Less',
   isActive: returnFalse,
   isEnabled: returnTrue,
-  update: noop,
+  update: (f, editorState, onChange) => onChange(indentLess(editorState)),
 };
 
 export const BLOCK_QUOTE: Feature = {
@@ -177,7 +177,7 @@ export const BLOCK_QUOTE: Feature = {
   style: 'blockquote',
   isActive: hasBlockStyle,
   isEnabled: returnTrue,
-  update: toggleBlockStyle,
+  update: toggleBlockType,
 };
 
 export const H1: Feature = {
@@ -186,7 +186,7 @@ export const H1: Feature = {
   style: 'header-one',
   isActive: hasBlockStyle,
   isEnabled: returnTrue,
-  update: toggleBlockStyle,
+  update: toggleBlockType,
 };
 
 export const H2: Feature = {
@@ -195,7 +195,7 @@ export const H2: Feature = {
   style: 'header-two',
   isActive: hasBlockStyle,
   isEnabled: returnTrue,
-  update: toggleBlockStyle,
+  update: toggleBlockType,
 };
 
 export const H3: Feature = {
@@ -204,7 +204,7 @@ export const H3: Feature = {
   style: 'header-three',
   isActive: hasBlockStyle,
   isEnabled: returnTrue,
-  update: toggleBlockStyle,
+  update: toggleBlockType,
 };
 
 export const H4: Feature = {
@@ -213,7 +213,7 @@ export const H4: Feature = {
   style: 'header-four',
   isActive: hasBlockStyle,
   isEnabled: returnTrue,
-  update: toggleBlockStyle,
+  update: toggleBlockType,
 };
 
 export const H5: Feature = {
@@ -222,7 +222,7 @@ export const H5: Feature = {
   style: 'header-five',
   isActive: hasBlockStyle,
   isEnabled: returnTrue,
-  update: toggleBlockStyle,
+  update: toggleBlockType,
 };
 
 export const UNDO: Feature = {
@@ -295,7 +295,7 @@ function hasNoSelection(feature: Feature, editorState: EditorState): boolean {
   return selectionState.isCollapsed();
 }
 
-function toggleBlockStyle(
+function toggleBlockType(
   feature: Feature,
   editorState: EditorState,
   onChange: OnChange,
