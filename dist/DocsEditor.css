@@ -88,6 +88,28 @@
   width: 32px;
 }
 
-.docs-style-font-size-26pt {
-  font-size: 26pt;
+/* Default Styles, copied from user-agent */
+/* https://trac.webkit.org/browser/trunk/Source/WebCore/css/html.css */
+.docs-editor .header-one {
+  font-size: 2em;
+  font-weight: bold;
+  margin: 0.67em 0;
+}
+
+.docs-editor .header-two {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin: 0.83em 0;
+}
+
+.docs-editor .header-three {
+  font-size: 1.17em;
+  font-weight: bold;
+  margin: 1em 0;
+}
+
+.docs-editor .header-four {
+  font-size: 1em;
+  font-weight: bold;
+  margin: 1.33em 0;
 }

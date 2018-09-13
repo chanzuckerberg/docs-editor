@@ -33,10 +33,15 @@ var _immutable = require('immutable');
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // Copied from https://github.com/facebook/draft-js/blob/master/src/model/constants/DraftBlockType.js#L27-L28
-var UNORDERED_LIST_ITEM = 'unordered-list-item';
+var H1 = 'header-one';
 
+var H2 = 'header-two';
+var H3 = 'header-three';
+var H4 = 'header-four';
 var ORDERED_LIST_ITEM = 'ordered-list-item';
 var PARAGRAPH = 'paragraph';
+var UNORDERED_LIST_ITEM = 'unordered-list-item';
+var UNSTYLED = 'unstyled';
 
 function renderBlock(contentBlock, blockProps) {
 
@@ -93,6 +98,23 @@ function getStyle(contentBlock) {
   var inlineStyleSet = contentBlock.getInlineStyleAt(0);
   if (inlineStyleSet && inlineStyleSet.size > 0) {
     classNames.push.apply(classNames, inlineStyleSet.toArray());
+  }
+
+  var blockType = contentBlock.getType();
+  switch (blockType) {
+    case UNSTYLED:
+      var className = _DocsCustomStyleMap2.default.forDepth(contentBlock.getDepth());
+      className && classNames.push(className);
+      break;
+
+    case UNORDERED_LIST_ITEM:
+    case ORDERED_LIST_ITEM:
+    case H1:
+    case H2:
+    case H3:
+    case H4:
+      classNames.push(blockType);
+      break;
   }
 
   if (contentBlock.getType() === 'unstyled') {

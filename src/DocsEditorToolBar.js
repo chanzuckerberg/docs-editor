@@ -7,10 +7,10 @@ import captureDocumentEvents from './captureDocumentEvents';
 import withDocsContext from './withDocsContext';
 import {ButtonGroup} from 'react-bootstrap';
 import {EditorState} from 'draft-js';
-import {UNORDERED_LIST, ORDERED_LIST, BLOCK_QUOTE, H1, H2, H3, H4, LINK, BOLD, ITALIC, UNDERLINE, STRIKE, CODE, HIGHLIGHT, IMAGE, TABLE, MATH, EXPANDABLE, UNDO, REDO, INDENT_MORE, INDENT_LESS} from './DocsEditorToolBarFeatures';
+import {UNORDERED_LIST, ORDERED_LIST, BLOCK_QUOTE, H1, H2, H3, H4, LINK, BOLD, ITALIC, UNDERLINE, STRIKE, CODE, HIGHLIGHT, IMAGE, TABLE, MATH, EXPANDABLE, UNDO, REDO, INDENT_MORE, INDENT_LESS} from './DocsBehaviors';
 
 import type {DocsEditorLike} from './Types';
-import type {EditorToolbarFeature} from './DocsEditorToolBarFeatures';
+import type {DocsBehavior} from './DocsBehaviors';
 
 import './DocsEditorToolBar.css';
 
@@ -71,8 +71,8 @@ class DocsEditorToolBar extends React.PureComponent {
                 H2,
                 H3,
                 H4,
-                INDENT_MORE,
                 INDENT_LESS,
+                INDENT_MORE,
               ].map(this._renderButton)
             }
           </ButtonGroup>
@@ -101,13 +101,13 @@ class DocsEditorToolBar extends React.PureComponent {
           <ButtonGroup className="docs-buttons-group" key="history">
             <DocsEditorToolBarButton
               active={false}
-              disabled={!UNDO.isEnabled(UNDO, editorState)}
+              disabled={!UNDO.isEnabled(editorState)}
               feature={UNDO}
               onClick={this._onButtonClick}
             />
             <DocsEditorToolBarButton
               active={false}
-              disabled={!REDO.isEnabled(REDO, editorState)}
+              disabled={!REDO.isEnabled(editorState)}
               feature={REDO}
               onClick={this._onButtonClick}
             />
@@ -117,7 +117,7 @@ class DocsEditorToolBar extends React.PureComponent {
     );
   }
 
-  _renderButton = (feature: EditorToolbarFeature): ?React.Element<any> => {
+  _renderButton = (feature: DocsBehavior): ?React.Element<any> => {
     const {allowedActions} = this.context.docsContext;
     if (!allowedActions.has(feature.action)) {
       return null;
@@ -130,11 +130,11 @@ class DocsEditorToolBar extends React.PureComponent {
 
 
     const disabled = editorState ?
-      !feature.isEnabled(feature, editorState) :
+      !feature.isEnabled(editorState) :
       true;
 
     const active = editorState ?
-      feature.isActive(feature, editorState) :
+      feature.isActive(editorState) :
       false;
 
     return (
@@ -166,7 +166,7 @@ class DocsEditorToolBar extends React.PureComponent {
     }
   };
 
-  _onButtonClick = (feature: EditorToolbarFeature): void => {
+  _onButtonClick = (feature: DocsBehavior): void => {
     this._closeModal();
 
     const editor: any = this.props.getEditor() || DUMMY_EDITOR;
@@ -182,7 +182,6 @@ class DocsEditorToolBar extends React.PureComponent {
     const {docsContext} = this.context;
 
     this._modalHandle = feature.update(
-      feature,
       editorState,
       onChange,
       docsContext,

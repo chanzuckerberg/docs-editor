@@ -14,21 +14,22 @@ import {insertImage, insertTable, insertMath, toggleAnnotation, insertExpandable
 import type {ModalHandle} from './showModalDialog';
 
 type OnChange = (e: EditorState) => void;
-type Update = (f: Feature, e: EditorState, o: OnChange, d: DocsContext) => ?ModalHandle;
+type Update = (e: EditorState, o: OnChange, d: DocsContext) => ?ModalHandle;
 
-type Feature = {
+// List item depths limited to 4.
+// https://github.com/facebook/draft-js/issues/122
+const MAX_DEPTH = 4;
+
+export type DocsBehavior = {
   action: string,
   icon?: ?string,
-  isActive: (f: Feature, e: EditorState) => boolean,
-  isEnabled: (f: Feature, e: EditorState) => boolean,
+  isActive: (e: EditorState) => boolean,
+  isEnabled: (e: EditorState) => boolean,
   label?: ?string,
-  style?: ?string,
   update: Update,
 };
 
-export type EditorToolbarFeature = Feature;
-
-export const IMAGE: Feature = {
+export const IMAGE: DocsBehavior = {
   action: DocsActionTypes.IMAGE_INSERT,
   icon: 'insert_photo',
   label: 'Insert Image',
@@ -37,16 +38,16 @@ export const IMAGE: Feature = {
   update: showImageEditorModalDialog,
 };
 
-export const TABLE: Feature = {
+export const TABLE: DocsBehavior = {
   action:  DocsActionTypes.TABLE_INSERT,
   icon: 'grid_on',
   label: 'Insert Table',
   isActive: returnFalse,
   isEnabled: hasNoSelection,
-  update: (f, editorState, onChange) => onChange(insertTable(editorState)),
+  update: (editorState, onChange) => onChange(insertTable(editorState)),
 };
 
-export const MATH: Feature = {
+export const MATH: DocsBehavior = {
   action: DocsActionTypes.MATH_INSERT,
   icon: 'functions',
   label: 'Math',
@@ -55,75 +56,71 @@ export const MATH: Feature = {
   update: showMathEditorModalDialog,
 };
 
-export const EXPANDABLE: Feature = {
+export const EXPANDABLE: DocsBehavior = {
   action: DocsActionTypes.EXPANDABLE_INSERT,
   icon: 'expand_more',
   label: 'Expandable',
   isActive: returnFalse,
   isEnabled: hasNoSelection,
-  update: (f, editorState, onChange) => onChange(insertExpandable(editorState)),
+  update: (editorState, onChange) => onChange(insertExpandable(editorState)),
 };
 
-export const LINK: Feature = {
+export const LINK: DocsBehavior = {
   action: DocsActionTypes.TEXT_LINK,
   icon: 'link',
   label: 'Add link',
-  isActive: (f, editorState) => RichUtils.currentBlockContainsLink(editorState),
+  isActive: (editorState) => RichUtils.currentBlockContainsLink(editorState),
   isEnabled: hasSelection,
   update: showLinkEditorModalDialog,
 };
 
-export const BOLD: Feature = {
+export const BOLD: DocsBehavior = {
   action: DocsActionTypes.TEXT_B,
   icon: 'format_bold',
   label: 'Bold',
-  style: 'BOLD',
-  isActive: hasInlineStyle,
+  isActive: (e) => isInlineStyle('BOLD', e),
   isEnabled: hasSelection,
-  update: toggleInlineStyle,
+  update: (e, o, d) => toggleInlineStyle('BOLD', e, o, d),
 };
 
-export const ITALIC = {
+export const ITALIC: DocsBehavior = {
   action: DocsActionTypes.TEXT_I,
   icon: 'format_italic',
   label: 'Italic',
   style: 'ITALIC',
-  isActive: hasInlineStyle,
+  isActive: (e) => isInlineStyle('ITALIC', e),
   isEnabled: hasSelection,
-  update: toggleInlineStyle,
+  update: (e, o, d) => toggleInlineStyle('ITALIC', e, o, d),
 };
 
-export const UNDERLINE = {
+export const UNDERLINE: DocsBehavior = {
   action: DocsActionTypes.TEXT_U,
   icon: 'format_underlined',
   label: 'Underline',
-  style: 'UNDERLINE',
-  isActive: hasInlineStyle,
+  isActive: (e) => isInlineStyle('UNDERLINE', e),
   isEnabled: hasSelection,
-  update: toggleInlineStyle,
+  update: (e, o, d) => toggleInlineStyle('UNDERLINE', e, o, d),
 };
 
-export const STRIKE: Feature = {
+export const STRIKE: DocsBehavior = {
   action: DocsActionTypes.TEXT_STRIKE,
   icon: 'strikethrough_s',
   label: 'Strike',
-  style: 'STRIKETHROUGH',
-  isActive: hasInlineStyle,
+  isActive: (e) => isInlineStyle('STRIKETHROUGH', e),
   isEnabled: hasSelection,
-  update: toggleInlineStyle,
+  update: (e, o, d) => toggleInlineStyle('STRIKETHROUGH', e, o, d),
 };
 
-export const CODE: Feature = {
+export const CODE: DocsBehavior = {
   action: DocsActionTypes.TEXT_VAR,
   icon: 'code',
   label: 'Code',
-  style: 'CODE',
-  isActive: hasInlineStyle,
+  isActive: (e) => isInlineStyle('CODE', e),
   isEnabled: hasSelection,
-  update: toggleInlineStyle,
+  update: (e, o, d) => toggleInlineStyle('CODE', e, o, d),
 };
 
-export const HIGHLIGHT: Feature = {
+export const HIGHLIGHT: DocsBehavior = {
   action: DocsActionTypes.TEXT_HIGHLIGHT,
   icon: 'format_color_text',
   label: 'Highlight',
@@ -132,100 +129,93 @@ export const HIGHLIGHT: Feature = {
   update: noop,
 };
 
-export const UNORDERED_LIST: Feature = {
+export const UNORDERED_LIST: DocsBehavior = {
   action: DocsActionTypes.TEXT_UL,
   icon: 'format_list_bulleted',
   label: 'Unordered List',
-  style: 'unordered-list-item',
-  isActive: hasBlockStyle,
+  isActive: (e) => isBlockType('unordered-list-item', e),
   isEnabled: returnTrue,
-  update: toggleBlockType,
+  update: (e, o, d) => toggleBlockType('unordered-list-item', e, o, d),
 };
 
-export const ORDERED_LIST: Feature = {
+export const ORDERED_LIST: DocsBehavior = {
   action: DocsActionTypes.TEXT_OL,
   icon: 'format_list_numbered',
   label: 'Ordered List',
-  style: 'ordered-list-item',
-  isActive: hasBlockStyle,
+  isActive: (e) => isBlockType('ordered-list-item', e),
   isEnabled: returnTrue,
-  update: toggleBlockType,
+  update: (e, o, d) => toggleBlockType('ordered-list-item', e, o, d),
 };
 
-export const INDENT_MORE: Feature = {
+export const INDENT_MORE: DocsBehavior = {
   action: DocsActionTypes.INDENT_MORE,
   icon: 'format_indent_increase',
   label: 'Indent More',
   isActive: returnFalse,
-  isEnabled: returnTrue,
-  update: (f, editorState, onChange) => onChange(indentMore(editorState)),
+  isEnabled: (e) => isIndentable(1, e),
+  update: (editorState, onChange) => onChange(indentMore(editorState)),
 };
 
-export const INDENT_LESS: Feature = {
+export const INDENT_LESS: DocsBehavior = {
   action: DocsActionTypes.INDENT_LESS,
   icon: 'format_indent_decrease',
   label: 'Indent Less',
   isActive: returnFalse,
-  isEnabled: returnTrue,
-  update: (f, editorState, onChange) => onChange(indentLess(editorState)),
+  isEnabled: (e) => isIndentable(-1, e),
+  update: (editorState, onChange) => onChange(indentLess(editorState)),
 };
 
-export const BLOCK_QUOTE: Feature = {
+export const BLOCK_QUOTE: DocsBehavior = {
   action: DocsActionTypes.TEXT_BLOCK_QUOTE,
   icon: 'format_quote',
   label: 'Block Quote',
-  style: 'blockquote',
-  isActive: hasBlockStyle,
+  isActive: (e) => isBlockType('blockquote', e),
   isEnabled: returnTrue,
-  update: toggleBlockType,
+  update: (e, o, d) => toggleBlockType('blockquote', e, o, d),
 };
 
-export const H1: Feature = {
+export const H1: DocsBehavior = {
   action: DocsActionTypes.TEXT_H1,
   label: 'H1',
-  style: 'header-one',
-  isActive: hasBlockStyle,
+  isActive: (e) => isBlockType('header-one', e),
   isEnabled: returnTrue,
-  update: toggleBlockType,
+  update: (e, o, d) => toggleBlockType('header-one', e, o, d),
 };
 
-export const H2: Feature = {
+export const H2: DocsBehavior = {
   action: DocsActionTypes.TEXT_H2,
   label: 'H2',
-  style: 'header-two',
-  isActive: hasBlockStyle,
+  isActive: (e) => isBlockType('header-two', e),
   isEnabled: returnTrue,
-  update: toggleBlockType,
+  update: (e, o, d) => toggleBlockType('header-two', e, o, d),
 };
 
-export const H3: Feature = {
+export const H3: DocsBehavior = {
   action: DocsActionTypes.TEXT_H3,
   label: 'H3',
-  style: 'header-three',
-  isActive: hasBlockStyle,
+  isActive: (e) => isBlockType('header-three', e),
   isEnabled: returnTrue,
-  update: toggleBlockType,
+  update: (e, o, d) => toggleBlockType('header-three', e, o, d),
 };
 
-export const H4: Feature = {
+export const H4: DocsBehavior = {
   action: DocsActionTypes.TEXT_H4,
   label: 'H4',
-  style: 'header-four',
-  isActive: hasBlockStyle,
+  isActive: (e) => isBlockType('header-four', e),
   isEnabled: returnTrue,
-  update: toggleBlockType,
+  update: (e, o, d) => toggleBlockType('header-four', e, o, d),
 };
 
-export const H5: Feature = {
+export const H5: DocsBehavior = {
   action: DocsActionTypes.TEXT_H5,
   label: 'H5',
   style: 'header-five',
-  isActive: hasBlockStyle,
+  isActive: (e) => isBlockType('header-five', e),
   isEnabled: returnTrue,
-  update: toggleBlockType,
+  update: (e, o, d) => toggleBlockType('header-five', e, o, d),
 };
 
-export const UNDO: Feature = {
+export const UNDO: DocsBehavior = {
   action: DocsActionTypes.HISTORY_UNDO,
   icon: 'undo',
   label: 'Undo',
@@ -234,7 +224,7 @@ export const UNDO: Feature = {
   update: undo,
 };
 
-export const REDO: Feature = {
+export const REDO: DocsBehavior = {
   action: DocsActionTypes.HISTORY_UNDO,
   icon: 'redo',
   label: 'Redo',
@@ -251,80 +241,101 @@ function returnFalse(): boolean {
   return false;
 }
 
-function redo(feature: Feature, editorState: EditorState, onChange: OnChange) {
+function redo(editorState: EditorState, onChange: OnChange) {
   onChange(EditorState.redo(editorState));
 }
 
-function undo(feature: Feature, editorState: EditorState, onChange: OnChange) {
+function undo(editorState: EditorState, onChange: OnChange) {
   onChange(EditorState.undo(editorState));
 }
 
-function canRedo(feature: Feature, editorState: EditorState): boolean {
+function canRedo(editorState: EditorState): boolean {
   return editorState.getRedoStack().size > 0;
 }
 
-function canUndo(feature: Feature, editorState: EditorState): boolean {
+function canUndo(editorState: EditorState): boolean {
   return editorState.getUndoStack().size > 0;
 }
 
-function hasBlockStyle(feature: Feature, editorState: EditorState): boolean {
+function isBlockType(type: string, editorState: EditorState): boolean {
   const selection = editorState.getSelection();
   const contentState = editorState.getCurrentContent();
   const contentBlock = contentState.getBlockForKey(selection.getStartKey());
   const blockType = contentBlock ? contentBlock.getType() : null;
-  return blockType === feature.style;
+  return blockType === type;
 }
 
-function hasInlineStyle(feature: Feature, editorState: EditorState): boolean {
+function isIndentable(adjustment: number, editorState: EditorState): boolean {
+  const selection = editorState.getSelection();
+  const contentState = editorState.getCurrentContent();
+  const contentBlock = contentState.getBlockForKey(selection.getStartKey());
+  const blockType = contentBlock ? contentBlock.getType() : null;
+
+  if (
+    blockType !== 'unstyled' &&
+    blockType !== 'unordered-list-item' &&
+    blockType !== 'ordered-list-item'
+  ) {
+    return false;
+  }
+  const depth = contentBlock ? contentBlock.getDepth() : 0;
+  if (adjustment > 0) {
+    return depth + adjustment <= MAX_DEPTH;
+  } else if (adjustment < 0) {
+    return depth - adjustment >= 0;
+  }
+
+  return false;
+}
+
+function isInlineStyle(style: string, editorState: EditorState): boolean {
   const selectionState = editorState.getSelection();
   if (selectionState.isCollapsed()) {
     return false;
   }
 
   const currentStyle = editorState.getCurrentInlineStyle();
-  return currentStyle.has(feature.style);
+  return currentStyle.has(style);
 }
 
-function hasSelection(feature: Feature, editorState: EditorState): boolean {
+function hasSelection(editorState: EditorState): boolean {
   const selectionState = editorState.getSelection();
   return !selectionState.isCollapsed();
 }
 
-function hasNoSelection(feature: Feature, editorState: EditorState): boolean {
+function hasNoSelection(editorState: EditorState): boolean {
   const selectionState = editorState.getSelection();
   return selectionState.isCollapsed();
 }
 
 function toggleBlockType(
-  feature: Feature,
+  blockType: string,
   editorState: EditorState,
   onChange: OnChange,
   docsContext: DocsContext,
 ): void {
-  onChange(RichUtils.toggleBlockType(editorState, feature.style));
+  onChange(RichUtils.toggleBlockType(editorState, blockType));
 }
 
 function toggleInlineStyle(
-  feature: Feature,
+  style: string,
   editorState: EditorState,
   onChange: OnChange,
   docsContext: DocsContext,
 ): void {
-  onChange(RichUtils.toggleInlineStyle(editorState, feature.style));
+  onChange(RichUtils.toggleInlineStyle(editorState, style));
 }
 
 function noop(
-  feature: Feature,
   editorState: EditorState,
   onChange: OnChange,
   docsContext: DocsContext,
 ) {
-  console.log('not supported', feature);
+  console.log('not supported');
 }
 
 // This opens an image editor for the image that was just inserted by user.
 function showImageEditorModalDialog(
-  feature: Feature,
   editorState: EditorState,
   onChange: OnChange,
   docsContext: DocsContext,
@@ -355,7 +366,6 @@ function showImageEditorModalDialog(
 }
 
 function showLinkEditorModalDialog(
-  feature: Feature,
   editorState: EditorState,
   onChange: OnChange,
   docsContext: DocsContext,
@@ -377,7 +387,6 @@ function showLinkEditorModalDialog(
 // This opens an math editor for the math placeholder that was just inserted by
 // user.
 function showMathEditorModalDialog(
-  feature: Feature,
   editorState: EditorState,
   onChange: OnChange,
   docsContext: DocsContext,

@@ -14,9 +14,14 @@ type Props = {
 };
 
 // Copied from https://github.com/facebook/draft-js/blob/master/src/model/constants/DraftBlockType.js#L27-L28
-const UNORDERED_LIST_ITEM = 'unordered-list-item'
-const ORDERED_LIST_ITEM = 'ordered-list-item'
+const H1 = 'header-one';
+const H2 = 'header-two';
+const H3 = 'header-three';
+const H4 = 'header-four';
+const ORDERED_LIST_ITEM = 'ordered-list-item';
 const PARAGRAPH = 'paragraph';
+const UNORDERED_LIST_ITEM = 'unordered-list-item';
+const UNSTYLED = 'unstyled';
 
 function renderBlock(
   contentBlock: ContentBlock,
@@ -81,6 +86,23 @@ function getStyle(
   const inlineStyleSet = contentBlock.getInlineStyleAt(0);
   if (inlineStyleSet && inlineStyleSet.size > 0) {
     classNames.push.apply(classNames, inlineStyleSet.toArray());
+  }
+
+  const blockType = contentBlock.getType();
+  switch (blockType) {
+    case UNSTYLED:
+      const className = DocsCustomStyleMap.forDepth(contentBlock.getDepth());
+      className && classNames.push(className);
+      break;
+
+    case UNORDERED_LIST_ITEM:
+    case ORDERED_LIST_ITEM:
+    case H1:
+    case H2:
+    case H3:
+    case H4:
+      classNames.push(blockType);
+      break;
   }
 
   if (contentBlock.getType() === 'unstyled') {
