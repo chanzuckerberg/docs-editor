@@ -16,6 +16,10 @@ var _DocsDecoratorTypes = require('./DocsDecoratorTypes');
 
 var _DocsDecoratorTypes2 = _interopRequireDefault(_DocsDecoratorTypes);
 
+var _adjustBlockDepthForContentState = require('./adjustBlockDepthForContentState');
+
+var _adjustBlockDepthForContentState2 = _interopRequireDefault(_adjustBlockDepthForContentState);
+
 var _convertFromHTML = require('./convertFromHTML');
 
 var _convertFromHTML2 = _interopRequireDefault(_convertFromHTML);
@@ -58,8 +62,36 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var CHAR_ZERO_WIDTH = '\u200B';
 
+var MAX_DEPTH = 8;
+
 // All the modifiers in this file muss have the same interface like this:
 //   `function modifyXY(editorState: EditorState, ...rest): EditorState {}``
+
+function updateIndent(editorState, adjustment) {
+  var selectionState = editorState.getSelection();
+  var contentState = editorState.getCurrentContent();
+  var startKey = editorState.getSelection().getStartKey();
+  var startOffset = editorState.getSelection().getStartOffset();
+  var block = contentState.getBlockForKey(startKey);
+  var blockType = block.getType();
+  if (blockType === 'unordered-list-item' || blockType === 'ordered-list-item') {
+    var nextContentState = (0, _adjustBlockDepthForContentState2.default)(contentState, selectionState, adjustment, 4);
+    return _draftJs.EditorState.push(editorState, nextContentState, _DocsEditorChangeType.ADJUST_DEPTH);
+  } else if (blockType === 'unstyled') {
+    var _nextContentState = (0, _adjustBlockDepthForContentState2.default)(contentState, selectionState, adjustment, MAX_DEPTH);
+    return _draftJs.EditorState.push(editorState, _nextContentState, _DocsEditorChangeType.ADJUST_DEPTH);
+  }
+
+  return editorState;
+}
+
+function indentMore(editorState) {
+  return updateIndent(editorState, 1);
+}
+
+function indentLess(editorState) {
+  return updateIndent(editorState, -1);
+}
 
 function insertTable(editorState) {
   return insertCustomBlock(editorState, _DocsBlockTypes2.default.DOCS_TABLE, { rowsCount: 2, colsCount: 2, topRowBgStyle: 'dark' });
@@ -347,6 +379,8 @@ function createContentBlock(text, className) {
 
 module.exports = {
   ensureAtomicBlocksAreSelectable: ensureAtomicBlocksAreSelectable,
+  indentLess: indentLess,
+  indentMore: indentMore,
   insertBlock: insertBlock,
   insertCustomBlock: insertCustomBlock,
   insertExpandable: insertExpandable,

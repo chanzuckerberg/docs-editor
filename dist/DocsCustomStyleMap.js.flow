@@ -48,6 +48,9 @@ const BACKGROUND_COLOR_VALUES = [
   createPaletteColors(90, 90),
 );
 
+const DEPTH_KEY = `${STYLE_KEY_PREFIX}_DEPTH`;
+const DEPTH_VALUES = numberRange(1, 10);
+
 const FONT_SIZE_KEY = `${STYLE_KEY_PREFIX}_FONT_SIZE`;
 const FONT_SIZE_VALUES = numberRange(4, 86);
 
@@ -102,6 +105,16 @@ const VERTICAL_ALIGN_VALUES = [
 const TRANSPARENT_COLORS = new Set([
   'default', 'transparent', 'rgba(0, 0, 0, 0)', 'inherit', 'none', 'initial',
 ]);
+
+function defineDepthStyle(
+  styleMap: StyleMapType,
+  depth: number,
+): void {
+  const suffix = String(depth);
+  styleMap[`${DEPTH_KEY}_${suffix}`] = {
+    'paddingLeft': `${depth * 24}pt`,
+  };
+}
 
 function defineListStartStyle(
   styleMap: StyleMapType,
@@ -310,6 +323,15 @@ function forVerticalAlign(
   return styleMap[key] ? key : null;
 }
 
+function forDepth(
+  styleMap: StyleMapType,
+  depth: number,
+): ?string {
+  const suffix = String(depth);
+  const key = `${DEPTH_KEY}_${suffix}`;
+  return styleMap[key] ? key : null;
+}
+
 function forLineHeight(
   styleMap: StyleMapType,
   lineHeight: string,
@@ -339,10 +361,11 @@ function forListStart(
 
 BACKGROUND_COLOR_VALUES.forEach(defineBackgroundColorStyle.bind(null, InlineStyles));
 COLOR_VALUES.forEach(defineColorStyle.bind(null, InlineStyles));
+DEPTH_VALUES.forEach(defineDepthStyle.bind(null, BlockStyles));
 FONT_SIZE_VALUES.forEach(defineFontSizeStyle.bind(null, InlineStyles));
 LINE_HEIGHT_VALUES.forEach(defineLineHeightStyle.bind(null, BlockStyles));
-LIST_STYLE_TYPE_VALUES.forEach(defineListStyleTypeStyle.bind(null, BlockStyles));
 LIST_START_VALUES.forEach(defineListStartStyle.bind(null, BlockStyles));
+LIST_STYLE_TYPE_VALUES.forEach(defineListStyleTypeStyle.bind(null, BlockStyles));
 TEXT_ALIGN_VALUES.forEach(defineTextAlignStyle.bind(null, BlockStyles));
 VERTICAL_ALIGN_VALUES.forEach(defineVerticalAlignStyle.bind(null, InlineStyles));
 
@@ -360,6 +383,7 @@ const DocsCustomStyleMap = {
   forListStyleType: forListStyleType.bind(null, AllStyles),
   forTextAlign: forTextAlign.bind(null, AllStyles),
   forVerticalAlign: forVerticalAlign.bind(null, AllStyles),
+  forDepth: forDepth.bind(null, AllStyles),
   injectCSSIntoDocument: injectCSSIntoDocument.bind(null, AllStyles),
 };
 

@@ -72,6 +72,9 @@ var WEB_SAFE_COLORS = (0, _createWebSafeColors2.default)();
 var BACKGROUND_COLOR_KEY = STYLE_KEY_PREFIX + '_BACKGROUND_COLOR';
 var BACKGROUND_COLOR_VALUES = [(0, _color2.default)('#4b4b96')].concat(WEB_SAFE_COLORS, (0, _createPaletteColors2.default)(90, 90));
 
+var DEPTH_KEY = STYLE_KEY_PREFIX + '_DEPTH';
+var DEPTH_VALUES = (0, _numberRange2.default)(1, 10);
+
 var FONT_SIZE_KEY = STYLE_KEY_PREFIX + '_FONT_SIZE';
 var FONT_SIZE_VALUES = (0, _numberRange2.default)(4, 86);
 
@@ -95,6 +98,13 @@ var VERTICAL_ALIGN_KEY = STYLE_KEY_PREFIX + '_VERTICAL_ALIGN';
 var VERTICAL_ALIGN_VALUES = ['baseline', 'sub', 'super', 'text-bottom', 'text-top'];
 
 var TRANSPARENT_COLORS = new _set2.default(['default', 'transparent', 'rgba(0, 0, 0, 0)', 'inherit', 'none', 'initial']);
+
+function defineDepthStyle(styleMap, depth) {
+  var suffix = String(depth);
+  styleMap[DEPTH_KEY + '_' + suffix] = {
+    'paddingLeft': depth * 24 + 'pt'
+  };
+}
 
 function defineListStartStyle(styleMap, listStart) {
   var suffix = listStart.toString();
@@ -249,6 +259,12 @@ function forVerticalAlign(styleMap, verticalAlign) {
   return styleMap[key] ? key : null;
 }
 
+function forDepth(styleMap, depth) {
+  var suffix = String(depth);
+  var key = DEPTH_KEY + '_' + suffix;
+  return styleMap[key] ? key : null;
+}
+
 function forLineHeight(styleMap, lineHeight) {
   var suffix = String(lineHeight).replace(/[\.]/, '-');
   var key = LINE_HEIGHT_KEY + '_' + suffix;
@@ -269,10 +285,11 @@ function forListStart(styleMap, listStart) {
 
 BACKGROUND_COLOR_VALUES.forEach(defineBackgroundColorStyle.bind(null, InlineStyles));
 COLOR_VALUES.forEach(defineColorStyle.bind(null, InlineStyles));
+DEPTH_VALUES.forEach(defineDepthStyle.bind(null, BlockStyles));
 FONT_SIZE_VALUES.forEach(defineFontSizeStyle.bind(null, InlineStyles));
 LINE_HEIGHT_VALUES.forEach(defineLineHeightStyle.bind(null, BlockStyles));
-LIST_STYLE_TYPE_VALUES.forEach(defineListStyleTypeStyle.bind(null, BlockStyles));
 LIST_START_VALUES.forEach(defineListStartStyle.bind(null, BlockStyles));
+LIST_STYLE_TYPE_VALUES.forEach(defineListStyleTypeStyle.bind(null, BlockStyles));
 TEXT_ALIGN_VALUES.forEach(defineTextAlignStyle.bind(null, BlockStyles));
 VERTICAL_ALIGN_VALUES.forEach(defineVerticalAlignStyle.bind(null, InlineStyles));
 
@@ -288,6 +305,7 @@ var DocsCustomStyleMap = (0, _extends3.default)({}, InlineStyles, {
   forListStyleType: forListStyleType.bind(null, AllStyles),
   forTextAlign: forTextAlign.bind(null, AllStyles),
   forVerticalAlign: forVerticalAlign.bind(null, AllStyles),
+  forDepth: forDepth.bind(null, AllStyles),
   injectCSSIntoDocument: injectCSSIntoDocument.bind(null, AllStyles)
 });
 

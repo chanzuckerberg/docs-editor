@@ -229,6 +229,15 @@ var DocsBaseEditor = function (_React$PureComponent) {
       _this3.props.onChange((0, _DocsModifiers.ensureAtomicBlocksAreSelectable)(editorState));
     };
 
+    _this3._onTab = function (e) {
+      var _this3$props = _this3.props,
+          editorState = _this3$props.editorState,
+          onChange = _this3$props.onChange;
+
+      var maxDepth = 4;
+      onChange(_draftJs.RichUtils.onTab(e, editorState, maxDepth));
+    };
+
     _this3._renderBlock = function (conetntBlock) {
       var editorState = _this3.props.editorState;
 
@@ -321,6 +330,7 @@ var DocsBaseEditor = function (_React$PureComponent) {
           customStyleMap: _DocsCustomStyleMap2.default,
           editorState: (0, _DocsModifiers.ensureAtomicBlocksAreSelectable)(editorState),
           onChange: this._onChange,
+          onTab: this._onTab,
           readOnly: readOnly,
           ref: this._onEditorRef
         }))

@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.REDO = exports.UNDO = exports.H5 = exports.H4 = exports.H3 = exports.H2 = exports.H1 = exports.BLOCK_QUOTE = exports.ORDERED_LIST = exports.UNORDERED_LIST = exports.HIGHLIGHT = exports.CODE = exports.STRIKE = exports.UNDERLINE = exports.ITALIC = exports.BOLD = exports.LINK = exports.EXPANDABLE = exports.MATH = exports.TABLE = exports.IMAGE = undefined;
+exports.REDO = exports.UNDO = exports.H5 = exports.H4 = exports.H3 = exports.H2 = exports.H1 = exports.BLOCK_QUOTE = exports.INDENT_LESS = exports.INDENT_MORE = exports.ORDERED_LIST = exports.UNORDERED_LIST = exports.HIGHLIGHT = exports.CODE = exports.STRIKE = exports.UNDERLINE = exports.ITALIC = exports.BOLD = exports.LINK = exports.EXPANDABLE = exports.MATH = exports.TABLE = exports.IMAGE = undefined;
 
 var _DocsActionTypes = require('./DocsActionTypes');
 
@@ -89,7 +89,9 @@ var LINK = exports.LINK = {
   action: _DocsActionTypes2.default.TEXT_LINK,
   icon: 'link',
   label: 'Add link',
-  isActive: returnFalse,
+  isActive: function isActive(f, editorState) {
+    return _draftJs.RichUtils.currentBlockContainsLink(editorState);
+  },
   isEnabled: hasSelection,
   update: showLinkEditorModalDialog
 };
@@ -160,7 +162,7 @@ var UNORDERED_LIST = exports.UNORDERED_LIST = {
   style: 'unordered-list-item',
   isActive: hasBlockStyle,
   isEnabled: returnTrue,
-  update: toggleBlockStyle
+  update: toggleBlockType
 };
 
 var ORDERED_LIST = exports.ORDERED_LIST = {
@@ -170,7 +172,29 @@ var ORDERED_LIST = exports.ORDERED_LIST = {
   style: 'ordered-list-item',
   isActive: hasBlockStyle,
   isEnabled: returnTrue,
-  update: toggleBlockStyle
+  update: toggleBlockType
+};
+
+var INDENT_MORE = exports.INDENT_MORE = {
+  action: _DocsActionTypes2.default.INDENT_MORE,
+  icon: 'format_indent_increase',
+  label: 'Indent More',
+  isActive: returnFalse,
+  isEnabled: returnTrue,
+  update: function update(f, editorState, onChange) {
+    return onChange((0, _DocsModifiers.indentMore)(editorState));
+  }
+};
+
+var INDENT_LESS = exports.INDENT_LESS = {
+  action: _DocsActionTypes2.default.INDENT_LESS,
+  icon: 'format_indent_decrease',
+  label: 'Indent Less',
+  isActive: returnFalse,
+  isEnabled: returnTrue,
+  update: function update(f, editorState, onChange) {
+    return onChange((0, _DocsModifiers.indentLess)(editorState));
+  }
 };
 
 var BLOCK_QUOTE = exports.BLOCK_QUOTE = {
@@ -180,7 +204,7 @@ var BLOCK_QUOTE = exports.BLOCK_QUOTE = {
   style: 'blockquote',
   isActive: hasBlockStyle,
   isEnabled: returnTrue,
-  update: toggleBlockStyle
+  update: toggleBlockType
 };
 
 var H1 = exports.H1 = {
@@ -189,7 +213,7 @@ var H1 = exports.H1 = {
   style: 'header-one',
   isActive: hasBlockStyle,
   isEnabled: returnTrue,
-  update: toggleBlockStyle
+  update: toggleBlockType
 };
 
 var H2 = exports.H2 = {
@@ -198,7 +222,7 @@ var H2 = exports.H2 = {
   style: 'header-two',
   isActive: hasBlockStyle,
   isEnabled: returnTrue,
-  update: toggleBlockStyle
+  update: toggleBlockType
 };
 
 var H3 = exports.H3 = {
@@ -207,7 +231,7 @@ var H3 = exports.H3 = {
   style: 'header-three',
   isActive: hasBlockStyle,
   isEnabled: returnTrue,
-  update: toggleBlockStyle
+  update: toggleBlockType
 };
 
 var H4 = exports.H4 = {
@@ -216,7 +240,7 @@ var H4 = exports.H4 = {
   style: 'header-four',
   isActive: hasBlockStyle,
   isEnabled: returnTrue,
-  update: toggleBlockStyle
+  update: toggleBlockType
 };
 
 var H5 = exports.H5 = {
@@ -225,7 +249,7 @@ var H5 = exports.H5 = {
   style: 'header-five',
   isActive: hasBlockStyle,
   isEnabled: returnTrue,
-  update: toggleBlockStyle
+  update: toggleBlockType
 };
 
 var UNDO = exports.UNDO = {
@@ -298,7 +322,7 @@ function hasNoSelection(feature, editorState) {
   return selectionState.isCollapsed();
 }
 
-function toggleBlockStyle(feature, editorState, onChange, docsContext) {
+function toggleBlockType(feature, editorState, onChange, docsContext) {
   onChange(_draftJs.RichUtils.toggleBlockType(editorState, feature.style));
 }
 
