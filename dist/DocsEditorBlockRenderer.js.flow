@@ -1,9 +1,11 @@
 // @flow
 
 import DocsBlockTypeToComponent from './DocsBlockTypeToComponent';
+import DocsCustomStyleMap from './DocsCustomStyleMap';
 import React from 'react';
 import tryGetEntityAtContentState from './tryGetEntityAtContentState';
 import {ContentBlock, EditorState, DefaultDraftBlockRenderMap} from 'draft-js';
+import {DOCS_INDENTED_BLOCK} from './DocsBlockTypes';
 import {Map as ImmutableMap} from 'immutable';
 
 type Props = {
@@ -79,6 +81,11 @@ function getStyle(
   const inlineStyleSet = contentBlock.getInlineStyleAt(0);
   if (inlineStyleSet && inlineStyleSet.size > 0) {
     classNames.push.apply(classNames, inlineStyleSet.toArray());
+  }
+
+  if (contentBlock.getType() === 'unstyled') {
+    const depthClassName = DocsCustomStyleMap.forDepth(contentBlock.getDepth());
+    depthClassName && classNames.push(depthClassName);
   }
 
   return classNames.length ? classNames.join(' ') : null;

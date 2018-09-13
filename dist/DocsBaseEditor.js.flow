@@ -127,6 +127,7 @@ class DocsBaseEditor extends React.PureComponent {
           customStyleMap={DocsCustomStyleMap}
           editorState={ensureAtomicBlocksAreSelectable(editorState)}
           onChange={this._onChange}
+          onTab={this._onTab}
           readOnly={readOnly}
           ref={this._onEditorRef}
         />
@@ -222,6 +223,12 @@ class DocsBaseEditor extends React.PureComponent {
 
   _onChange = (editorState: EditorState): void => {
     this.props.onChange(ensureAtomicBlocksAreSelectable(editorState));
+  };
+
+  _onTab = (e: SyntheticEvent): void => {
+    const {editorState, onChange} = this.props;
+    const maxDepth = 4;
+    onChange(RichUtils.onTab(e, editorState, maxDepth));
   };
 
   _renderBlock = (conetntBlock: ContentBlock): ?Object => {

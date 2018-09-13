@@ -54,6 +54,10 @@ var babelPluginFlowReactPropTypes_proptype_DocsEditorLike = require('./Types').b
 
 var babelPluginFlowReactPropTypes_proptype_EditorToolbarFeature = require('./DocsEditorToolBarFeatures').babelPluginFlowReactPropTypes_proptype_EditorToolbarFeature || require('prop-types').any;
 
+var DUMMY_EDITOR = {
+  props: {}
+};
+
 var DocsEditorToolBar = function (_React$PureComponent) {
   (0, _inherits3.default)(DocsEditorToolBar, _React$PureComponent);
 
@@ -76,10 +80,16 @@ var DocsEditorToolBar = function (_React$PureComponent) {
       if (!allowedActions.has(feature.action)) {
         return null;
       }
-      var disabled = false;
-      var active = false;
-      // active={editorState ? feature.isActive(feature, editorState) : false}
-      // disabled={editorState ? !feature.isEnabled(feature, editorState) : true}
+
+      var editor = _this.props.getEditor() || DUMMY_EDITOR;
+
+      var _ref2 = feature === _DocsEditorToolBarFeatures.REDO || feature === _DocsEditorToolBarFeatures.UNDO ? _this.props : editor.props,
+          editorState = _ref2.editorState;
+
+      var disabled = editorState ? !feature.isEnabled(feature, editorState) : true;
+
+      var active = editorState ? feature.isActive(feature, editorState) : false;
+
       return _react2.default.createElement(_DocsEditorToolBarButton2.default, {
         disabled: disabled,
         active: active,
@@ -104,25 +114,14 @@ var DocsEditorToolBar = function (_React$PureComponent) {
           });
         }
       }
-    }, _this._onHistoryButtonClick = function (feature) {
-      var docsContext = _this.context.docsContext;
-      var _this$props = _this.props,
-          editorState = _this$props.editorState,
-          onChange = _this$props.onChange;
-
-      feature.update(feature, editorState, function (nextEditorState) {
-        if (nextEditorState && nextEditorState !== editorState) {
-          onChange(nextEditorState);
-        }
-      }, docsContext);
     }, _this._onButtonClick = function (feature) {
       _this._closeModal();
 
-      var editor = _this.props.getEditor() || { props: {} };
+      var editor = _this.props.getEditor() || DUMMY_EDITOR;
 
-      var _ref2 = feature === _DocsEditorToolBarFeatures.REDO || feature === _DocsEditorToolBarFeatures.UNDO ? _this.props : editor.props,
-          editorState = _ref2.editorState,
-          onChange = _ref2.onChange;
+      var _ref3 = feature === _DocsEditorToolBarFeatures.REDO || feature === _DocsEditorToolBarFeatures.UNDO ? _this.props : editor.props,
+          editorState = _ref3.editorState,
+          onChange = _ref3.onChange;
 
       if (!onChange || !editorState) {
         return;
@@ -175,7 +174,7 @@ var DocsEditorToolBar = function (_React$PureComponent) {
           _react2.default.createElement(
             _reactBootstrap.ButtonGroup,
             { className: 'docs-buttons-group', key: 'block' },
-            [_DocsEditorToolBarFeatures.UNORDERED_LIST, _DocsEditorToolBarFeatures.ORDERED_LIST, _DocsEditorToolBarFeatures.BLOCK_QUOTE, _DocsEditorToolBarFeatures.H1, _DocsEditorToolBarFeatures.H2, _DocsEditorToolBarFeatures.H3, _DocsEditorToolBarFeatures.H4].map(this._renderButton)
+            [_DocsEditorToolBarFeatures.UNORDERED_LIST, _DocsEditorToolBarFeatures.ORDERED_LIST, _DocsEditorToolBarFeatures.BLOCK_QUOTE, _DocsEditorToolBarFeatures.H1, _DocsEditorToolBarFeatures.H2, _DocsEditorToolBarFeatures.H3, _DocsEditorToolBarFeatures.H4, _DocsEditorToolBarFeatures.INDENT_MORE, _DocsEditorToolBarFeatures.INDENT_LESS].map(this._renderButton)
           ),
           _react2.default.createElement(
             _reactBootstrap.ButtonGroup,
@@ -194,13 +193,13 @@ var DocsEditorToolBar = function (_React$PureComponent) {
               active: false,
               disabled: !_DocsEditorToolBarFeatures.UNDO.isEnabled(_DocsEditorToolBarFeatures.UNDO, editorState),
               feature: _DocsEditorToolBarFeatures.UNDO,
-              onClick: this._onHistoryButtonClick
+              onClick: this._onButtonClick
             }),
             _react2.default.createElement(_DocsEditorToolBarButton2.default, {
               active: false,
               disabled: !_DocsEditorToolBarFeatures.REDO.isEnabled(_DocsEditorToolBarFeatures.REDO, editorState),
               feature: _DocsEditorToolBarFeatures.REDO,
-              onClick: this._onHistoryButtonClick
+              onClick: this._onButtonClick
             })
           )
         )

@@ -12,6 +12,10 @@ var _DocsBlockTypeToComponent = require('./DocsBlockTypeToComponent');
 
 var _DocsBlockTypeToComponent2 = _interopRequireDefault(_DocsBlockTypeToComponent);
 
+var _DocsCustomStyleMap = require('./DocsCustomStyleMap');
+
+var _DocsCustomStyleMap2 = _interopRequireDefault(_DocsCustomStyleMap);
+
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
@@ -21,6 +25,8 @@ var _tryGetEntityAtContentState = require('./tryGetEntityAtContentState');
 var _tryGetEntityAtContentState2 = _interopRequireDefault(_tryGetEntityAtContentState);
 
 var _draftJs = require('draft-js');
+
+var _DocsBlockTypes = require('./DocsBlockTypes');
 
 var _immutable = require('immutable');
 
@@ -87,6 +93,11 @@ function getStyle(contentBlock) {
   var inlineStyleSet = contentBlock.getInlineStyleAt(0);
   if (inlineStyleSet && inlineStyleSet.size > 0) {
     classNames.push.apply(classNames, inlineStyleSet.toArray());
+  }
+
+  if (contentBlock.getType() === 'unstyled') {
+    var depthClassName = _DocsCustomStyleMap2.default.forDepth(contentBlock.getDepth());
+    depthClassName && classNames.push(depthClassName);
   }
 
   return classNames.length ? classNames.join(' ') : null;
