@@ -410,8 +410,8 @@ function maybeInsertSiblingBlock(
 
   if (siblingBlock && isContentBlockEmpty(siblingBlock)) {
     // No need to inject extra blank line since siblingBlock is already empty.
-    // blockMap.set(currentBlock.getKey(), currentBlock);
-    // return;
+    blockMap.set(currentBlock.getKey(), currentBlock);
+    return;
   }
 
   const className = before ?
@@ -419,9 +419,8 @@ function maybeInsertSiblingBlock(
     'docs-after-atomic-block';
 
   if (
-    0
-    // !siblingBlock ||
-    // siblingBlock.getData().get('className') !== className
+    !siblingBlock ||
+    siblingBlock.getData().get('className') !== className
   ) {
     const newBlock = createContentBlock('', className);
     if (before) {
