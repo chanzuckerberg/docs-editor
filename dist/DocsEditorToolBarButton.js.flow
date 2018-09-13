@@ -5,14 +5,14 @@ import React from 'react';
 import {EditorState} from 'draft-js';
 
 import type {DocsEditorLike} from './Types';
-import type {EditorToolbarFeature} from './DocsEditorToolBarFeatures';
+import type {DocsBehavior} from './DocsBehaviors';
 
 type Props = {
   active: boolean,
   disabled: boolean,
-  feature: EditorToolbarFeature,
+  feature: DocsBehavior,
   id?: ?string,
-  onClick: (feature: EditorToolbarFeature) => void,
+  onClick: (feature: DocsBehavior) => void,
 };
 
 class DocsEditorToolBarButton extends React.PureComponent {

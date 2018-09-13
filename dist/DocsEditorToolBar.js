@@ -44,7 +44,7 @@ var _reactBootstrap = require('react-bootstrap');
 
 var _draftJs = require('draft-js');
 
-var _DocsEditorToolBarFeatures = require('./DocsEditorToolBarFeatures');
+var _DocsBehaviors = require('./DocsBehaviors');
 
 require('./DocsEditorToolBar.css');
 
@@ -52,7 +52,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var babelPluginFlowReactPropTypes_proptype_DocsEditorLike = require('./Types').babelPluginFlowReactPropTypes_proptype_DocsEditorLike || require('prop-types').any;
 
-var babelPluginFlowReactPropTypes_proptype_EditorToolbarFeature = require('./DocsEditorToolBarFeatures').babelPluginFlowReactPropTypes_proptype_EditorToolbarFeature || require('prop-types').any;
+var babelPluginFlowReactPropTypes_proptype_DocsBehavior = require('./DocsBehaviors').babelPluginFlowReactPropTypes_proptype_DocsBehavior || require('prop-types').any;
 
 var DUMMY_EDITOR = {
   props: {}
@@ -83,12 +83,12 @@ var DocsEditorToolBar = function (_React$PureComponent) {
 
       var editor = _this.props.getEditor() || DUMMY_EDITOR;
 
-      var _ref2 = feature === _DocsEditorToolBarFeatures.REDO || feature === _DocsEditorToolBarFeatures.UNDO ? _this.props : editor.props,
+      var _ref2 = feature === _DocsBehaviors.REDO || feature === _DocsBehaviors.UNDO ? _this.props : editor.props,
           editorState = _ref2.editorState;
 
-      var disabled = editorState ? !feature.isEnabled(feature, editorState) : true;
+      var disabled = editorState ? !feature.isEnabled(editorState) : true;
 
-      var active = editorState ? feature.isActive(feature, editorState) : false;
+      var active = editorState ? feature.isActive(editorState) : false;
 
       return _react2.default.createElement(_DocsEditorToolBarButton2.default, {
         disabled: disabled,
@@ -119,7 +119,7 @@ var DocsEditorToolBar = function (_React$PureComponent) {
 
       var editor = _this.props.getEditor() || DUMMY_EDITOR;
 
-      var _ref3 = feature === _DocsEditorToolBarFeatures.REDO || feature === _DocsEditorToolBarFeatures.UNDO ? _this.props : editor.props,
+      var _ref3 = feature === _DocsBehaviors.REDO || feature === _DocsBehaviors.UNDO ? _this.props : editor.props,
           editorState = _ref3.editorState,
           onChange = _ref3.onChange;
 
@@ -130,7 +130,7 @@ var DocsEditorToolBar = function (_React$PureComponent) {
       var docsContext = _this.context.docsContext;
 
 
-      _this._modalHandle = feature.update(feature, editorState, onChange, docsContext);
+      _this._modalHandle = feature.update(editorState, onChange, docsContext);
     }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
   }
 
@@ -174,31 +174,31 @@ var DocsEditorToolBar = function (_React$PureComponent) {
           _react2.default.createElement(
             _reactBootstrap.ButtonGroup,
             { className: 'docs-buttons-group', key: 'block' },
-            [_DocsEditorToolBarFeatures.UNORDERED_LIST, _DocsEditorToolBarFeatures.ORDERED_LIST, _DocsEditorToolBarFeatures.BLOCK_QUOTE, _DocsEditorToolBarFeatures.H1, _DocsEditorToolBarFeatures.H2, _DocsEditorToolBarFeatures.H3, _DocsEditorToolBarFeatures.H4, _DocsEditorToolBarFeatures.INDENT_MORE, _DocsEditorToolBarFeatures.INDENT_LESS].map(this._renderButton)
+            [_DocsBehaviors.UNORDERED_LIST, _DocsBehaviors.ORDERED_LIST, _DocsBehaviors.BLOCK_QUOTE, _DocsBehaviors.H1, _DocsBehaviors.H2, _DocsBehaviors.H3, _DocsBehaviors.H4, _DocsBehaviors.INDENT_LESS, _DocsBehaviors.INDENT_MORE].map(this._renderButton)
           ),
           _react2.default.createElement(
             _reactBootstrap.ButtonGroup,
             { className: 'docs-buttons-group', key: 'inline' },
-            [_DocsEditorToolBarFeatures.LINK, _DocsEditorToolBarFeatures.BOLD, _DocsEditorToolBarFeatures.ITALIC, _DocsEditorToolBarFeatures.UNDERLINE, _DocsEditorToolBarFeatures.STRIKE, _DocsEditorToolBarFeatures.CODE].map(this._renderButton)
+            [_DocsBehaviors.LINK, _DocsBehaviors.BOLD, _DocsBehaviors.ITALIC, _DocsBehaviors.UNDERLINE, _DocsBehaviors.STRIKE, _DocsBehaviors.CODE].map(this._renderButton)
           ),
           _react2.default.createElement(
             _reactBootstrap.ButtonGroup,
             { className: 'docs-buttons-group', key: 'insert' },
-            [_DocsEditorToolBarFeatures.IMAGE, _DocsEditorToolBarFeatures.TABLE, _DocsEditorToolBarFeatures.MATH, _DocsEditorToolBarFeatures.EXPANDABLE].map(this._renderButton)
+            [_DocsBehaviors.IMAGE, _DocsBehaviors.TABLE, _DocsBehaviors.MATH, _DocsBehaviors.EXPANDABLE].map(this._renderButton)
           ),
           _react2.default.createElement(
             _reactBootstrap.ButtonGroup,
             { className: 'docs-buttons-group', key: 'history' },
             _react2.default.createElement(_DocsEditorToolBarButton2.default, {
               active: false,
-              disabled: !_DocsEditorToolBarFeatures.UNDO.isEnabled(_DocsEditorToolBarFeatures.UNDO, editorState),
-              feature: _DocsEditorToolBarFeatures.UNDO,
+              disabled: !_DocsBehaviors.UNDO.isEnabled(editorState),
+              feature: _DocsBehaviors.UNDO,
               onClick: this._onButtonClick
             }),
             _react2.default.createElement(_DocsEditorToolBarButton2.default, {
               active: false,
-              disabled: !_DocsEditorToolBarFeatures.REDO.isEnabled(_DocsEditorToolBarFeatures.REDO, editorState),
-              feature: _DocsEditorToolBarFeatures.REDO,
+              disabled: !_DocsBehaviors.REDO.isEnabled(editorState),
+              feature: _DocsBehaviors.REDO,
               onClick: this._onButtonClick
             })
           )

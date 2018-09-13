@@ -34,7 +34,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var babelPluginFlowReactPropTypes_proptype_DocsEditorLike = require('./Types').babelPluginFlowReactPropTypes_proptype_DocsEditorLike || require('prop-types').any;
 
-var babelPluginFlowReactPropTypes_proptype_EditorToolbarFeature = require('./DocsEditorToolBarFeatures').babelPluginFlowReactPropTypes_proptype_EditorToolbarFeature || require('prop-types').any;
+var babelPluginFlowReactPropTypes_proptype_DocsBehavior = require('./DocsBehaviors').babelPluginFlowReactPropTypes_proptype_DocsBehavior || require('prop-types').any;
 
 var DocsEditorToolBarButton = function (_React$PureComponent) {
   (0, _inherits3.default)(DocsEditorToolBarButton, _React$PureComponent);

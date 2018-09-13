@@ -45,6 +45,20 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var babelPluginFlowReactPropTypes_proptype_ModalHandle = require('./showModalDialog').babelPluginFlowReactPropTypes_proptype_ModalHandle || require('prop-types').any;
 
+// List item depths limited to 4.
+// https://github.com/facebook/draft-js/issues/122
+var MAX_DEPTH = 4;
+
+if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginFlowReactPropTypes_proptype_DocsBehavior', {
+  value: require('prop-types').shape({
+    action: require('prop-types').string.isRequired,
+    icon: require('prop-types').string,
+    isActive: require('prop-types').func.isRequired,
+    isEnabled: require('prop-types').func.isRequired,
+    label: require('prop-types').string,
+    update: require('prop-types').func.isRequired
+  })
+});
 var IMAGE = exports.IMAGE = {
   action: _DocsActionTypes2.default.IMAGE_INSERT,
   icon: 'insert_photo',
@@ -60,7 +74,7 @@ var TABLE = exports.TABLE = {
   label: 'Insert Table',
   isActive: returnFalse,
   isEnabled: hasNoSelection,
-  update: function update(f, editorState, onChange) {
+  update: function update(editorState, onChange) {
     return onChange((0, _DocsModifiers.insertTable)(editorState));
   }
 };
@@ -80,7 +94,7 @@ var EXPANDABLE = exports.EXPANDABLE = {
   label: 'Expandable',
   isActive: returnFalse,
   isEnabled: hasNoSelection,
-  update: function update(f, editorState, onChange) {
+  update: function update(editorState, onChange) {
     return onChange((0, _DocsModifiers.insertExpandable)(editorState));
   }
 };
@@ -89,7 +103,7 @@ var LINK = exports.LINK = {
   action: _DocsActionTypes2.default.TEXT_LINK,
   icon: 'link',
   label: 'Add link',
-  isActive: function isActive(f, editorState) {
+  isActive: function isActive(editorState) {
     return _draftJs.RichUtils.currentBlockContainsLink(editorState);
   },
   isEnabled: hasSelection,
@@ -100,10 +114,13 @@ var BOLD = exports.BOLD = {
   action: _DocsActionTypes2.default.TEXT_B,
   icon: 'format_bold',
   label: 'Bold',
-  style: 'BOLD',
-  isActive: hasInlineStyle,
+  isActive: function isActive(e) {
+    return isInlineStyle('BOLD', e);
+  },
   isEnabled: hasSelection,
-  update: toggleInlineStyle
+  update: function update(e, o, d) {
+    return toggleInlineStyle('BOLD', e, o, d);
+  }
 };
 
 var ITALIC = exports.ITALIC = {
@@ -111,39 +128,52 @@ var ITALIC = exports.ITALIC = {
   icon: 'format_italic',
   label: 'Italic',
   style: 'ITALIC',
-  isActive: hasInlineStyle,
+  isActive: function isActive(e) {
+    return isInlineStyle('ITALIC', e);
+  },
   isEnabled: hasSelection,
-  update: toggleInlineStyle
+  update: function update(e, o, d) {
+    return toggleInlineStyle('ITALIC', e, o, d);
+  }
 };
 
 var UNDERLINE = exports.UNDERLINE = {
   action: _DocsActionTypes2.default.TEXT_U,
   icon: 'format_underlined',
   label: 'Underline',
-  style: 'UNDERLINE',
-  isActive: hasInlineStyle,
+  isActive: function isActive(e) {
+    return isInlineStyle('UNDERLINE', e);
+  },
   isEnabled: hasSelection,
-  update: toggleInlineStyle
+  update: function update(e, o, d) {
+    return toggleInlineStyle('UNDERLINE', e, o, d);
+  }
 };
 
 var STRIKE = exports.STRIKE = {
   action: _DocsActionTypes2.default.TEXT_STRIKE,
   icon: 'strikethrough_s',
   label: 'Strike',
-  style: 'STRIKETHROUGH',
-  isActive: hasInlineStyle,
+  isActive: function isActive(e) {
+    return isInlineStyle('STRIKETHROUGH', e);
+  },
   isEnabled: hasSelection,
-  update: toggleInlineStyle
+  update: function update(e, o, d) {
+    return toggleInlineStyle('STRIKETHROUGH', e, o, d);
+  }
 };
 
 var CODE = exports.CODE = {
   action: _DocsActionTypes2.default.TEXT_VAR,
   icon: 'code',
   label: 'Code',
-  style: 'CODE',
-  isActive: hasInlineStyle,
+  isActive: function isActive(e) {
+    return isInlineStyle('CODE', e);
+  },
   isEnabled: hasSelection,
-  update: toggleInlineStyle
+  update: function update(e, o, d) {
+    return toggleInlineStyle('CODE', e, o, d);
+  }
 };
 
 var HIGHLIGHT = exports.HIGHLIGHT = {
@@ -159,20 +189,26 @@ var UNORDERED_LIST = exports.UNORDERED_LIST = {
   action: _DocsActionTypes2.default.TEXT_UL,
   icon: 'format_list_bulleted',
   label: 'Unordered List',
-  style: 'unordered-list-item',
-  isActive: hasBlockStyle,
+  isActive: function isActive(e) {
+    return isBlockType('unordered-list-item', e);
+  },
   isEnabled: returnTrue,
-  update: toggleBlockType
+  update: function update(e, o, d) {
+    return toggleBlockType('unordered-list-item', e, o, d);
+  }
 };
 
 var ORDERED_LIST = exports.ORDERED_LIST = {
   action: _DocsActionTypes2.default.TEXT_OL,
   icon: 'format_list_numbered',
   label: 'Ordered List',
-  style: 'ordered-list-item',
-  isActive: hasBlockStyle,
+  isActive: function isActive(e) {
+    return isBlockType('ordered-list-item', e);
+  },
   isEnabled: returnTrue,
-  update: toggleBlockType
+  update: function update(e, o, d) {
+    return toggleBlockType('ordered-list-item', e, o, d);
+  }
 };
 
 var INDENT_MORE = exports.INDENT_MORE = {
@@ -180,8 +216,10 @@ var INDENT_MORE = exports.INDENT_MORE = {
   icon: 'format_indent_increase',
   label: 'Indent More',
   isActive: returnFalse,
-  isEnabled: returnTrue,
-  update: function update(f, editorState, onChange) {
+  isEnabled: function isEnabled(e) {
+    return isIndentable(1, e);
+  },
+  update: function update(editorState, onChange) {
     return onChange((0, _DocsModifiers.indentMore)(editorState));
   }
 };
@@ -191,8 +229,10 @@ var INDENT_LESS = exports.INDENT_LESS = {
   icon: 'format_indent_decrease',
   label: 'Indent Less',
   isActive: returnFalse,
-  isEnabled: returnTrue,
-  update: function update(f, editorState, onChange) {
+  isEnabled: function isEnabled(e) {
+    return isIndentable(-1, e);
+  },
+  update: function update(editorState, onChange) {
     return onChange((0, _DocsModifiers.indentLess)(editorState));
   }
 };
@@ -201,55 +241,74 @@ var BLOCK_QUOTE = exports.BLOCK_QUOTE = {
   action: _DocsActionTypes2.default.TEXT_BLOCK_QUOTE,
   icon: 'format_quote',
   label: 'Block Quote',
-  style: 'blockquote',
-  isActive: hasBlockStyle,
+  isActive: function isActive(e) {
+    return isBlockType('blockquote', e);
+  },
   isEnabled: returnTrue,
-  update: toggleBlockType
+  update: function update(e, o, d) {
+    return toggleBlockType('blockquote', e, o, d);
+  }
 };
 
 var H1 = exports.H1 = {
   action: _DocsActionTypes2.default.TEXT_H1,
   label: 'H1',
-  style: 'header-one',
-  isActive: hasBlockStyle,
+  isActive: function isActive(e) {
+    return isBlockType('header-one', e);
+  },
   isEnabled: returnTrue,
-  update: toggleBlockType
+  update: function update(e, o, d) {
+    return toggleBlockType('header-one', e, o, d);
+  }
 };
 
 var H2 = exports.H2 = {
   action: _DocsActionTypes2.default.TEXT_H2,
   label: 'H2',
-  style: 'header-two',
-  isActive: hasBlockStyle,
+  isActive: function isActive(e) {
+    return isBlockType('header-two', e);
+  },
   isEnabled: returnTrue,
-  update: toggleBlockType
+  update: function update(e, o, d) {
+    return toggleBlockType('header-two', e, o, d);
+  }
 };
 
 var H3 = exports.H3 = {
   action: _DocsActionTypes2.default.TEXT_H3,
   label: 'H3',
-  style: 'header-three',
-  isActive: hasBlockStyle,
+  isActive: function isActive(e) {
+    return isBlockType('header-three', e);
+  },
   isEnabled: returnTrue,
-  update: toggleBlockType
+  update: function update(e, o, d) {
+    return toggleBlockType('header-three', e, o, d);
+  }
 };
 
 var H4 = exports.H4 = {
   action: _DocsActionTypes2.default.TEXT_H4,
   label: 'H4',
-  style: 'header-four',
-  isActive: hasBlockStyle,
+  isActive: function isActive(e) {
+    return isBlockType('header-four', e);
+  },
   isEnabled: returnTrue,
-  update: toggleBlockType
+  update: function update(e, o, d) {
+    return toggleBlockType('header-four', e, o, d);
+  }
 };
 
 var H5 = exports.H5 = {
   action: _DocsActionTypes2.default.TEXT_H5,
   label: 'H5',
   style: 'header-five',
-  isActive: hasBlockStyle,
+  isActive: function isActive(e) {
+    return isBlockType('header-five', e);
+  },
   isEnabled: returnTrue,
-  update: toggleBlockType
+  update: function update(e, o, d) {
+    return toggleBlockType('header-five', e, o, d);
+  }
 };
 
 var UNDO = exports.UNDO = {
@@ -278,64 +337,83 @@ function returnFalse() {
   return false;
 }
 
-function redo(feature, editorState, onChange) {
+function redo(editorState, onChange) {
   onChange(_draftJs.EditorState.redo(editorState));
 }
 
-function undo(feature, editorState, onChange) {
+function undo(editorState, onChange) {
   onChange(_draftJs.EditorState.undo(editorState));
 }
 
-function canRedo(feature, editorState) {
+function canRedo(editorState) {
   return editorState.getRedoStack().size > 0;
 }
 
-function canUndo(feature, editorState) {
+function canUndo(editorState) {
   return editorState.getUndoStack().size > 0;
 }
 
-function hasBlockStyle(feature, editorState) {
+function isBlockType(type, editorState) {
   var selection = editorState.getSelection();
   var contentState = editorState.getCurrentContent();
   var contentBlock = contentState.getBlockForKey(selection.getStartKey());
   var blockType = contentBlock ? contentBlock.getType() : null;
-  return blockType === feature.style;
+  return blockType === type;
 }
 
-function hasInlineStyle(feature, editorState) {
+function isIndentable(adjustment, editorState) {
+  var selection = editorState.getSelection();
+  var contentState = editorState.getCurrentContent();
+  var contentBlock = contentState.getBlockForKey(selection.getStartKey());
+  var blockType = contentBlock ? contentBlock.getType() : null;
+
+  if (blockType !== 'unstyled' && blockType !== 'unordered-list-item' && blockType !== 'ordered-list-item') {
+    return false;
+  }
+  var depth = contentBlock ? contentBlock.getDepth() : 0;
+  if (adjustment > 0) {
+    return depth + adjustment <= MAX_DEPTH;
+  } else if (adjustment < 0) {
+    return depth - adjustment >= 0;
+  }
+
+  return false;
+}
+
+function isInlineStyle(style, editorState) {
   var selectionState = editorState.getSelection();
   if (selectionState.isCollapsed()) {
     return false;
   }
 
   var currentStyle = editorState.getCurrentInlineStyle();
-  return currentStyle.has(feature.style);
+  return currentStyle.has(style);
 }
 
-function hasSelection(feature, editorState) {
+function hasSelection(editorState) {
   var selectionState = editorState.getSelection();
   return !selectionState.isCollapsed();
 }
 
-function hasNoSelection(feature, editorState) {
+function hasNoSelection(editorState) {
   var selectionState = editorState.getSelection();
   return selectionState.isCollapsed();
 }
 
-function toggleBlockType(feature, editorState, onChange, docsContext) {
-  onChange(_draftJs.RichUtils.toggleBlockType(editorState, feature.style));
+function toggleBlockType(blockType, editorState, onChange, docsContext) {
+  onChange(_draftJs.RichUtils.toggleBlockType(editorState, blockType));
 }
 
-function toggleInlineStyle(feature, editorState, onChange, docsContext) {
-  onChange(_draftJs.RichUtils.toggleInlineStyle(editorState, feature.style));
+function toggleInlineStyle(style, editorState, onChange, docsContext) {
+  onChange(_draftJs.RichUtils.toggleInlineStyle(editorState, style));
 }
 
-function noop(feature, editorState, onChange, docsContext) {
-  console.log('not supported', feature);
+function noop(editorState, onChange, docsContext) {
+  console.log('not supported');
 }
 
 // This opens an image editor for the image that was just inserted by user.
-function showImageEditorModalDialog(feature, editorState, onChange, docsContext) {
+function showImageEditorModalDialog(editorState, onChange, docsContext) {
   // TODO:  This creates an extra history entry, fix it.
   var nextEditorState = (0, _DocsModifiers.insertImage)(editorState);
   var contentState = nextEditorState.getCurrentContent();
@@ -353,7 +431,7 @@ function showImageEditorModalDialog(feature, editorState, onChange, docsContext)
   });
 }
 
-function showLinkEditorModalDialog(feature, editorState, onChange, docsContext) {
+function showLinkEditorModalDialog(editorState, onChange, docsContext) {
   var linkEntity = (0, _getCurrentSelectionEntity2.default)(editorState);
   var currentURL = linkEntity && linkEntity.getData().url || '';
   return (0, _showModalDialog2.default)(_DocsTextInputEditor2.default, {
@@ -370,7 +448,7 @@ function showLinkEditorModalDialog(feature, editorState, onChange, docsContext) 
 
 // This opens an math editor for the math placeholder that was just inserted by
 // user.
-function showMathEditorModalDialog(feature, editorState, onChange, docsContext) {
+function showMathEditorModalDialog(editorState, onChange, docsContext) {
   // TODO:  This creates an extra history entry, fix it.
   var nextEditorState = (0, _DocsModifiers.insertMath)(editorState);
   var contentState = nextEditorState.getCurrentContent();
