@@ -78,7 +78,6 @@ class DocsEditorToolBar extends React.PureComponent {
                 UNDERLINE,
                 STRIKE,
                 CODE,
-                HIGHLIGHT,
               ].map(this._renderButton)
             }
           </ButtonGroup>
