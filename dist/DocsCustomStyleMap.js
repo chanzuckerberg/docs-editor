@@ -197,7 +197,7 @@ function injectCSSIntoDocument(styleMap) {
     }
     var rules = styleMap[styleName];
     (0, _keys2.default)(rules).forEach(function (attr) {
-      cssTexts.push((0, _hyphenize2.default)(attr) + ': ' + rules[attr] + ';');
+      cssTexts.push((0, _hyphenize2.default)(attr) + ': ' + rules[attr] + ' !important;');
     });
     cssTexts.push('}');
   });

@@ -167,7 +167,7 @@ function toggleAnnotation(editorState) {
     // part.
     var contentState = editorState.getCurrentContent();
     var entityKey = null;
-    var newContentState = _draftJs.Modifier.applyEntity(contentState, selection, null);
+    var newContentState = _draftJs.Modifier.applyEntity(contentState, selection, entityKey);
     return _draftJs.EditorState.push(editorState, newContentState, _DocsEditorChangeType.APPLY_ENTITY);
   } else {
     var _contentState = editorState.getCurrentContent();
@@ -256,7 +256,6 @@ function ensureAtomicBlocksAreSelectable(editorState) {
   var contentState = editorState.getCurrentContent();
   var blockMap = contentState.getBlockMap();
   var newBlockMap = new _immutable.OrderedMap().withMutations(function (mutableBlock) {
-
     var blocks = blockMap.toArray();
     blocks.forEach(function (block, ii) {
       if (block.getType() !== 'atomic') {
@@ -308,7 +307,7 @@ function maybeInsertSiblingBlock(siblingBlock, currentBlock, before, blockMap) {
 
   if (siblingBlock && (0, _isContentBlockEmpty2.default)(siblingBlock)) {
     // No need to inject extra blank line since siblingBlock is already empty.
-    // blockMap.set(currentBlock.getKey(), currentBlock);
+    blockMap.set(currentBlock.getKey(), currentBlock);
     return;
   }
 

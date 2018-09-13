@@ -210,7 +210,7 @@ function toggleAnnotation(
     const newContentState = Modifier.applyEntity(
       contentState,
       selection,
-      null,
+      entityKey,
     );
     return EditorState.push(editorState, newContentState, APPLY_ENTITY);
   } else {
@@ -329,7 +329,6 @@ function ensureAtomicBlocksAreSelectable(
   const contentState = editorState.getCurrentContent();
   const blockMap = contentState.getBlockMap();
   let newBlockMap = (new OrderedMap()).withMutations((mutableBlock) => {
-
     const blocks = blockMap.toArray();
     blocks.forEach((block, ii) => {
       if (block.getType() !== 'atomic') {
@@ -411,7 +410,7 @@ function maybeInsertSiblingBlock(
 
   if (siblingBlock && isContentBlockEmpty(siblingBlock)) {
     // No need to inject extra blank line since siblingBlock is already empty.
-    // blockMap.set(currentBlock.getKey(), currentBlock);
+    blockMap.set(currentBlock.getKey(), currentBlock);
     return;
   }
 
