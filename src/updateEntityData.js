@@ -95,11 +95,9 @@ function updateEntityData(
   entityKey: string,
   entityData: Object,
 ): EditorState {
-  debugger;
   const contentState = editorState.getCurrentContent();
   const contentEntity = contentState.getEntity(entityKey);
   if (!contentEntity) {
-    debugger;
     return createEntityData(editorState, entityKey, entityData);
   }
   const selection = editorState.getSelection();
@@ -111,7 +109,6 @@ function updateEntityData(
     for (let kk = 0; kk < contentLength; kk++) {
       const entity = contentBlock.getEntityAt(kk);
       if (entity === entityKey) {
-        debugger;
         // This happens when the entity belongs to a decorator component.
         return updateContentBlockEntityData(
           editorState,
@@ -132,7 +129,6 @@ function updateEntityData(
     // This happens when the entity belongs to a atomic component.
     const entity = contentBlock.getEntityAt(0);
     if (entity === entityKey) {
-      debugger;
       return updateContentBlockEntityData(
         editorState,
         entityKey,
@@ -143,7 +139,6 @@ function updateEntityData(
     }
   }
 
-  debugger;
   return editorState;
 }
 

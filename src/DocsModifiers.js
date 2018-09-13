@@ -210,7 +210,7 @@ function toggleAnnotation(
     const newContentState = Modifier.applyEntity(
       contentState,
       selection,
-      null,
+      entityKey,
     );
     return EditorState.push(editorState, newContentState, APPLY_ENTITY);
   } else {
@@ -411,7 +411,7 @@ function maybeInsertSiblingBlock(
   if (siblingBlock && isContentBlockEmpty(siblingBlock)) {
     // No need to inject extra blank line since siblingBlock is already empty.
     // blockMap.set(currentBlock.getKey(), currentBlock);
-    return;
+    // return;
   }
 
   const className = before ?
@@ -419,8 +419,9 @@ function maybeInsertSiblingBlock(
     'docs-after-atomic-block';
 
   if (
-    !siblingBlock ||
-    siblingBlock.getData().get('className') !== className
+    0
+    // !siblingBlock ||
+    // siblingBlock.getData().get('className') !== className
   ) {
     const newBlock = createContentBlock('', className);
     if (before) {

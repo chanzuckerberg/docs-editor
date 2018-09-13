@@ -164,7 +164,7 @@ class DemoApp extends React.PureComponent<any, any, any> {
     const {editorState} = this.state;
     this.setState({
       debugValue: html,
-      editorState: convertFromHTML(html, null, null, null, true),
+      editorState: convertFromHTML(html, editorState, null, null, true),
     });
   };
 
