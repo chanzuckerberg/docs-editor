@@ -123,3 +123,29 @@
   margin: 0 0 20px;
   padding: 10px 20px;
 }
+
+.docs-editor .ordered-list-item.public-DraftStyleDefault-depth0,
+.docs-editor .unordered-list-item.public-DraftStyleDefault-depth0 {
+  margin-left: 3em;
+}
+
+.docs-editor .ordered-list-item.public-DraftStyleDefault-depth1,
+.docs-editor .unordered-list-item.public-DraftStyleDefault-depth1 {
+  margin-left: 6em;
+}
+
+.docs-editor .ordered-list-item.public-DraftStyleDefault-depth2,
+.docs-editor .unordered-list-item.public-DraftStyleDefault-depth2 {
+  margin-left: 9em;
+}
+
+
+.docs-editor .ordered-list-item.public-DraftStyleDefault-depth3,
+.docs-editor .unordered-list-item.public-DraftStyleDefault-depth3 {
+  margin-left: 12em;
+}
+
+.docs-editor .ordered-list-item.public-DraftStyleDefault-depth4,
+.docs-editor .unordered-list-item.public-DraftStyleDefault-depth4 {
+  margin-left: 15em;
+}
