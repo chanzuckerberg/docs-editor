@@ -7,6 +7,8 @@ import DocsImageEditor from './DocsImageEditor';
 import DocsMathEditor from './DocsMathEditor';
 import DocsTextInputEditor from './DocsTextInputEditor';
 import getCurrentSelectionEntity from './getCurrentSelectionEntity';
+import hasNoSelection from './hasNoSelection';
+import hasSelection from './hasSelection';
 import returnFalse from './returnFalse';
 import returnTrue from './returnTrue';
 import showModalDialog from './showModalDialog';
@@ -293,16 +295,6 @@ function isInlineStyle(style: string, editorState: EditorState): boolean {
 
   const currentStyle = editorState.getCurrentInlineStyle();
   return currentStyle.has(style);
-}
-
-function hasSelection(editorState: EditorState): boolean {
-  const selectionState = editorState.getSelection();
-  return !selectionState.isCollapsed();
-}
-
-function hasNoSelection(editorState: EditorState): boolean {
-  const selectionState = editorState.getSelection();
-  return selectionState.isCollapsed();
 }
 
 function toggleBlockType(
