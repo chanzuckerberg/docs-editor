@@ -19,6 +19,7 @@ type Update = (e: EditorState, o: OnChange, d: DocsContext) => ?ModalHandle;
 // List item depths limited to 4.
 // https://github.com/facebook/draft-js/issues/122
 const MAX_DEPTH = 4;
+const MIN_DEPTH = 0;
 
 export type DocsBehavior = {
   action: string,
@@ -279,12 +280,12 @@ function isIndentable(adjustment: number, editorState: EditorState): boolean {
   }
   const depth = contentBlock ? contentBlock.getDepth() : 0;
   if (adjustment > 0) {
-    return depth + adjustment <= MAX_DEPTH;
+    return (depth + adjustment) <= MAX_DEPTH;
   } else if (adjustment < 0) {
-    return depth - adjustment >= 0;
+    return (depth + adjustment) >= MIN_DEPTH;
+  } else {
+    return false;
   }
-
-  return false;
 }
 
 function isInlineStyle(style: string, editorState: EditorState): boolean {
