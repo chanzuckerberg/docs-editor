@@ -7,6 +7,8 @@ var _keyMirror2 = _interopRequireDefault(_keyMirror);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 module.exports = (0, _keyMirror2.default)({
+  CALCULATOR_INSERT: null,
+  CALCULATOR_SET_TYPE: null,
   EXPANDABLE_INSERT: null,
   HISTORY_REDO: null,
   HISTORY_UNDO: null,
@@ -17,8 +19,8 @@ module.exports = (0, _keyMirror2.default)({
   IMAGE_INSERT: null,
   IMAGE_SET_URL: null,
   IMAGE_TOGGLE_FRAME: null,
-  INDENT_MORE: null,
   INDENT_LESS: null,
+  INDENT_MORE: null,
   MATH_INSERT: null,
   MATH_SET_VALUE: null,
   TABLE_DELETE_COLUMN: null,

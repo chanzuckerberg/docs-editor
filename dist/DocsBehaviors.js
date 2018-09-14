@@ -3,7 +3,11 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.REDO = exports.UNDO = exports.H5 = exports.H4 = exports.H3 = exports.H2 = exports.H1 = exports.BLOCK_QUOTE = exports.INDENT_LESS = exports.INDENT_MORE = exports.ORDERED_LIST = exports.UNORDERED_LIST = exports.HIGHLIGHT = exports.CODE = exports.STRIKE = exports.UNDERLINE = exports.ITALIC = exports.BOLD = exports.LINK = exports.EXPANDABLE = exports.MATH = exports.TABLE = exports.IMAGE = undefined;
+exports.REDO = exports.UNDO = exports.H5 = exports.H4 = exports.H3 = exports.H2 = exports.H1 = exports.BLOCK_QUOTE = exports.INDENT_LESS = exports.INDENT_MORE = exports.ORDERED_LIST = exports.UNORDERED_LIST = exports.HIGHLIGHT = exports.CODE = exports.STRIKE = exports.UNDERLINE = exports.ITALIC = exports.BOLD = exports.LINK = exports.EXPANDABLE = exports.MATH = exports.TABLE = exports.IMAGE = exports.CALCULATOR = undefined;
+
+var _CalculatorBehavior = require('./CalculatorBehavior');
+
+var _CalculatorBehavior2 = _interopRequireDefault(_CalculatorBehavior);
 
 var _DocsActionTypes = require('./DocsActionTypes');
 
@@ -28,6 +32,22 @@ var _DocsTextInputEditor2 = _interopRequireDefault(_DocsTextInputEditor);
 var _getCurrentSelectionEntity = require('./getCurrentSelectionEntity');
 
 var _getCurrentSelectionEntity2 = _interopRequireDefault(_getCurrentSelectionEntity);
+
+var _hasNoSelection = require('./hasNoSelection');
+
+var _hasNoSelection2 = _interopRequireDefault(_hasNoSelection);
+
+var _hasSelection = require('./hasSelection');
+
+var _hasSelection2 = _interopRequireDefault(_hasSelection);
+
+var _returnFalse = require('./returnFalse');
+
+var _returnFalse2 = _interopRequireDefault(_returnFalse);
+
+var _returnTrue = require('./returnTrue');
+
+var _returnTrue2 = _interopRequireDefault(_returnTrue);
 
 var _showModalDialog = require('./showModalDialog');
 
@@ -56,16 +76,18 @@ if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginF
     icon: require('prop-types').string,
     isActive: require('prop-types').func.isRequired,
     isEnabled: require('prop-types').func.isRequired,
-    label: require('prop-types').string,
+    label: require('prop-types').string.isRequired,
     update: require('prop-types').func.isRequired
   })
 });
+var CALCULATOR = exports.CALCULATOR = new _CalculatorBehavior2.default();
+
 var IMAGE = exports.IMAGE = {
   action: _DocsActionTypes2.default.IMAGE_INSERT,
   icon: 'insert_photo',
   label: 'Insert Image',
-  isEnabled: hasNoSelection,
-  isActive: returnFalse,
+  isEnabled: _hasNoSelection2.default,
+  isActive: _returnFalse2.default,
   update: showImageEditorModalDialog
 };
 
@@ -73,8 +95,8 @@ var TABLE = exports.TABLE = {
   action: _DocsActionTypes2.default.TABLE_INSERT,
   icon: 'grid_on',
   label: 'Insert Table',
-  isActive: returnFalse,
-  isEnabled: hasNoSelection,
+  isActive: _returnFalse2.default,
+  isEnabled: _hasNoSelection2.default,
   update: function update(editorState, onChange) {
     return onChange((0, _DocsModifiers.insertTable)(editorState));
   }
@@ -84,8 +106,8 @@ var MATH = exports.MATH = {
   action: _DocsActionTypes2.default.MATH_INSERT,
   icon: 'functions',
   label: 'Math',
-  isActive: returnFalse,
-  isEnabled: hasNoSelection,
+  isActive: _returnFalse2.default,
+  isEnabled: _hasNoSelection2.default,
   update: showMathEditorModalDialog
 };
 
@@ -93,8 +115,8 @@ var EXPANDABLE = exports.EXPANDABLE = {
   action: _DocsActionTypes2.default.EXPANDABLE_INSERT,
   icon: 'expand_more',
   label: 'Expandable',
-  isActive: returnFalse,
-  isEnabled: hasNoSelection,
+  isActive: _returnFalse2.default,
+  isEnabled: _hasNoSelection2.default,
   update: function update(editorState, onChange) {
     return onChange((0, _DocsModifiers.insertExpandable)(editorState));
   }
@@ -107,7 +129,7 @@ var LINK = exports.LINK = {
   isActive: function isActive(editorState) {
     return _draftJs.RichUtils.currentBlockContainsLink(editorState);
   },
-  isEnabled: hasSelection,
+  isEnabled: _hasSelection2.default,
   update: showLinkEditorModalDialog
 };
 
@@ -118,7 +140,7 @@ var BOLD = exports.BOLD = {
   isActive: function isActive(e) {
     return isInlineStyle('BOLD', e);
   },
-  isEnabled: hasSelection,
+  isEnabled: _hasSelection2.default,
   update: function update(e, o, d) {
     return toggleInlineStyle('BOLD', e, o, d);
   }
@@ -132,7 +154,7 @@ var ITALIC = exports.ITALIC = {
   isActive: function isActive(e) {
     return isInlineStyle('ITALIC', e);
   },
-  isEnabled: hasSelection,
+  isEnabled: _hasSelection2.default,
   update: function update(e, o, d) {
     return toggleInlineStyle('ITALIC', e, o, d);
   }
@@ -145,7 +167,7 @@ var UNDERLINE = exports.UNDERLINE = {
   isActive: function isActive(e) {
     return isInlineStyle('UNDERLINE', e);
   },
-  isEnabled: hasSelection,
+  isEnabled: _hasSelection2.default,
   update: function update(e, o, d) {
     return toggleInlineStyle('UNDERLINE', e, o, d);
   }
@@ -158,7 +180,7 @@ var STRIKE = exports.STRIKE = {
   isActive: function isActive(e) {
     return isInlineStyle('STRIKETHROUGH', e);
   },
-  isEnabled: hasSelection,
+  isEnabled: _hasSelection2.default,
   update: function update(e, o, d) {
     return toggleInlineStyle('STRIKETHROUGH', e, o, d);
   }
@@ -171,7 +193,7 @@ var CODE = exports.CODE = {
   isActive: function isActive(e) {
     return isInlineStyle('CODE', e);
   },
-  isEnabled: hasSelection,
+  isEnabled: _hasSelection2.default,
   update: function update(e, o, d) {
     return toggleInlineStyle('CODE', e, o, d);
   }
@@ -181,8 +203,8 @@ var HIGHLIGHT = exports.HIGHLIGHT = {
   action: _DocsActionTypes2.default.TEXT_HIGHLIGHT,
   icon: 'format_color_text',
   label: 'Highlight',
-  isActive: returnFalse,
-  isEnabled: hasSelection,
+  isActive: _returnFalse2.default,
+  isEnabled: _hasSelection2.default,
   update: noop
 };
 
@@ -193,7 +215,7 @@ var UNORDERED_LIST = exports.UNORDERED_LIST = {
   isActive: function isActive(e) {
     return isBlockType('unordered-list-item', e);
   },
-  isEnabled: returnTrue,
+  isEnabled: _returnTrue2.default,
   update: function update(e, o, d) {
     return toggleBlockType('unordered-list-item', e, o, d);
   }
@@ -206,7 +228,7 @@ var ORDERED_LIST = exports.ORDERED_LIST = {
   isActive: function isActive(e) {
     return isBlockType('ordered-list-item', e);
   },
-  isEnabled: returnTrue,
+  isEnabled: _returnTrue2.default,
   update: function update(e, o, d) {
     return toggleBlockType('ordered-list-item', e, o, d);
   }
@@ -216,7 +238,7 @@ var INDENT_MORE = exports.INDENT_MORE = {
   action: _DocsActionTypes2.default.INDENT_MORE,
   icon: 'format_indent_increase',
   label: 'Indent More',
-  isActive: returnFalse,
+  isActive: _returnFalse2.default,
   isEnabled: function isEnabled(e) {
     return isIndentable(1, e);
   },
@@ -229,7 +251,7 @@ var INDENT_LESS = exports.INDENT_LESS = {
   action: _DocsActionTypes2.default.INDENT_LESS,
   icon: 'format_indent_decrease',
   label: 'Indent Less',
-  isActive: returnFalse,
+  isActive: _returnFalse2.default,
   isEnabled: function isEnabled(e) {
     return isIndentable(-1, e);
   },
@@ -245,7 +267,7 @@ var BLOCK_QUOTE = exports.BLOCK_QUOTE = {
   isActive: function isActive(e) {
     return isBlockType('blockquote', e);
   },
-  isEnabled: returnTrue,
+  isEnabled: _returnTrue2.default,
   update: function update(e, o, d) {
     return toggleBlockType('blockquote', e, o, d);
   }
@@ -257,7 +279,7 @@ var H1 = exports.H1 = {
   isActive: function isActive(e) {
     return isBlockType('header-one', e);
   },
-  isEnabled: returnTrue,
+  isEnabled: _returnTrue2.default,
   update: function update(e, o, d) {
     return toggleBlockType('header-one', e, o, d);
   }
@@ -269,7 +291,7 @@ var H2 = exports.H2 = {
   isActive: function isActive(e) {
     return isBlockType('header-two', e);
   },
-  isEnabled: returnTrue,
+  isEnabled: _returnTrue2.default,
   update: function update(e, o, d) {
     return toggleBlockType('header-two', e, o, d);
   }
@@ -281,7 +303,7 @@ var H3 = exports.H3 = {
   isActive: function isActive(e) {
     return isBlockType('header-three', e);
   },
-  isEnabled: returnTrue,
+  isEnabled: _returnTrue2.default,
   update: function update(e, o, d) {
     return toggleBlockType('header-three', e, o, d);
   }
@@ -293,7 +315,7 @@ var H4 = exports.H4 = {
   isActive: function isActive(e) {
     return isBlockType('header-four', e);
   },
-  isEnabled: returnTrue,
+  isEnabled: _returnTrue2.default,
   update: function update(e, o, d) {
     return toggleBlockType('header-four', e, o, d);
   }
@@ -306,7 +328,7 @@ var H5 = exports.H5 = {
   isActive: function isActive(e) {
     return isBlockType('header-five', e);
   },
-  isEnabled: returnTrue,
+  isEnabled: _returnTrue2.default,
   update: function update(e, o, d) {
     return toggleBlockType('header-five', e, o, d);
   }
@@ -316,7 +338,7 @@ var UNDO = exports.UNDO = {
   action: _DocsActionTypes2.default.HISTORY_UNDO,
   icon: 'undo',
   label: 'Undo',
-  isActive: returnFalse,
+  isActive: _returnFalse2.default,
   isEnabled: canUndo,
   update: undo
 };
@@ -325,18 +347,10 @@ var REDO = exports.REDO = {
   action: _DocsActionTypes2.default.HISTORY_UNDO,
   icon: 'redo',
   label: 'Redo',
-  isActive: returnFalse,
+  isActive: _returnFalse2.default,
   isEnabled: canRedo,
   update: redo
 };
-
-function returnTrue() {
-  return true;
-}
-
-function returnFalse() {
-  return false;
-}
 
 function redo(editorState, onChange) {
   onChange(_draftJs.EditorState.redo(editorState));
@@ -389,16 +403,6 @@ function isInlineStyle(style, editorState) {
 
   var currentStyle = editorState.getCurrentInlineStyle();
   return currentStyle.has(style);
-}
-
-function hasSelection(editorState) {
-  var selectionState = editorState.getSelection();
-  return !selectionState.isCollapsed();
-}
-
-function hasNoSelection(editorState) {
-  var selectionState = editorState.getSelection();
-  return selectionState.isCollapsed();
 }
 
 function toggleBlockType(blockType, editorState, onChange, docsContext) {

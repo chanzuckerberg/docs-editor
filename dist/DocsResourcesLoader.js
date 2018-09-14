@@ -96,7 +96,7 @@ function isUsingMaterialIcon() {
 
 function loadResources(id) {
 
-  var styles = [createElement('link', {
+  var resources = [createElement('link', {
     id: id + '-katex-style',
     crossorigin: 'anonymous',
     href: 'https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css',
@@ -104,7 +104,7 @@ function loadResources(id) {
     rel: 'stylesheet'
   })];
   if (!isUsingMaterialIcon()) {
-    styles.push(createElement('link', {
+    resources.push(createElement('link', {
       id: id + '-materialicons-style',
       crossorigin: 'anonymous',
       href: 'https://fonts.googleapis.com/icon?family=Material+Icons',
@@ -112,7 +112,14 @@ function loadResources(id) {
     }));
   }
 
-  return _promise2.default.all(styles.map(loadResource));
+  resources.push(createElement('script', {
+    id: id + '-calculator-js',
+    src: 'https://cdn.summitlearning.org/assets/javascripts/calculator1.0.js',
+    async: 'true',
+    defer: 'defer'
+  }));
+
+  return _promise2.default.all(resources.map(loadResource));
 }
 
 var DocsResourcesLoader = function () {
