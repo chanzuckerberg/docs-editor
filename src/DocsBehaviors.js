@@ -1,11 +1,14 @@
 // @flow
 
+import CalculatorBehavior from './CalculatorBehavior';
 import DocsActionTypes from './DocsActionTypes';
 import DocsContext from './DocsContext';
 import DocsImageEditor from './DocsImageEditor';
 import DocsMathEditor from './DocsMathEditor';
 import DocsTextInputEditor from './DocsTextInputEditor';
 import getCurrentSelectionEntity from './getCurrentSelectionEntity';
+import returnFalse from './returnFalse';
+import returnTrue from './returnTrue';
 import showModalDialog from './showModalDialog';
 import updateEntityData from './updateEntityData';
 import {EditorState, RichUtils} from 'draft-js';
@@ -26,9 +29,11 @@ export type DocsBehavior = {
   icon?: ?string,
   isActive: (e: EditorState) => boolean,
   isEnabled: (e: EditorState) => boolean,
-  label?: ?string,
+  label: string,
   update: Update,
 };
+
+export const CALCULATOR: DocsBehavior = new CalculatorBehavior();
 
 export const IMAGE: DocsBehavior = {
   action: DocsActionTypes.IMAGE_INSERT,
@@ -233,14 +238,6 @@ export const REDO: DocsBehavior = {
   isEnabled: canRedo,
   update: redo,
 };
-
-function returnTrue(): boolean {
-  return true;
-}
-
-function returnFalse(): boolean {
-  return false;
-}
 
 function redo(editorState: EditorState, onChange: OnChange) {
   onChange(EditorState.redo(editorState));
