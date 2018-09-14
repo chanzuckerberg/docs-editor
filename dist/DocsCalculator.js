@@ -89,8 +89,6 @@ var DocsCalculator = function (_React$PureComponent) {
     return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = DocsCalculator.__proto__ || (0, _getPrototypeOf2.default)(DocsCalculator)).call.apply(_ref, [this].concat(args))), _this), _this._id = (0, _uniqueID2.default)(), _this.state = {
       editing: false,
       ready: _DocsResourcesLoader2.default.isReady()
-    }, _this._maskEvent = function (e) {
-      e.stopPropagation();
     }, _this._onDesmosLoad = function () {
       var Desmos = window.Desmos;
       if (!Desmos) {
@@ -102,7 +100,8 @@ var DocsCalculator = function (_React$PureComponent) {
         return;
       }
       el.innerHTML = '';
-      Desmos.FourFunctionCalculator(el);
+      // Desmos.FourFunctionCalculator(el);
+      Desmos.ScientificCalculator(el);
       // Desmos.GraphingCalculator(el);
       // case CALCULATOR_ALLOWED.SCIENTIFIC:
       //   Desmos.ScientificCalculator(this.refs.calculator);
@@ -141,10 +140,6 @@ var DocsCalculator = function (_React$PureComponent) {
         (0, _extends3.default)({}, attrs, {
           className: 'docs-calculator',
           contentEditable: false,
-          onInput: this._maskEvent,
-          onKeyDown: this._maskEvent,
-          onKeyPress: this._maskEvent,
-          onKeyUp: this._maskEvent,
           tabIndex: 0 }),
         _react2.default.createElement('div', { id: this._id })
       );
