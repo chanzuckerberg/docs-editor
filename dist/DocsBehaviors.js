@@ -48,6 +48,7 @@ var babelPluginFlowReactPropTypes_proptype_ModalHandle = require('./showModalDia
 // List item depths limited to 4.
 // https://github.com/facebook/draft-js/issues/122
 var MAX_DEPTH = 4;
+var MIN_DEPTH = 0;
 
 if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginFlowReactPropTypes_proptype_DocsBehavior', {
   value: require('prop-types').shape({
@@ -367,17 +368,17 @@ function isIndentable(adjustment, editorState) {
   var contentBlock = contentState.getBlockForKey(selection.getStartKey());
   var blockType = contentBlock ? contentBlock.getType() : null;
 
-  if (blockType !== 'unstyled' && blockType !== 'unordered-list-item' && blockType !== 'ordered-list-item') {
+  if (blockType !== 'unordered-list-item' && blockType !== 'ordered-list-item') {
     return false;
   }
   var depth = contentBlock ? contentBlock.getDepth() : 0;
   if (adjustment > 0) {
     return depth + adjustment <= MAX_DEPTH;
   } else if (adjustment < 0) {
-    return depth - adjustment >= 0;
+    return depth + adjustment >= MIN_DEPTH;
+  } else {
+    return false;
   }
-
-  return false;
 }
 
 function isInlineStyle(style, editorState) {

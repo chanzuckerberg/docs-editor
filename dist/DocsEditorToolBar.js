@@ -174,7 +174,7 @@ var DocsEditorToolBar = function (_React$PureComponent) {
           _react2.default.createElement(
             _reactBootstrap.ButtonGroup,
             { className: 'docs-buttons-group', key: 'block' },
-            [_DocsBehaviors.UNORDERED_LIST, _DocsBehaviors.ORDERED_LIST, _DocsBehaviors.BLOCK_QUOTE, _DocsBehaviors.H1, _DocsBehaviors.H2, _DocsBehaviors.H3, _DocsBehaviors.H4, _DocsBehaviors.INDENT_LESS, _DocsBehaviors.INDENT_MORE].map(this._renderButton)
+            [_DocsBehaviors.H1, _DocsBehaviors.H2, _DocsBehaviors.H3, _DocsBehaviors.H4, _DocsBehaviors.UNORDERED_LIST, _DocsBehaviors.ORDERED_LIST, _DocsBehaviors.INDENT_LESS, _DocsBehaviors.INDENT_MORE, _DocsBehaviors.BLOCK_QUOTE].map(this._renderButton)
           ),
           _react2.default.createElement(
             _reactBootstrap.ButtonGroup,

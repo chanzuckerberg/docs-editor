@@ -100,6 +100,10 @@ var _invariant = require('invariant');
 
 var _invariant2 = _interopRequireDefault(_invariant);
 
+var _isEditorStateEmpty = require('./isEditorStateEmpty');
+
+var _isEditorStateEmpty2 = _interopRequireDefault(_isEditorStateEmpty);
+
 var _noop = require('./noop');
 
 var _noop2 = _interopRequireDefault(_noop);
@@ -259,7 +263,7 @@ var DocsEditor = function (_React$PureComponent) {
       (0, _invariant2.default)(docsContext, 'prop `docsContext` is required');
 
       var activeEditor = this._activeEditor;
-      var placeholderText = docsContext.canEdit && activeEditor ? placeholder || 'Type something' : '';
+      var placeholderText = (0, _isEditorStateEmpty2.default)(editorState) && docsContext.canEdit && activeEditor ? placeholder || 'Type something' : '';
 
       var editorId = id || this._id;
       var attrs = (0, _defineProperty3.default)({}, _DocsDataAttributes2.default.EDITOR_FOR, editorId);

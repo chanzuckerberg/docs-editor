@@ -42,6 +42,7 @@ var ORDERED_LIST_ITEM = 'ordered-list-item';
 var PARAGRAPH = 'paragraph';
 var UNORDERED_LIST_ITEM = 'unordered-list-item';
 var UNSTYLED = 'unstyled';
+var BLOCKQUOTE = 'blockquote';
 
 function renderBlock(contentBlock, blockProps) {
 
@@ -109,17 +110,19 @@ function getStyle(contentBlock) {
 
     case UNORDERED_LIST_ITEM:
     case ORDERED_LIST_ITEM:
+    case BLOCKQUOTE:
     case H1:
     case H2:
     case H3:
     case H4:
       classNames.push(blockType);
       break;
-  }
-
-  if (contentBlock.getType() === 'unstyled') {
-    var depthClassName = _DocsCustomStyleMap2.default.forDepth(contentBlock.getDepth());
-    depthClassName && classNames.push(depthClassName);
+    case UNSTYLED:
+      // TODO: Should we support depth for this block?
+      // const depth = contentBlock.getDepth();
+      // const depthClassName = DocsCustomStyleMap.forDepth(depth);
+      // depthClassName && classNames.push(depthClassName);
+      break;
   }
 
   return classNames.length ? classNames.join(' ') : null;

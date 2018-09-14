@@ -64,15 +64,15 @@ class DocsEditorToolBar extends React.PureComponent {
           <ButtonGroup className="docs-buttons-group" key="block">
             {
               [
-                UNORDERED_LIST,
-                ORDERED_LIST,
-                BLOCK_QUOTE,
                 H1,
                 H2,
                 H3,
                 H4,
+                UNORDERED_LIST,
+                ORDERED_LIST,
                 INDENT_LESS,
                 INDENT_MORE,
+                BLOCK_QUOTE,
               ].map(this._renderButton)
             }
           </ButtonGroup>

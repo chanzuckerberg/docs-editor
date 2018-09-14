@@ -18,6 +18,7 @@ import asElement from './asElement';
 import convertFromRaw from './convertFromRaw';
 import cx from 'classnames';
 import invariant from 'invariant';
+import isEditorStateEmpty from './isEditorStateEmpty';
 import noop from './noop';
 import uniqueID from './uniqueID';
 import withDocsContext from './withDocsContext';
@@ -124,7 +125,8 @@ class DocsEditor extends React.PureComponent {
     invariant(docsContext, 'prop `docsContext` is required');
 
     const activeEditor = this._activeEditor;
-    const placeholderText = (docsContext.canEdit && activeEditor) ?
+    const placeholderText =
+      (isEditorStateEmpty(editorState) && docsContext.canEdit && activeEditor) ?
       (placeholder || 'Type something') :
       '';
 
