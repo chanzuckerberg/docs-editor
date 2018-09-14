@@ -82,7 +82,7 @@ function getInitialState(): Object {
     editorState,
     initialEditorState: editorState,
     debugValue,
-    debugMode: false,
+    debugMode: /debug_mode=1/.test(document.cookie),
   };
 }
 
@@ -270,9 +270,11 @@ class DemoApp extends React.PureComponent<any, any, any> {
   };
 
   _toggleDebugMode = () => {
+    const debugMode = !this.state.debugMode;
     this.setState({
-      debugMode: !this.state.debugMode,
+      debugMode,
     });
+    document.cookie = `debug_mode=${debugMode  ? 1 : ''}`;
   };
 }
 
