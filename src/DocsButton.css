@@ -33,3 +33,8 @@
 .docs-button-active .docs-icon {
   color: #000;
 }
+
+.docs-button.btn[disabled] {
+  color: #ccc;
+  opacity: 1;
+}

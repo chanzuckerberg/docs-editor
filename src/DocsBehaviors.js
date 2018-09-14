@@ -272,7 +272,6 @@ function isIndentable(adjustment: number, editorState: EditorState): boolean {
   const blockType = contentBlock ? contentBlock.getType() : null;
 
   if (
-    blockType !== 'unstyled' &&
     blockType !== 'unordered-list-item' &&
     blockType !== 'ordered-list-item'
   ) {
