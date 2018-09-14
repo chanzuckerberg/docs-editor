@@ -37,7 +37,6 @@ class DocsCalculator extends React.PureComponent {
 
   render(): React.Element<any> {
 
-
     const attrs = {
       [DocsDataAttributes.WIDGET]: true,
     };
@@ -47,19 +46,11 @@ class DocsCalculator extends React.PureComponent {
         {...attrs}
         className="docs-calculator"
         contentEditable={false}
-        onInput={this._maskEvent}
-        onKeyDown={this._maskEvent}
-        onKeyPress={this._maskEvent}
-        onKeyUp={this._maskEvent}
         tabIndex={0}>
         <div id={this._id} />
       </div>
     )
   }
-
-  _maskEvent = (e: SyntheticEvent): void => {
-    e.stopPropagation();
-  };
 
   _onDesmosLoad = (): void => {
     const Desmos: any = window.Desmos;
@@ -72,7 +63,8 @@ class DocsCalculator extends React.PureComponent {
       return;
     }
     el.innerHTML = '';
-    Desmos.FourFunctionCalculator(el);
+    // Desmos.FourFunctionCalculator(el);
+    Desmos.ScientificCalculator(el);
     // Desmos.GraphingCalculator(el);
     // case CALCULATOR_ALLOWED.SCIENTIFIC:
     //   Desmos.ScientificCalculator(this.refs.calculator);
