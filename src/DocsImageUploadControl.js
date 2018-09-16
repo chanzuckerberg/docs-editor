@@ -1,10 +1,10 @@
 // @flow
 
+import DocsEditorRuntime from './DocsEditorRuntime';
+import React from 'react';
 import uniqueID from './uniqueID';
 
-import type {DocsEditorRuntime, ImageLike} from './Types';
-
-import React from 'react';
+import type {ImageLike} from './Types';
 
 type Props = {
   disabled?: ?boolean,

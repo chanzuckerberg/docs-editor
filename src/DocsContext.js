@@ -1,11 +1,9 @@
 // @flow
 
 import DocsActionTypes from './DocsActionTypes';
-
-import {Record, Set as ImmutableSet} from 'immutable';
+import DocsEditorRuntime from './DocsEditorRuntime';
 import invariant from 'invariant';
-
-import type {DocsEditorRuntime} from './Types';
+import {Record, Set as ImmutableSet} from 'immutable';
 
 type RecordData = {
   allowedActions?: ?(ImmutableSet<string> | Array<string>),
