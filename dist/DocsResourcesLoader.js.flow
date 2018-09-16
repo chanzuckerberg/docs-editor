@@ -69,7 +69,7 @@ function isUsingMaterialIcon() {
 
 function loadResources(id: string): Promise<any> {
 
-  const styles = [
+  const resources = [
     createElement('link', {
       id: id + '-katex-style',
       crossorigin: 'anonymous',
@@ -79,7 +79,7 @@ function loadResources(id: string): Promise<any> {
     }),
   ];
   if (!isUsingMaterialIcon()) {
-    styles.push(
+    resources.push(
       createElement('link', {
         id: id + '-materialicons-style',
         crossorigin: 'anonymous',
@@ -89,7 +89,16 @@ function loadResources(id: string): Promise<any> {
     )
   }
 
-  return Promise.all(styles.map(loadResource));
+  resources.push(
+    createElement('script', {
+      id: id + '-calculator-js',
+      src: 'https://cdn.summitlearning.org/assets/javascripts/calculator1.0.js',
+      async: 'true',
+      defer: 'defer',
+    }),
+  );
+
+  return Promise.all(resources.map(loadResource));
 }
 
 class DocsResourcesLoader {

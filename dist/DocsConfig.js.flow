@@ -3,6 +3,7 @@
 import DocsAnnotation from './DocsAnnotation';
 import DocsBlockTypeToComponent from './DocsBlockTypeToComponent';
 import DocsBlockTypes from './DocsBlockTypes';
+import DocsCalculator from './DocsCalculator';
 import DocsDecorator from './DocsDecorator';
 import DocsDecoratorTypes from './DocsDecoratorTypes';
 import DocsExpandable from './DocsExpandable';
@@ -27,8 +28,9 @@ function registerDecorator(specs: Array<Array<any>>): void {
 
 function init(): void {
   registerCustomBlocks([
-    [DocsBlockTypes.DOCS_TABLE, DocsTable],
+    [DocsBlockTypes.DOCS_CALCULATOR, DocsCalculator],
     [DocsBlockTypes.DOCS_EXPANDABLE, DocsExpandable],
+    [DocsBlockTypes.DOCS_TABLE, DocsTable],
   ]);
 
   // Register Decorator

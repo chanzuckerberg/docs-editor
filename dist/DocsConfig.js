@@ -16,6 +16,10 @@ var _DocsBlockTypes = require('./DocsBlockTypes');
 
 var _DocsBlockTypes2 = _interopRequireDefault(_DocsBlockTypes);
 
+var _DocsCalculator = require('./DocsCalculator');
+
+var _DocsCalculator2 = _interopRequireDefault(_DocsCalculator);
+
 var _DocsDecorator = require('./DocsDecorator');
 
 var _DocsDecorator2 = _interopRequireDefault(_DocsDecorator);
@@ -67,7 +71,7 @@ function registerDecorator(specs) {
 }
 
 function init() {
-  registerCustomBlocks([[_DocsBlockTypes2.default.DOCS_TABLE, _DocsTable2.default], [_DocsBlockTypes2.default.DOCS_EXPANDABLE, _DocsExpandable2.default]]);
+  registerCustomBlocks([[_DocsBlockTypes2.default.DOCS_CALCULATOR, _DocsCalculator2.default], [_DocsBlockTypes2.default.DOCS_EXPANDABLE, _DocsExpandable2.default], [_DocsBlockTypes2.default.DOCS_TABLE, _DocsTable2.default]]);
 
   // Register Decorator
   registerDecorator([[_DocsDecoratorTypes2.default.DOCS_ANNOTATION, _DocsAnnotation2.default], [_DocsDecoratorTypes2.default.DOCS_IMAGE, _DocsImage2.default], [_DocsDecoratorTypes2.default.DOCS_MATH, _DocsMath2.default], [_DocsDecoratorTypes2.default.LINK, _DocsLink2.default]]);

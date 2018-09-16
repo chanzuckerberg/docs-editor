@@ -184,7 +184,7 @@ var DocsEditorToolBar = function (_React$PureComponent) {
           _react2.default.createElement(
             _reactBootstrap.ButtonGroup,
             { className: 'docs-buttons-group', key: 'insert' },
-            [_DocsBehaviors.IMAGE, _DocsBehaviors.TABLE, _DocsBehaviors.MATH, _DocsBehaviors.EXPANDABLE].map(this._renderButton)
+            [_DocsBehaviors.IMAGE, _DocsBehaviors.TABLE, _DocsBehaviors.MATH, _DocsBehaviors.CALCULATOR, _DocsBehaviors.EXPANDABLE].map(this._renderButton)
           ),
           _react2.default.createElement(
             _reactBootstrap.ButtonGroup,
