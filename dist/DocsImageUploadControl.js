@@ -36,19 +36,21 @@ var _inherits2 = require('babel-runtime/helpers/inherits');
 
 var _inherits3 = _interopRequireDefault(_inherits2);
 
-var _uniqueID = require('./uniqueID');
+var _DocsEditorRuntime = require('./DocsEditorRuntime');
 
-var _uniqueID2 = _interopRequireDefault(_uniqueID);
+var _DocsEditorRuntime2 = _interopRequireDefault(_DocsEditorRuntime);
 
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _uniqueID = require('./uniqueID');
+
+var _uniqueID2 = _interopRequireDefault(_uniqueID);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var babelPluginFlowReactPropTypes_proptype_ImageLike = require('./Types').babelPluginFlowReactPropTypes_proptype_ImageLike || require('prop-types').any;
-
-var babelPluginFlowReactPropTypes_proptype_DocsEditorRuntime = require('./Types').babelPluginFlowReactPropTypes_proptype_DocsEditorRuntime || require('prop-types').any;
 
 var DocsImageUploadControl = function (_React$PureComponent) {
   (0, _inherits3.default)(DocsImageUploadControl, _React$PureComponent);

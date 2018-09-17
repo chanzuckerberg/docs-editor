@@ -24,15 +24,17 @@ var _DocsActionTypes = require('./DocsActionTypes');
 
 var _DocsActionTypes2 = _interopRequireDefault(_DocsActionTypes);
 
-var _immutable = require('immutable');
+var _DocsEditorRuntime = require('./DocsEditorRuntime');
+
+var _DocsEditorRuntime2 = _interopRequireDefault(_DocsEditorRuntime);
 
 var _invariant = require('invariant');
 
 var _invariant2 = _interopRequireDefault(_invariant);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _immutable = require('immutable');
 
-var babelPluginFlowReactPropTypes_proptype_DocsEditorRuntime = require('./Types').babelPluginFlowReactPropTypes_proptype_DocsEditorRuntime || require('prop-types').any;
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var ALL_ACTIONS = (0, _immutable.Set)((0, _keys2.default)(_DocsActionTypes2.default));
 

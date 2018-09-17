@@ -31,6 +31,15 @@ Object.defineProperty(exports, 'DocsContext', {
   }
 });
 
+var _DocsEditorRuntime = require('./DocsEditorRuntime');
+
+Object.defineProperty(exports, 'DocsEditorRuntime', {
+  enumerable: true,
+  get: function get() {
+    return _interopRequireDefault(_DocsEditorRuntime).default;
+  }
+});
+
 var _DocsEditor = require('./DocsEditor');
 
 Object.defineProperty(exports, 'DocsEditor', {
@@ -85,21 +94,21 @@ Object.defineProperty(exports, 'convertFromRaw', {
   }
 });
 
-var _isEditorStateEmpty = require('./isEditorStateEmpty');
-
-Object.defineProperty(exports, 'isEditorStateEmpty', {
-  enumerable: true,
-  get: function get() {
-    return _interopRequireDefault(_isEditorStateEmpty).default;
-  }
-});
-
 var _convertToRaw = require('./convertToRaw');
 
 Object.defineProperty(exports, 'convertToRaw', {
   enumerable: true,
   get: function get() {
     return _interopRequireDefault(_convertToRaw).default;
+  }
+});
+
+var _isEditorStateEmpty = require('./isEditorStateEmpty');
+
+Object.defineProperty(exports, 'isEditorStateEmpty', {
+  enumerable: true,
+  get: function get() {
+    return _interopRequireDefault(_isEditorStateEmpty).default;
   }
 });
 

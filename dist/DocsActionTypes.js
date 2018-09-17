@@ -12,6 +12,7 @@ module.exports = (0, _keyMirror2.default)({
   EXPANDABLE_INSERT: null,
   HISTORY_REDO: null,
   HISTORY_UNDO: null,
+  HTML_INSERT: null,
   IMAGE_ALIGN_CENTER: null,
   IMAGE_ALIGN_LEFT: null,
   IMAGE_ALIGN_NONE: null,

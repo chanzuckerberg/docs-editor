@@ -80,26 +80,12 @@ if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginF
     y: require('prop-types').number.isRequired
   })
 });
-
-
-// This defines the APIs that depend on the specific app that the editor
-// is running within. This serves as a bridge to enable editor communicate
-// with the app server to do tasks such as uploading images, load comments,
-// ...etc.
 if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginFlowReactPropTypes_proptype_ImageLike', {
   value: require('prop-types').shape({
     height: require('prop-types').number.isRequired,
     id: require('prop-types').string.isRequired,
     src: require('prop-types').string.isRequired,
     width: require('prop-types').number.isRequired
-  })
-});
-if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginFlowReactPropTypes_proptype_DocsEditorRuntime', {
-  value: require('prop-types').shape({
-    canUploadImage: require('prop-types').func.isRequired,
-    canProxyImageSrc: require('prop-types').func.isRequired,
-    getProxyImageSrc: require('prop-types').func.isRequired,
-    uploadImage: require('prop-types').func.isRequired
   })
 });
 if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginFlowReactPropTypes_proptype_DocsEditorProps', {
