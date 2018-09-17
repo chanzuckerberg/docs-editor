@@ -75,6 +75,9 @@ var DocsEditorToolBar = function (_React$PureComponent) {
     return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = DocsEditorToolBar.__proto__ || (0, _getPrototypeOf2.default)(DocsEditorToolBar)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
       focusedEditorState: null
     }, _this._eventsCapture = null, _this._timer = new _Timer2.default(), _this._modalHandle = null, _this._renderButton = function (feature) {
+      if (!feature) {
+        return null;
+      }
       var allowedActions = _this.context.docsContext.allowedActions;
 
       if (!allowedActions.has(feature.action)) {
@@ -156,7 +159,8 @@ var DocsEditorToolBar = function (_React$PureComponent) {
     value: function render() {
       var docsContext = this.context.docsContext;
       var canEdit = docsContext.canEdit,
-          allowedActions = docsContext.allowedActions;
+          allowedActions = docsContext.allowedActions,
+          runtime = docsContext.runtime;
 
       if (!canEdit) {
         return null;
@@ -184,7 +188,7 @@ var DocsEditorToolBar = function (_React$PureComponent) {
           _react2.default.createElement(
             _reactBootstrap.ButtonGroup,
             { className: 'docs-buttons-group', key: 'insert' },
-            [_DocsBehaviors.IMAGE, _DocsBehaviors.TABLE, _DocsBehaviors.MATH, _DocsBehaviors.CALCULATOR, _DocsBehaviors.EXPANDABLE].map(this._renderButton)
+            [_DocsBehaviors.IMAGE, _DocsBehaviors.TABLE, _DocsBehaviors.MATH, _DocsBehaviors.CALCULATOR, runtime && runtime.canLoadHTML && runtime.canLoadHTML() ? _DocsBehaviors.HTML_DOCUMENT : null, _DocsBehaviors.EXPANDABLE].map(this._renderButton)
           ),
           _react2.default.createElement(
             _reactBootstrap.ButtonGroup,

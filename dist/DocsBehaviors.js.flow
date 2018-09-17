@@ -6,6 +6,7 @@ import DocsContext from './DocsContext';
 import DocsImageEditor from './DocsImageEditor';
 import DocsMathEditor from './DocsMathEditor';
 import DocsTextInputEditor from './DocsTextInputEditor';
+import HTMLDocumentBehavior from './HTMLDocumentBehavior';
 import getCurrentSelectionEntity from './getCurrentSelectionEntity';
 import hasNoSelection from './hasNoSelection';
 import hasSelection from './hasSelection';
@@ -36,6 +37,8 @@ export type DocsBehavior = {
 };
 
 export const CALCULATOR: DocsBehavior = new CalculatorBehavior();
+
+export const HTML_DOCUMENT: DocsBehavior = new HTMLDocumentBehavior();
 
 export const IMAGE: DocsBehavior = {
   action: DocsActionTypes.IMAGE_INSERT,

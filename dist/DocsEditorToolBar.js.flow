@@ -7,7 +7,7 @@ import captureDocumentEvents from './captureDocumentEvents';
 import withDocsContext from './withDocsContext';
 import {ButtonGroup} from 'react-bootstrap';
 import {EditorState} from 'draft-js';
-import {CALCULATOR, UNORDERED_LIST, ORDERED_LIST, BLOCK_QUOTE, H1, H2, H3, H4, LINK, BOLD, ITALIC, UNDERLINE, STRIKE, CODE, HIGHLIGHT, IMAGE, TABLE, MATH, EXPANDABLE, UNDO, REDO, INDENT_MORE, INDENT_LESS} from './DocsBehaviors';
+import {HTML_DOCUMENT, CALCULATOR, UNORDERED_LIST, ORDERED_LIST, BLOCK_QUOTE, H1, H2, H3, H4, LINK, BOLD, ITALIC, UNDERLINE, STRIKE, CODE, HIGHLIGHT, IMAGE, TABLE, MATH, EXPANDABLE, UNDO, REDO, INDENT_MORE, INDENT_LESS} from './DocsBehaviors';
 
 import type {DocsEditorLike} from './Types';
 import type {DocsBehavior} from './DocsBehaviors';
@@ -53,7 +53,7 @@ class DocsEditorToolBar extends React.PureComponent {
 
   render(): ?React.Element<any> {
     const {docsContext} = this.context;
-    const {canEdit, allowedActions} = docsContext;
+    const {canEdit, allowedActions, runtime} = docsContext;
     if (!canEdit) {
       return null;
     }
@@ -95,6 +95,9 @@ class DocsEditorToolBar extends React.PureComponent {
               TABLE,
               MATH,
               CALCULATOR,
+              runtime && runtime.canLoadHTML && runtime.canLoadHTML() ?
+                HTML_DOCUMENT :
+                null,
               EXPANDABLE,
             ].map(this._renderButton)
           }
@@ -118,7 +121,10 @@ class DocsEditorToolBar extends React.PureComponent {
     );
   }
 
-  _renderButton = (feature: DocsBehavior): ?React.Element<any> => {
+  _renderButton = (feature: ?DocsBehavior): ?React.Element<any> => {
+    if (!feature) {
+      return null;
+    }
     const {allowedActions} = this.context.docsContext;
     if (!allowedActions.has(feature.action)) {
       return null;

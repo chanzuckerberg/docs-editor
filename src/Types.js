@@ -81,17 +81,6 @@ export type ImageLike = {
   width: number,
 };
 
-// This defines the APIs that depend on the specific app that the editor
-// is running within. This serves as a bridge to enable editor communicate
-// with the app server to do tasks such as uploading images, load comments,
-// ...etc.
-export type DocsEditorRuntime = {
-  canUploadImage: () => boolean,
-  canProxyImageSrc: (src: string) => boolean,
-  getProxyImageSrc: (src: string) => string,
-  uploadImage: (obj: Blob) => Promise<ImageLike>,
-};
-
 export type DocsEditorProps = {
   docsContext?: ?Object,
   editorState: EditorState,
