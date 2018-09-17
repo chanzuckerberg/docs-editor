@@ -3,7 +3,8 @@
 import React from 'react';
 
 import {ButtonGroup, Button} from 'react-bootstrap';
-import {DocsEditor, DocsContext, EditorState, convertToRaw, convertFromRaw, convertFromHTML, uniqueID} from '../src/index.js';
+import {DocsEditor, DocsContext, EditorState, convertToRaw, convertFromRaw, convertFromHTML, uniqueID, DocsEditorRuntime} from '../src/index.js';
+import showModalDialog from '../src/showModalDialog';
 
 // Because React-Bootstrap doesn't depend on a very precise version of
 // Bootstrap, we don't ship with any included css. However, some stylesheet is
@@ -61,8 +62,53 @@ const DEFAULT_CONTEXT = new DocsContext({});
 const DEFAULT_EDITOR_STATE = convertFromRaw({});
 const LOCAL_STORAGE_KEY = 'education-doc-editor-examples';
 
+class HTMLFilePicker extends React.PureComponent {
+  _id = uniqueID();
+  render() {
+    return (
+      <form onSubmit={this._onSubmit}>
+        <input type="file" id={this._id} />
+        <input type="submit" />
+      </form>
+    )
+  }
+
+  _onSubmit = (e: SyntheticEvent) => {
+    e.preventDefault();
+    const el: any = document.getElementById(this._id);
+    if (!el || !el.files) {
+      return;
+    }
+    const file = el.files[0];
+    if (!file || !(/\.html$/).test(file.name)) {
+      return;
+    }
+    const reader: any = new FileReader();
+    reader.onload = (onload) => {
+      const html = onload.target.result;
+      reader.onload = null;
+      this.props.onConfirm(html);
+    };
+    reader.readAsText(file);
+  };
+}
+
+class DemoAppRuntime extends DocsEditorRuntime {
+  canLoadHTML() {
+    return true;
+  }
+  loadHTML() {
+    return new Promise(resolve => {
+      showModalDialog(HTMLFilePicker, {}, (html) => {
+        resolve(html);
+      });
+    });
+  }
+}
+
 function getInitialState(): Object {
-  const docsContext = DEFAULT_CONTEXT.merge({canEdit: true});
+  const runtime = new DemoAppRuntime();
+  const docsContext = DEFAULT_CONTEXT.merge({canEdit: true, runtime});
   let editorState;
   let debugValue = '';
   try {

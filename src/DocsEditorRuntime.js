@@ -11,10 +11,10 @@ class DocsEditorRuntime {
   canUploadImage(): boolean {
     return false;
   }
-  canProxyImageSrc(src: string): boolean {
+  canLoadHTML(): boolean {
     return false;
   }
-  canUploadHTML(): boolean {
+  canProxyImageSrc(src: string): boolean {
     return false;
   }
   getProxyImageSrc(src: string): string {
@@ -23,7 +23,7 @@ class DocsEditorRuntime {
   uploadImage (obj: Blob): Promise<ImageLike> {
     return Promise.reject('Unsupported');
   }
-  uploadHTML (html: string): Promise<string> {
+  loadHTML(): Promise<?string> {
     return Promise.reject('Unsupported');
   }
 };
