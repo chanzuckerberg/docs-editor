@@ -104,7 +104,14 @@ var DocsTableCell = function (_React$PureComponent) {
       }
       // Effectively and optimistically commit change locally then sync later.
       _this._localChangeID = (0, _uniqueID2.default)();
-      _this.setState({ localEditorState: localEditorState }, _this._notifyChange);
+      var currContentState = _this.state.localEditorState.getCurrentContent();
+      var nextContentState = localEditorState.getCurrentContent();
+      _this.setState({ localEditorState: localEditorState }, function () {
+        if (currContentState !== nextContentState) {
+          // Do not notify changes unless the content did change.
+          _this._notifyChange();
+        }
+      });
     }, _this._notifyChange = function () {
       if (!_this.context.docsContext.canEdit) {
         return;

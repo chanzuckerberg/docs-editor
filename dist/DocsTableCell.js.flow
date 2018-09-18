@@ -154,7 +154,14 @@ class DocsTableCell extends React.PureComponent {
     }
     // Effectively and optimistically commit change locally then sync later.
     this._localChangeID = uniqueID();
-    this.setState({localEditorState}, this._notifyChange);
+    const currContentState = this.state.localEditorState.getCurrentContent();
+    const nextContentState = localEditorState.getCurrentContent();
+    this.setState({localEditorState}, () => {
+      if (currContentState !== nextContentState) {
+        // Do not notify changes unless the content did change.
+        this._notifyChange();
+      }
+    });
   };
 
   _notifyChange = () => {

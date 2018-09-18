@@ -74,7 +74,7 @@ var HTMLDocumentBehavior = function (_AbstractBehavior) {
 
     var _this = (0, _possibleConstructorReturn3.default)(this, (HTMLDocumentBehavior.__proto__ || (0, _getPrototypeOf2.default)(HTMLDocumentBehavior)).call(this, {
       action: _DocsActionTypes2.default.HTML_INSERT,
-      icon: 'fastfood',
+      icon: 'assignment',
       label: 'Insert HTML'
     }));
 
@@ -115,7 +115,6 @@ var HTMLDocumentBehavior = function (_AbstractBehavior) {
           }, _callee, this);
         }))();
       }
-      // onChange(insertCalculator(editorState));
       return null;
     };
 
