@@ -112,12 +112,16 @@ function loadResources(id) {
     }));
   }
 
-  resources.push(createElement('script', {
-    id: id + '-calculator-js',
-    src: 'https://cdn.summitlearning.org/assets/javascripts/calculator1.0.js',
-    async: 'true',
-    defer: 'defer'
-  }));
+  if (/localhost/.test(window.location.href)) {
+    // TODO:
+    // This is not production ready, must have an reliable way to detect this.
+    resources.push(createElement('script', {
+      id: id + '-calculator-js',
+      src: 'https://cdn.summitlearning.org/assets/javascripts/calculator1.0.js',
+      async: 'true',
+      defer: 'defer'
+    }));
+  }
 
   return _promise2.default.all(resources.map(loadResource));
 }
