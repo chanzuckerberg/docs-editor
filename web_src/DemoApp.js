@@ -2,9 +2,9 @@
 
 import React from 'react';
 
+import DemoAppRuntime from './DemoAppRuntime';
 import {ButtonGroup, Button} from 'react-bootstrap';
 import {DocsEditor, DocsContext, EditorState, convertToRaw, convertFromRaw, convertFromHTML, uniqueID, DocsEditorRuntime} from '../src/index.js';
-import showModalDialog from '../src/showModalDialog';
 
 // Because React-Bootstrap doesn't depend on a very precise version of
 // Bootstrap, we don't ship with any included css. However, some stylesheet is
@@ -16,13 +16,13 @@ import showModalDialog from '../src/showModalDialog';
 // import '../node_modules/bootstrap-css/lib/alerts.css';
 // import '../node_modules/bootstrap-css/lib/badges.css';
 // import '../node_modules/bootstrap-css/lib/breadcrumbs.css';
-import '../node_modules/bootstrap-css/lib/button-groups.css';
-import '../node_modules/bootstrap-css/lib/buttons.css';
+// import '../node_modules/bootstrap-css/lib/button-groups.css';
+// import '../node_modules/bootstrap-css/lib/buttons.css';
 // import '../node_modules/bootstrap-css/lib/carousel.css';
 // import '../node_modules/bootstrap-css/lib/close.css';
 // import '../node_modules/bootstrap-css/lib/code.css';
 // import '../node_modules/bootstrap-css/lib/component-animations.css';
-import '../node_modules/bootstrap-css/lib/dropdowns.css';
+// import '../node_modules/bootstrap-css/lib/dropdowns.css';
 // import '../node_modules/bootstrap-css/lib/forms.css';
 // import '../node_modules/bootstrap-css/lib/grid.css';
 // import '../node_modules/bootstrap-css/lib/input-groups.css';
@@ -33,11 +33,11 @@ import '../node_modules/bootstrap-css/lib/dropdowns.css';
 // import '../node_modules/bootstrap-css/lib/modals.css';
 // import '../node_modules/bootstrap-css/lib/navbar.css';
 // import '../node_modules/bootstrap-css/lib/navs.css';
-import '../node_modules/bootstrap-css/lib/normalize.css';
+// import '../node_modules/bootstrap-css/lib/normalize.css';
 // import '../node_modules/bootstrap-css/lib/pager.css';
 // import '../node_modules/bootstrap-css/lib/pagination.css';
 // import '../node_modules/bootstrap-css/lib/panels.css';
-import '../node_modules/bootstrap-css/lib/popovers.css';
+// import '../node_modules/bootstrap-css/lib/popovers.css';
 // import '../node_modules/bootstrap-css/lib/print.css';
 // import '../node_modules/bootstrap-css/lib/progress-bars.css';
 // import '../node_modules/bootstrap-css/lib/responsive-embed.css';
@@ -62,48 +62,8 @@ const DEFAULT_CONTEXT = new DocsContext({});
 const DEFAULT_EDITOR_STATE = convertFromRaw({});
 const LOCAL_STORAGE_KEY = 'education-doc-editor-examples';
 
-class HTMLFilePicker extends React.PureComponent {
-  _id = uniqueID();
-  render() {
-    return (
-      <form onSubmit={this._onSubmit}>
-        <input type="file" id={this._id} />
-        <input type="submit" />
-      </form>
-    )
-  }
+function noop(): void {
 
-  _onSubmit = (e: SyntheticEvent) => {
-    e.preventDefault();
-    const el: any = document.getElementById(this._id);
-    if (!el || !el.files) {
-      return;
-    }
-    const file = el.files[0];
-    if (!file || !(/\.html$/).test(file.name)) {
-      return;
-    }
-    const reader: any = new FileReader();
-    reader.onload = (onload) => {
-      const html = onload.target.result;
-      reader.onload = null;
-      this.props.onConfirm(html);
-    };
-    reader.readAsText(file);
-  };
-}
-
-class DemoAppRuntime extends DocsEditorRuntime {
-  canLoadHTML() {
-    return true;
-  }
-  loadHTML() {
-    return new Promise(resolve => {
-      showModalDialog(HTMLFilePicker, {}, (html) => {
-        resolve(html);
-      });
-    });
-  }
 }
 
 function getInitialState(): Object {
@@ -130,10 +90,6 @@ function getInitialState(): Object {
     debugValue,
     debugMode: /debug_mode=1/.test(document.cookie),
   };
-}
-
-function noop(): void {
-
 }
 
 class DemoApp extends React.PureComponent<any, any, any> {

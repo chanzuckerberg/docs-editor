@@ -19,7 +19,7 @@ class HTMLDocumentBehavior extends AbstractBehavior {
   constructor() {
     super({
       action: DocsActionTypes.HTML_INSERT,
-      icon: 'fastfood',
+      icon: 'assignment',
       label: 'Insert HTML',
     });
   }
@@ -49,7 +49,6 @@ class HTMLDocumentBehavior extends AbstractBehavior {
         );
       })();
     }
-    // onChange(insertCalculator(editorState));
     return null;
   };
 }
