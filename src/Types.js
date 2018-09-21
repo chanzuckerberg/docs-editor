@@ -131,3 +131,7 @@ export type DocsMathEntityData = {
   text?: ?string,
   xml?: ?string,
 };
+
+export type DocsCommentEntityData = {
+  clientID: string,
+};

@@ -14,8 +14,14 @@ class DocsEditorRuntime {
   canLoadHTML(): boolean {
     return false;
   }
+  canComment(): boolean {
+    return false;
+  }
   canProxyImageSrc(src: string): boolean {
     return false;
+  }
+  createCommentID(): string {
+    return '';
   }
   getProxyImageSrc(src: string): string {
     return src;

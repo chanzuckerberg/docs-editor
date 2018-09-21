@@ -3,9 +3,13 @@
 import DemoHTMLFilePicker from './DemoHTMLFilePicker';
 import showModalDialog from '../src/showModalDialog';
 import {DocsEditorRuntime} from '../src/index.js';
+import uniqueID from '../src/uniqueID';
 
 class DemoAppRuntime extends DocsEditorRuntime {
   canLoadHTML() {
+    return true;
+  }
+  canComment() {
     return true;
   }
   loadHTML() {
@@ -14,6 +18,9 @@ class DemoAppRuntime extends DocsEditorRuntime {
         resolve(html);
       });
     });
+  }
+  createCommentID() {
+    return `demo-app-comment-${uniqueID()}`;
   }
 }
 

@@ -1,6 +1,7 @@
 // @flow
 
 import CalculatorBehavior from './CalculatorBehavior';
+import CommentsBehavior from './CommentsBehavior';
 import DocsActionTypes from './DocsActionTypes';
 import DocsContext from './DocsContext';
 import DocsImageEditor from './DocsImageEditor';
@@ -39,6 +40,8 @@ export type DocsBehavior = {
 export const CALCULATOR: DocsBehavior = new CalculatorBehavior();
 
 export const HTML_DOCUMENT: DocsBehavior = new HTMLDocumentBehavior();
+
+export const COMMENT: DocsBehavior = new CommentsBehavior();
 
 export const IMAGE: DocsBehavior = {
   action: DocsActionTypes.IMAGE_INSERT,

@@ -41,12 +41,9 @@ const WEB_SAFE_COLORS = createWebSafeColors();
 
 // Background Color defaults to be brighter.
 const BACKGROUND_COLOR_KEY = `${STYLE_KEY_PREFIX}_BACKGROUND_COLOR`;
-const BACKGROUND_COLOR_VALUES = [
-  Color('#4b4b96'),
-].concat(
-  WEB_SAFE_COLORS,
-  createPaletteColors(90, 90),
-);
+const BACKGROUND_COLOR_VALUES = [Color('#4b4b96')].
+  concat(WEB_SAFE_COLORS, createPaletteColors(90, 90)).
+  filter(color => color.hex() !== '#FFFFFF');
 
 const DEPTH_KEY = `${STYLE_KEY_PREFIX}_DEPTH`;
 const DEPTH_VALUES = numberRange(1, 10);
@@ -56,7 +53,9 @@ const FONT_SIZE_VALUES = numberRange(4, 86);
 
 // Text Color defaults to be darker.
 const COLOR_KEY = `${STYLE_KEY_PREFIX}_COLOR`;
-const COLOR_VALUES = WEB_SAFE_COLORS.concat(createPaletteColors(90, 20));
+const COLOR_VALUES = WEB_SAFE_COLORS.
+  concat(createPaletteColors(90, 20)).
+  filter(color => color.hex() !== '#000000');
 
 const LINE_HEIGHT_KEY = `${STYLE_KEY_PREFIX}_LINE_HEIGHT`;
 const LINE_HEIGHT_VALUES = numberRange(0.8, 3, 0.0);
@@ -104,6 +103,7 @@ const VERTICAL_ALIGN_VALUES = [
 
 const TRANSPARENT_COLORS = new Set([
   'default', 'transparent', 'rgba(0, 0, 0, 0)', 'inherit', 'none', 'initial',
+  'rgba(255, 255, 255)', '#ffffff',
 ]);
 
 function defineDepthStyle(
