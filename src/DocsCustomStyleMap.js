@@ -270,10 +270,17 @@ function forColor(
   if (TRANSPARENT_COLORS.has(colorStr)) {
     return null;
   }
+
+  const textColor = Color(colorStr);
+  if (textColor.hex() === '#000000') {
+    return null;
+  }
+
   const color = getNearestColor(
-    Color(colorStr),
+    textColor,
     COLOR_VALUES,
   );
+
   const suffix = color ? color.hex().substr(1) : '';
   const key = `${COLOR_KEY}_${suffix}`;
   return styleMap[key] ? key : null;
@@ -286,8 +293,12 @@ function forBackgroundColor(
   if (TRANSPARENT_COLORS.has(colorStr)) {
     return null;
   }
+  const bgColor = Color(colorStr);
+  if (bgColor.hex() === '#FFFFFF') {
+    return null;
+  }
   const color = getNearestColor(
-    Color(colorStr),
+    bgColor,
     BACKGROUND_COLOR_VALUES,
   );
   const suffix = color ? color.hex().substr(1) : ''

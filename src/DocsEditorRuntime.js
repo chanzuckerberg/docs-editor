@@ -1,5 +1,7 @@
 // @flow
 
+import React from 'react';
+
 import type {ImageLike} from './Types';
 
 // This defines abstract class with the APIs that depend on the specific app
@@ -31,6 +33,11 @@ class DocsEditorRuntime {
   }
   loadHTML(): Promise<?string> {
     return Promise.reject('Unsupported');
+  }
+  renderComment(
+    props: {commentId: string, isActive: boolean},
+  ): ?React.Element<any> {
+    return null;
   }
 };
 

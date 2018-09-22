@@ -27,7 +27,7 @@ function getEntity(editorState: EditorState): ?Entity {
 
 function addComment(
   editorState: EditorState,
-  commentID: string,
+  commentId: string,
 ): EditorState {
   const selection = editorState.getSelection();
   const contentState = editorState.getCurrentContent();
@@ -35,7 +35,7 @@ function addComment(
     DocsDecoratorTypes.DOCS_COMMENT,
     'MUTABLE',
     {
-      clientID: commentID,
+      commentId: commentId,
     },
   );
   const entityKey = contentStateWithEntity.getLastCreatedEntityKey();
@@ -96,11 +96,11 @@ class CommentsBehavior extends AbstractBehavior {
       return null;
     }
 
-    const commentID = docsContext.runtime &&
+    const commentId = docsContext.runtime &&
       docsContext.runtime.createCommentID &&
       docsContext.runtime.createCommentID();
 
-    commentID && onChange(addComment(editorState, commentID));
+    commentId && onChange(addComment(editorState, commentId));
   };
 }
 

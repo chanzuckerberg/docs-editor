@@ -2,9 +2,11 @@
 
 import DocsContext from './DocsContext';
 import DocsDecoratorTypes from './DocsDecoratorTypes';
+import DocsEventTypes from './DocsEventTypes';
 import React from 'react';
 import Timer from './Timer';
 import captureDocumentEvents from './captureDocumentEvents';
+import createDOMCustomEvent from './createDOMCustomEvent';
 import cx from 'classnames';
 import getCurrentSelectionEntity from './getCurrentSelectionEntity';
 import getDOMSelectionNode from './getDOMSelectionNode';
@@ -21,7 +23,9 @@ type Props = {
   entityData: DocsCommentEntityData,
 };
 
-const ATTRIBUTE_ACTIVE = 'data-docs-comment-active';
+export const ATTRIBUTE_COMMENT_ACTIVE = 'data-docs-comment-active';
+export const ATTRIBUTE_COMMENT_ID = 'data-docs-comment-id';
+export const CLASS_NAME = 'docs-comment';
 
 // This component for commented text.
 class DocsComment extends React.PureComponent {
@@ -46,16 +50,13 @@ class DocsComment extends React.PureComponent {
 
   render(): React.Element<any> {
     const {children, entityData} = this.props;
-    const {clientID} = entityData;
-
-    const className = cx({
-      'docs-comment': true,
-    });
-
+    const {commentId} = entityData;
+    const attrs = {[ATTRIBUTE_COMMENT_ID]: commentId};
     return (
       <span
-        className={className}
-        data-docs-comment-client-id={clientID}
+        {...attrs}
+        name={commentId}
+        className={CLASS_NAME}
         id={this._id}>
         {children}
       </span>
@@ -69,6 +70,7 @@ class DocsComment extends React.PureComponent {
     this._eventsCapture = captureDocumentEvents({
       'keyup': this._checkActiveState,
       'click': this._checkActiveState,
+      [DocsEventTypes.COMMENT_REQUEST_FOCUS]: this._onRequestFocus,
     });
   }
 
@@ -92,16 +94,55 @@ class DocsComment extends React.PureComponent {
     }
     const selectionNode = getDOMSelectionNode();
     const active = selectionNode === el || el.contains(selectionNode);
+    this._setActive(active);
+  };
+
+  _onRequestFocus = (e: any): void => {
+    if (
+      e.detail &&
+      e.detail.commentId === this.props.entityData.commentId
+    ) {
+      this._setActive(true);
+    }
+  };
+
+  _setActive(active: boolean): void {
     if (active === this._active) {
       return;
     }
+
+    const el = document.getElementById(this._id);
+    if (!el) {
+      return;
+    }
+
     this._active = active;
     if (active) {
-      el.setAttribute(ATTRIBUTE_ACTIVE, "true");
+      el.setAttribute(ATTRIBUTE_COMMENT_ACTIVE, "true");
     } else {
-      el.removeAttribute(ATTRIBUTE_ACTIVE);
+      el.removeAttribute(ATTRIBUTE_COMMENT_ACTIVE);
     }
-  };
+
+    // Notify the document that the comment is focused, so that we could
+    // update the related comment panels.
+    const {commentId} = this.props.entityData;
+
+    const detail = {
+      target: el,
+      commentId,
+    };
+
+    const event = createDOMCustomEvent(
+      active ?
+        DocsEventTypes.COMMENT_FOCUS_IN :
+        DocsEventTypes.COMMENT_FOCUS_OUT,
+      true,
+      true,
+      detail,
+    );
+
+    el.dispatchEvent(event);
+  }
 }
 
-module.exports = withDocsContext(DocsComment);
+export default withDocsContext(DocsComment);

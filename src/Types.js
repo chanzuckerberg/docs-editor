@@ -133,5 +133,5 @@ export type DocsMathEntityData = {
 };
 
 export type DocsCommentEntityData = {
-  clientID: string,
+  commentId: string,
 };

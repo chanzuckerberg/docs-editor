@@ -1,26 +1,37 @@
 // @flow
 
+import DemoComment from './DemoComment';
 import DemoHTMLFilePicker from './DemoHTMLFilePicker';
+import React from 'react';
 import showModalDialog from '../src/showModalDialog';
-import {DocsEditorRuntime} from '../src/index.js';
 import uniqueID from '../src/uniqueID';
+import {DocsEditorRuntime} from '../src/index.js';
 
 class DemoAppRuntime extends DocsEditorRuntime {
-  canLoadHTML() {
+  canLoadHTML(): boolean {
     return true;
   }
-  canComment() {
+
+  canComment(): boolean {
     return true;
   }
-  loadHTML() {
+
+  loadHTML(): Promise<?string> {
     return new Promise(resolve => {
       showModalDialog(DemoHTMLFilePicker, {}, (html) => {
         resolve(html);
       });
     });
   }
-  createCommentID() {
+
+  createCommentID(): string {
     return `demo-app-comment-${uniqueID()}`;
+  }
+
+  renderComment(
+    props: {commentId: string, isActive: boolean},
+  ): ?React.Element<any> {
+    return <DemoComment {...props} />;
   }
 }
 

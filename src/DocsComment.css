@@ -1,8 +1,8 @@
 .docs-comment {
-  background: orange;
+  background-color: #FFEC9E;
   border-radius: 5px;
 }
 
 [data-docs-comment-active].docs-comment {
-  background: red;
+  background-color: #FED64C;
 }
