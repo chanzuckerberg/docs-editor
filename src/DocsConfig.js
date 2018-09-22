@@ -4,6 +4,7 @@ import DocsAnnotation from './DocsAnnotation';
 import DocsBlockTypeToComponent from './DocsBlockTypeToComponent';
 import DocsBlockTypes from './DocsBlockTypes';
 import DocsCalculator from './DocsCalculator';
+import DocsComment from './DocsComment';
 import DocsDecorator from './DocsDecorator';
 import DocsDecoratorTypes from './DocsDecoratorTypes';
 import DocsExpandable from './DocsExpandable';
@@ -36,6 +37,7 @@ function init(): void {
   // Register Decorator
   registerDecorator([
     [DocsDecoratorTypes.DOCS_ANNOTATION, DocsAnnotation],
+    [DocsDecoratorTypes.DOCS_COMMENT, DocsComment],
     [DocsDecoratorTypes.DOCS_IMAGE, DocsImage],
     [DocsDecoratorTypes.DOCS_MATH, DocsMath],
     [DocsDecoratorTypes.LINK, DocsLink],

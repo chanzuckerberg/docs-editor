@@ -113,6 +113,7 @@ class DocsDecoratorEntityDataContainer extends React.PureComponent {
       entityKey,
       entityData,
     };
+
     // Workaround to let editor to catch this change.
     // See `DocsEditorFocusManager`.
     const event = createDOMCustomEvent(
@@ -121,6 +122,7 @@ class DocsDecoratorEntityDataContainer extends React.PureComponent {
       true,
       detail,
     );
+
     editor.dispatchEvent(event);
   };
 

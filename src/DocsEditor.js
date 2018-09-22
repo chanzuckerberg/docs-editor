@@ -1,6 +1,7 @@
 // @flow
 
 import DocsBaseEditor from './DocsBaseEditor';
+import DocsCommentsSidePanel from './DocsCommentsSidePanel';
 import DocsConfig from './DocsConfig';
 import DocsContext from './DocsContext';
 import DocsCustomStyleMap from './DocsCustomStyleMap';
@@ -151,6 +152,18 @@ class DocsEditor extends React.PureComponent {
       'docs-editor-disabled': disabled,
     });
 
+    const canComment =
+      docsContext.runtime &&
+      docsContext.runtime.canComment &&
+      docsContext.runtime.canComment();
+
+    const commentSidePanel = canComment ?
+      <DocsCommentsSidePanel
+        editorId={editorId}
+        editorState={editorState}
+      /> :
+      null;
+
     return (
       <div
         {...attrs}
@@ -183,6 +196,7 @@ class DocsEditor extends React.PureComponent {
                 placeholder={placeholderText}
                 ref={this._onEditorRef}
               />
+              {commentSidePanel}
             </div>
           </div>
           <div className="docs-editor-frame-footer">

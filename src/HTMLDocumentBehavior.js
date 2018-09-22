@@ -14,7 +14,6 @@ import {pasteHTML} from './DocsModifiers';
 import type {ModalHandle} from './showModalDialog';
 import type {OnChange} from './AbstractBehavior';
 
-
 class HTMLDocumentBehavior extends AbstractBehavior {
   constructor() {
     super({

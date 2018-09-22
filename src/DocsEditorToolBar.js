@@ -7,7 +7,33 @@ import captureDocumentEvents from './captureDocumentEvents';
 import withDocsContext from './withDocsContext';
 import {ButtonGroup} from 'react-bootstrap';
 import {EditorState} from 'draft-js';
-import {HTML_DOCUMENT, CALCULATOR, UNORDERED_LIST, ORDERED_LIST, BLOCK_QUOTE, H1, H2, H3, H4, LINK, BOLD, ITALIC, UNDERLINE, STRIKE, CODE, HIGHLIGHT, IMAGE, TABLE, MATH, EXPANDABLE, UNDO, REDO, INDENT_MORE, INDENT_LESS} from './DocsBehaviors';
+import {
+  BLOCK_QUOTE,
+  BOLD,
+  CALCULATOR,
+  CODE,
+  COMMENT,
+  EXPANDABLE,
+  H1,
+  H2,
+  H3,
+  H4,
+  HIGHLIGHT,
+  HTML_DOCUMENT,
+  IMAGE,
+  INDENT_LESS,
+  INDENT_MORE,
+  ITALIC,
+  LINK,
+  MATH,
+  ORDERED_LIST,
+  REDO,
+  STRIKE,
+  TABLE,
+  UNDERLINE,
+  UNDO,
+  UNORDERED_LIST,
+} from './DocsBehaviors';
 
 import type {DocsEditorLike} from './Types';
 import type {DocsBehavior} from './DocsBehaviors';
@@ -85,6 +111,7 @@ class DocsEditorToolBar extends React.PureComponent {
                 UNDERLINE,
                 STRIKE,
                 CODE,
+                COMMENT,
               ].map(this._renderButton)
             }
           </ButtonGroup>

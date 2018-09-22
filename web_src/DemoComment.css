@@ -1,0 +1,13 @@
+.demo-comment {
+  background: #f0f0f0;
+  border: solid 1px #ccc;
+  box-sizing: border-box;
+  margin: 0 0 20px 0;
+  padding: 20px;
+  width: 200px;
+}
+
+.demo-comment.active {
+  background: #ffffff;
+  border-color: #000;
+}
