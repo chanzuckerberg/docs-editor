@@ -3,6 +3,7 @@
 import DocsDataAttributes from './DocsDataAttributes';
 import DocsDecoratorTypes from './DocsDecoratorTypes';
 import asElement from './asElement';
+import clearInlineFontStyles from './clearInlineFontStyles';
 import convertImageElementToPlaceholderElement from './convertImageElementToPlaceholderElement';
 import getCSSRules from './getCSSRules';
 import getSafeDocumentElementFromHTML from './getSafeDocumentElementFromHTML';
@@ -77,6 +78,10 @@ function getSafeHTML(
     // Monkey patch potentially nested lists.
     const listNodes = body.querySelectorAll('ul, ol');
     Array.from(listNodes).forEach(monkeyPatchListElementDepth);
+
+    // Clear all font size inside headers.
+    const headings = body.querySelectorAll('h1, h2, h3, h5, h6');
+      Array.from(headings).forEach(clearInlineFontStyles);
 
     safeHTML = body.innerHTML;
   }

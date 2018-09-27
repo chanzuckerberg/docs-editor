@@ -10,9 +10,9 @@ import {EditorState} from 'draft-js';
 import {
   BLOCK_QUOTE,
   BOLD,
-  CALCULATOR,
+  // CALCULATOR,
   CODE,
-  COMMENT,
+  // COMMENT,
   EXPANDABLE,
   H1,
   H2,
@@ -111,7 +111,7 @@ class DocsEditorToolBar extends React.PureComponent {
                 UNDERLINE,
                 STRIKE,
                 CODE,
-                COMMENT,
+                // COMMENT,
               ].map(this._renderButton)
             }
           </ButtonGroup>
@@ -121,7 +121,7 @@ class DocsEditorToolBar extends React.PureComponent {
               IMAGE,
               TABLE,
               MATH,
-              CALCULATOR,
+              // CALCULATOR,
               runtime && runtime.canLoadHTML && runtime.canLoadHTML() ?
                 HTML_DOCUMENT :
                 null,
