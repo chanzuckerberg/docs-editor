@@ -8,6 +8,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 module.exports = (0, _keyMirror2.default)({
   DOCS_ANNOTATION: null,
+  DOCS_COMMENT: null,
   DOCS_IMAGE: null,
   DOCS_MATH: null,
   LINK: null

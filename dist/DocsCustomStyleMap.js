@@ -70,7 +70,9 @@ var WEB_SAFE_COLORS = (0, _createWebSafeColors2.default)();
 
 // Background Color defaults to be brighter.
 var BACKGROUND_COLOR_KEY = STYLE_KEY_PREFIX + '_BACKGROUND_COLOR';
-var BACKGROUND_COLOR_VALUES = [(0, _color2.default)('#4b4b96')].concat(WEB_SAFE_COLORS, (0, _createPaletteColors2.default)(90, 90));
+var BACKGROUND_COLOR_VALUES = [(0, _color2.default)('#4b4b96')].concat(WEB_SAFE_COLORS, (0, _createPaletteColors2.default)(90, 90)).filter(function (color) {
+  return color.hex() !== '#FFFFFF';
+});
 
 var DEPTH_KEY = STYLE_KEY_PREFIX + '_DEPTH';
 var DEPTH_VALUES = (0, _numberRange2.default)(1, 10);
@@ -80,7 +82,9 @@ var FONT_SIZE_VALUES = (0, _numberRange2.default)(4, 86);
 
 // Text Color defaults to be darker.
 var COLOR_KEY = STYLE_KEY_PREFIX + '_COLOR';
-var COLOR_VALUES = WEB_SAFE_COLORS.concat((0, _createPaletteColors2.default)(90, 20));
+var COLOR_VALUES = WEB_SAFE_COLORS.concat((0, _createPaletteColors2.default)(90, 20)).filter(function (color) {
+  return color.hex() !== '#000000';
+});
 
 var LINE_HEIGHT_KEY = STYLE_KEY_PREFIX + '_LINE_HEIGHT';
 var LINE_HEIGHT_VALUES = (0, _numberRange2.default)(0.8, 3, 0.0);
@@ -97,7 +101,7 @@ var TEXT_ALIGN_VALUES = ['left', 'center', 'right'];
 var VERTICAL_ALIGN_KEY = STYLE_KEY_PREFIX + '_VERTICAL_ALIGN';
 var VERTICAL_ALIGN_VALUES = ['baseline', 'sub', 'super', 'text-bottom', 'text-top'];
 
-var TRANSPARENT_COLORS = new _set2.default(['default', 'transparent', 'rgba(0, 0, 0, 0)', 'inherit', 'none', 'initial']);
+var TRANSPARENT_COLORS = new _set2.default(['default', 'transparent', 'rgba(0, 0, 0, 0)', 'inherit', 'none', 'initial', 'rgba(255, 255, 255)', '#ffffff']);
 
 function defineDepthStyle(styleMap, depth) {
   var suffix = String(depth);
@@ -224,7 +228,14 @@ function forColor(styleMap, colorStr) {
   if (TRANSPARENT_COLORS.has(colorStr)) {
     return null;
   }
-  var color = (0, _getNearestColor2.default)((0, _color2.default)(colorStr), COLOR_VALUES);
+
+  var textColor = (0, _color2.default)(colorStr);
+  if (textColor.hex() === '#000000') {
+    return null;
+  }
+
+  var color = (0, _getNearestColor2.default)(textColor, COLOR_VALUES);
+
   var suffix = color ? color.hex().substr(1) : '';
   var key = COLOR_KEY + '_' + suffix;
   return styleMap[key] ? key : null;
@@ -234,7 +245,11 @@ function forBackgroundColor(styleMap, colorStr) {
   if (TRANSPARENT_COLORS.has(colorStr)) {
     return null;
   }
-  var color = (0, _getNearestColor2.default)((0, _color2.default)(colorStr), BACKGROUND_COLOR_VALUES);
+  var bgColor = (0, _color2.default)(colorStr);
+  if (bgColor.hex() === '#FFFFFF') {
+    return null;
+  }
+  var color = (0, _getNearestColor2.default)(bgColor, BACKGROUND_COLOR_VALUES);
   var suffix = color ? color.hex().substr(1) : '';
   var key = BACKGROUND_COLOR_KEY + '_' + suffix;
   return styleMap[key] ? key : null;

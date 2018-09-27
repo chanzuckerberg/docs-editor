@@ -3,7 +3,6 @@
 import DocsAnnotation from './DocsAnnotation';
 import DocsBlockTypeToComponent from './DocsBlockTypeToComponent';
 import DocsBlockTypes from './DocsBlockTypes';
-import DocsCalculator from './DocsCalculator';
 import DocsComment from './DocsComment';
 import DocsDecorator from './DocsDecorator';
 import DocsDecoratorTypes from './DocsDecoratorTypes';
@@ -12,6 +11,8 @@ import DocsImage from './DocsImage';
 import DocsLink from './DocsLink';
 import DocsMath from './DocsMath';
 import DocsTable from './DocsTable';
+// import DocsCalculator from './DocsCalculator';
+
 
 function registerCustomBlocks(specs: Array<Array<any>>): void {
   specs.forEach(spec => {
@@ -29,7 +30,7 @@ function registerDecorator(specs: Array<Array<any>>): void {
 
 function init(): void {
   registerCustomBlocks([
-    [DocsBlockTypes.DOCS_CALCULATOR, DocsCalculator],
+    // [DocsBlockTypes.DOCS_CALCULATOR, DocsCalculator],
     [DocsBlockTypes.DOCS_EXPANDABLE, DocsExpandable],
     [DocsBlockTypes.DOCS_TABLE, DocsTable],
   ]);

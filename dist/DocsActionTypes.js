@@ -9,6 +9,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 module.exports = (0, _keyMirror2.default)({
   CALCULATOR_INSERT: null,
   CALCULATOR_SET_TYPE: null,
+  COMMENT_ADD: null,
   EXPANDABLE_INSERT: null,
   HISTORY_REDO: null,
   HISTORY_UNDO: null,

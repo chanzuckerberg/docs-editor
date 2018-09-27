@@ -32,6 +32,10 @@ var _DocsBaseEditor = require('./DocsBaseEditor');
 
 var _DocsBaseEditor2 = _interopRequireDefault(_DocsBaseEditor);
 
+var _DocsCommentsSidePanel = require('./DocsCommentsSidePanel');
+
+var _DocsCommentsSidePanel2 = _interopRequireDefault(_DocsCommentsSidePanel);
+
 var _DocsConfig = require('./DocsConfig');
 
 var _DocsConfig2 = _interopRequireDefault(_DocsConfig);
@@ -284,6 +288,13 @@ var DocsEditor = function (_React$PureComponent) {
         'docs-editor-disabled': disabled
       });
 
+      var canComment = docsContext.runtime && docsContext.runtime.canComment && docsContext.runtime.canComment();
+
+      var commentSidePanel = canComment ? _react2.default.createElement(_DocsCommentsSidePanel2.default, {
+        editorId: editorId,
+        editorState: editorState
+      }) : null;
+
       return _react2.default.createElement(
         'div',
         (0, _extends3.default)({}, attrs, {
@@ -318,7 +329,8 @@ var DocsEditor = function (_React$PureComponent) {
                 onChange: this._onChange,
                 placeholder: placeholderText,
                 ref: this._onEditorRef
-              })
+              }),
+              commentSidePanel
             )
           ),
           _react2.default.createElement(

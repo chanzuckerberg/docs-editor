@@ -16,6 +16,10 @@ var _createClass2 = require('babel-runtime/helpers/createClass');
 
 var _createClass3 = _interopRequireDefault(_createClass2);
 
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // This defines abstract class with the APIs that depend on the specific app
@@ -41,9 +45,19 @@ var DocsEditorRuntime = function () {
       return false;
     }
   }, {
+    key: 'canComment',
+    value: function canComment() {
+      return false;
+    }
+  }, {
     key: 'canProxyImageSrc',
     value: function canProxyImageSrc(src) {
       return false;
+    }
+  }, {
+    key: 'createCommentID',
+    value: function createCommentID() {
+      return '';
     }
   }, {
     key: 'getProxyImageSrc',
@@ -59,6 +73,11 @@ var DocsEditorRuntime = function () {
     key: 'loadHTML',
     value: function loadHTML() {
       return _promise2.default.reject('Unsupported');
+    }
+  }, {
+    key: 'renderComment',
+    value: function renderComment(props) {
+      return null;
     }
   }]);
   return DocsEditorRuntime;

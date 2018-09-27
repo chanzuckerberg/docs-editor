@@ -119,9 +119,11 @@ var DocsDecoratorEntityDataContainer = function (_React$PureComponent) {
         entityKey: entityKey,
         entityData: entityData
       };
+
       // Workaround to let editor to catch this change.
       // See `DocsEditorFocusManager`.
       var event = (0, _createDOMCustomEvent2.default)(_DocsEventTypes2.default.EDITOR_REQUEST_UPDATE_ENTITY_DATA, true, true, detail);
+
       editor.dispatchEvent(event);
     };
 

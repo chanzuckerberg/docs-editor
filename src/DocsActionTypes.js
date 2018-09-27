@@ -3,8 +3,8 @@
 import keyMirror from 'fbjs/lib/keyMirror';
 
 module.exports = keyMirror({
-  CALCULATOR_INSERT: null,
-  CALCULATOR_SET_TYPE: null,
+  // CALCULATOR_INSERT: null,
+  // CALCULATOR_SET_TYPE: null,
   COMMENT_ADD: null,
   EXPANDABLE_INSERT: null,
   HISTORY_REDO: null,

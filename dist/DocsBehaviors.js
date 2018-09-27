@@ -3,11 +3,15 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.REDO = exports.UNDO = exports.H5 = exports.H4 = exports.H3 = exports.H2 = exports.H1 = exports.BLOCK_QUOTE = exports.INDENT_LESS = exports.INDENT_MORE = exports.ORDERED_LIST = exports.UNORDERED_LIST = exports.HIGHLIGHT = exports.CODE = exports.STRIKE = exports.UNDERLINE = exports.ITALIC = exports.BOLD = exports.LINK = exports.EXPANDABLE = exports.MATH = exports.TABLE = exports.IMAGE = exports.HTML_DOCUMENT = exports.CALCULATOR = undefined;
+exports.REDO = exports.UNDO = exports.H5 = exports.H4 = exports.H3 = exports.H2 = exports.H1 = exports.BLOCK_QUOTE = exports.INDENT_LESS = exports.INDENT_MORE = exports.ORDERED_LIST = exports.UNORDERED_LIST = exports.HIGHLIGHT = exports.CODE = exports.STRIKE = exports.UNDERLINE = exports.ITALIC = exports.BOLD = exports.LINK = exports.EXPANDABLE = exports.MATH = exports.TABLE = exports.IMAGE = exports.COMMENT = exports.HTML_DOCUMENT = exports.CALCULATOR = undefined;
 
 var _CalculatorBehavior = require('./CalculatorBehavior');
 
 var _CalculatorBehavior2 = _interopRequireDefault(_CalculatorBehavior);
+
+var _CommentsBehavior = require('./CommentsBehavior');
+
+var _CommentsBehavior2 = _interopRequireDefault(_CommentsBehavior);
 
 var _DocsActionTypes = require('./DocsActionTypes');
 
@@ -87,6 +91,8 @@ if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginF
 var CALCULATOR = exports.CALCULATOR = new _CalculatorBehavior2.default();
 
 var HTML_DOCUMENT = exports.HTML_DOCUMENT = new _HTMLDocumentBehavior2.default();
+
+var COMMENT = exports.COMMENT = new _CommentsBehavior2.default();
 
 var IMAGE = exports.IMAGE = {
   action: _DocsActionTypes2.default.IMAGE_INSERT,

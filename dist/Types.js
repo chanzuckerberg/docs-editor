@@ -152,3 +152,8 @@ if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginF
     xml: require('prop-types').string
   })
 });
+if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginFlowReactPropTypes_proptype_DocsCommentEntityData', {
+  value: require('prop-types').shape({
+    commentId: require('prop-types').string.isRequired
+  })
+});
