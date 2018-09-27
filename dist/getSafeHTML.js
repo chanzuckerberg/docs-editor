@@ -24,6 +24,10 @@ var _asElement = require('./asElement');
 
 var _asElement2 = _interopRequireDefault(_asElement);
 
+var _clearInlineFontStyles = require('./clearInlineFontStyles');
+
+var _clearInlineFontStyles2 = _interopRequireDefault(_clearInlineFontStyles);
+
 var _convertImageElementToPlaceholderElement = require('./convertImageElementToPlaceholderElement');
 
 var _convertImageElementToPlaceholderElement2 = _interopRequireDefault(_convertImageElementToPlaceholderElement);
@@ -106,6 +110,10 @@ function getSafeHTML(html, domDocument, defaultCSSRules) {
     // Monkey patch potentially nested lists.
     var listNodes = body.querySelectorAll('ul, ol');
     (0, _from2.default)(listNodes).forEach(monkeyPatchListElementDepth);
+
+    // Clear all font size inside headers.
+    var headings = body.querySelectorAll('h1, h2, h3, h5, h6');
+    (0, _from2.default)(headings).forEach(_clearInlineFontStyles2.default);
 
     safeHTML = body.innerHTML;
   }

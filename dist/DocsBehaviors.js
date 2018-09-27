@@ -125,7 +125,7 @@ var MATH = exports.MATH = {
 
 var EXPANDABLE = exports.EXPANDABLE = {
   action: _DocsActionTypes2.default.EXPANDABLE_INSERT,
-  icon: 'expand_more',
+  icon: 'arrow_drop_down_circle',
   label: 'Expandable',
   isActive: _returnFalse2.default,
   isEnabled: _hasNoSelection2.default,

@@ -16,14 +16,6 @@ var _DocsBlockTypes = require('./DocsBlockTypes');
 
 var _DocsBlockTypes2 = _interopRequireDefault(_DocsBlockTypes);
 
-var _DocsCalculator = require('./DocsCalculator');
-
-var _DocsCalculator2 = _interopRequireDefault(_DocsCalculator);
-
-var _DocsComment = require('./DocsComment');
-
-var _DocsComment2 = _interopRequireDefault(_DocsComment);
-
 var _DocsDecorator = require('./DocsDecorator');
 
 var _DocsDecorator2 = _interopRequireDefault(_DocsDecorator);
@@ -54,6 +46,9 @@ var _DocsTable2 = _interopRequireDefault(_DocsTable);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// import DocsCalculator from './DocsCalculator';
+// import DocsComment from './DocsComment';
+
 function registerCustomBlocks(specs) {
   specs.forEach(function (spec) {
     var _spec = (0, _slicedToArray3.default)(spec, 2),
@@ -75,10 +70,14 @@ function registerDecorator(specs) {
 }
 
 function init() {
-  registerCustomBlocks([[_DocsBlockTypes2.default.DOCS_CALCULATOR, _DocsCalculator2.default], [_DocsBlockTypes2.default.DOCS_EXPANDABLE, _DocsExpandable2.default], [_DocsBlockTypes2.default.DOCS_TABLE, _DocsTable2.default]]);
+  registerCustomBlocks([
+  // [DocsBlockTypes.DOCS_CALCULATOR, DocsCalculator],
+  [_DocsBlockTypes2.default.DOCS_EXPANDABLE, _DocsExpandable2.default], [_DocsBlockTypes2.default.DOCS_TABLE, _DocsTable2.default]]);
 
   // Register Decorator
-  registerDecorator([[_DocsDecoratorTypes2.default.DOCS_ANNOTATION, _DocsAnnotation2.default], [_DocsDecoratorTypes2.default.DOCS_COMMENT, _DocsComment2.default], [_DocsDecoratorTypes2.default.DOCS_IMAGE, _DocsImage2.default], [_DocsDecoratorTypes2.default.DOCS_MATH, _DocsMath2.default], [_DocsDecoratorTypes2.default.LINK, _DocsLink2.default]]);
+  registerDecorator([[_DocsDecoratorTypes2.default.DOCS_ANNOTATION, _DocsAnnotation2.default],
+  // [DocsDecoratorTypes.DOCS_COMMENT, DocsComment],
+  [_DocsDecoratorTypes2.default.DOCS_IMAGE, _DocsImage2.default], [_DocsDecoratorTypes2.default.DOCS_MATH, _DocsMath2.default], [_DocsDecoratorTypes2.default.LINK, _DocsLink2.default]]);
 }
 
 module.exports = {

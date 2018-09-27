@@ -72,7 +72,7 @@ export const MATH: DocsBehavior = {
 
 export const EXPANDABLE: DocsBehavior = {
   action: DocsActionTypes.EXPANDABLE_INSERT,
-  icon: 'expand_more',
+  icon: 'arrow_drop_down_circle',
   label: 'Expandable',
   isActive: returnFalse,
   isEnabled: hasNoSelection,

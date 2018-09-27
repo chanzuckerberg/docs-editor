@@ -183,12 +183,14 @@ var DocsEditorToolBar = function (_React$PureComponent) {
           _react2.default.createElement(
             _reactBootstrap.ButtonGroup,
             { className: 'docs-buttons-group', key: 'inline' },
-            [_DocsBehaviors.LINK, _DocsBehaviors.BOLD, _DocsBehaviors.ITALIC, _DocsBehaviors.UNDERLINE, _DocsBehaviors.STRIKE, _DocsBehaviors.CODE, _DocsBehaviors.COMMENT].map(this._renderButton)
+            [_DocsBehaviors.LINK, _DocsBehaviors.BOLD, _DocsBehaviors.ITALIC, _DocsBehaviors.UNDERLINE, _DocsBehaviors.STRIKE, _DocsBehaviors.CODE].map(this._renderButton)
           ),
           _react2.default.createElement(
             _reactBootstrap.ButtonGroup,
             { className: 'docs-buttons-group', key: 'insert' },
-            [_DocsBehaviors.IMAGE, _DocsBehaviors.TABLE, _DocsBehaviors.MATH, _DocsBehaviors.CALCULATOR, runtime && runtime.canLoadHTML && runtime.canLoadHTML() ? _DocsBehaviors.HTML_DOCUMENT : null, _DocsBehaviors.EXPANDABLE].map(this._renderButton)
+            [_DocsBehaviors.IMAGE, _DocsBehaviors.TABLE, _DocsBehaviors.MATH,
+            // CALCULATOR,
+            runtime && runtime.canLoadHTML && runtime.canLoadHTML() ? _DocsBehaviors.HTML_DOCUMENT : null, _DocsBehaviors.EXPANDABLE].map(this._renderButton)
           ),
           _react2.default.createElement(
             _reactBootstrap.ButtonGroup,

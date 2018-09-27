@@ -116,6 +116,15 @@
   margin: 1.33em 0;
 }
 
+.docs-editor .header-one span,
+.docs-editor .header-two span,
+.docs-editor .header-threw span,
+.docs-editor .header-four span {
+  /* TODO: this is just a temporary workaround, We should clean up all
+  * inline font-size styles within header instead.*/
+  font-size: 100% !important;
+}
+
 .docs-editor .blockquote {
   border-left: 5px solid #eeeeee;
   font-size: 16.25px;
