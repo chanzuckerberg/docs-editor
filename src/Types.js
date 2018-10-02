@@ -60,6 +60,7 @@ export type ElementLike = {
   rowIndex: ?number,
   rowSpan: ?number,
   rows: ?HTMLCollectionLike,
+  scrollTop: number,
   setAttribute: (attr: string, value: string) => void,
   style: CSSStyleDeclarationLike,
   tBodies: HTMLCollectionLike,
@@ -69,6 +70,7 @@ export type ClientRectLike = {
   height: number,
   left: number,
   right: number,
+  top: number,
   width: number,
   x: number,
   y: number,
@@ -133,5 +135,9 @@ export type DocsMathEntityData = {
 };
 
 export type DocsCommentEntityData = {
-  commentId: string,
+  commentThreadId: string,
+};
+
+export type DocsCommentElement = {
+  forceUpdate: () => void,
 };

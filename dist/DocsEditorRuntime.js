@@ -55,8 +55,8 @@ var DocsEditorRuntime = function () {
       return false;
     }
   }, {
-    key: 'createCommentID',
-    value: function createCommentID() {
+    key: 'createCommentThreadID',
+    value: function createCommentThreadID() {
       return '';
     }
   }, {

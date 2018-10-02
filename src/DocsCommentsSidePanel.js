@@ -4,12 +4,9 @@ import DocsCommentSideItem from './DocsCommentSideItem';
 import DocsContext from './DocsContext';
 import DocsEventTypes from './DocsEventTypes';
 import React from 'react';
-import Timer from './Timer';
-import captureDocumentEvents from './captureDocumentEvents';
-import createDOMCustomEvent from './createDOMCustomEvent';
-import uniqueID from './uniqueID';
+import commentsManager from './commentsManager';
 import withDocsContext from './withDocsContext';
-import {ATTRIBUTE_COMMENT_ID, CLASS_NAME} from './DocsComment';
+import {CLASS_NAME} from './DocsComment';
 import {EditorState} from 'draft-js';
 
 import type {DocsCommentEntityData} from './Types';
@@ -25,25 +22,28 @@ type Props = {
 
 class DocsCommentsSidePanelTemplate extends React.PureComponent {
   props: {
-    commentIds: Array<string>,
-    renderComment: (props: {commentId: string, isActive: boolean}) => ?React.Element<any>,
+    activeCommentThreadId: ?string,
+    commentThreadIds: Array<string>,
+    renderComment: (
+      props: {commentThreadId: string, isActive: boolean},
+    ) => ?React.Element<any>,
   };
 
   render(): React.Element<any> {
-    const {commentIds, renderComment} = this.props;
+    const {commentThreadIds, renderComment} = this.props;
     return (
       <div className="docs-comments-side-panel">
-        {commentIds.map(this._renderItem)}
+        {commentThreadIds.map(this._renderItem)}
       </div>
     );
   }
 
-  _renderItem = (commentId: string): React.Element<any> => {
-    const {renderComment} = this.props;
+  _renderItem = (commentThreadId: string): ?React.Element<any> => {
+    const {activeCommentThreadId, renderComment} = this.props;
     return (
       <DocsCommentSideItem
-        commentId={commentId}
-        key={commentId}
+        commentThreadId={commentThreadId}
+        key={commentThreadId}
         renderComment={renderComment}
       />
     );
@@ -52,33 +52,25 @@ class DocsCommentsSidePanelTemplate extends React.PureComponent {
 
 class DocsCommentsSidePanel extends React.PureComponent {
 
-  _eventsCapture = null;
-  _unmounted = false;
-  _timer = new Timer();
-
   props: Props;
 
   state = {
-    commentIds: [],
+    activeCommentThreadId: commentsManager.getActiveCommentThreadId(),
+    commentThreadIds: commentsManager.getCommentThreadIds(),
   };
 
-  componentDidMount(): void {
-    this._timer.set(this._lookupCommentIDs, UPDATE_DELAY);
-  }
-
-  componentDidUpdate(prevProps: Props): void {
-    if (
-      prevProps.editorState.getCurrentContent() ===
-      this.props.editorState.getCurrentContent()
-    ) {
-      return;
+  componentWillReceiveProps(nextProps: Props): void {
+    const currContent = this.props.editorState.getCurrentContent();
+    const nextContent = nextProps.editorState.getCurrentContent();
+    if (currContent !== nextContent) {
+      const commentThreadIds = commentsManager.getCommentThreadIds();
+      const activeCommentThreadId = commentsManager.getActiveCommentThreadId();
+      this.setState({
+        activeCommentThreadId: commentsManager.getActiveCommentThreadId(),
+        commentThreadIds: commentsManager.getCommentThreadIds(),
+      });
     }
-    this._timer.clear();
-    this._timer.set(this._lookupCommentIDs, UPDATE_DELAY);
-  }
-
-  componentWillUnmount(): void {
-    this._timer.clear();
+    commentsManager.setEditorState(nextProps.editorState);
   }
 
   render(): ?React.Element<any> {
@@ -88,41 +80,20 @@ class DocsCommentsSidePanel extends React.PureComponent {
     if (!renderComment) {
       return null;
     }
-    const {commentIds} = this.state;
-    if (!commentIds.length) {
+
+    const {activeCommentThreadId, commentThreadIds} = this.state;
+    if (!commentThreadIds.length) {
       return null;
     }
+    const {editorState} = this.props;
     return (
       <DocsCommentsSidePanelTemplate
-        commentIds={commentIds}
+        activeCommentThreadId={activeCommentThreadId}
+        commentThreadIds={commentThreadIds}
         renderComment={renderComment}
       />
     );
   }
-
-  _lookupCommentIDs = (): void => {
-    const {editorId} = this.props;
-    const editorEl = document.getElementById(editorId);
-    if (!editorEl) {
-      return;
-    }
-    const els = editorEl.querySelectorAll('.' + CLASS_NAME);
-    const commentIds = Array.from(els).reduce((memo, el) => {
-      const commentId = el.getAttribute(ATTRIBUTE_COMMENT_ID);
-      if (commentId && memo.indexOf(commentId) === -1) {
-        memo.push(commentId);
-      }
-      return memo;
-    }, []);
-
-    if (
-      commentIds.length === this.state.commentIds.length &&
-      commentIds.join(',') === this.state.commentIds.join(',')
-    ) {
-      return;
-    }
-    this.setState({commentIds});
-  };
 }
 
 module.exports = withDocsContext(DocsCommentsSidePanel);

@@ -10,6 +10,21 @@ function lookupElementByAttribute(element, attr, value) {
   var node = element;
   while (node) {
     if (node && node.nodeType === 1) {
+      if (attr === 'class' || attr === 'className') {
+        var _node = node,
+            classList = _node.classList;
+
+        if (classList && value && classList.contains(value)) {
+          return node;
+        }
+        if (classList && value === undefined && classList.length > 0) {
+          return node;
+        }
+        if (!classList) {
+          // TODO: Fallback?
+          return null;
+        }
+      }
       if (value === undefined && node.hasAttribute(attr)) {
         return node;
       } else if (node.getAttribute(attr) === value) {

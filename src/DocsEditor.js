@@ -6,6 +6,7 @@ import DocsConfig from './DocsConfig';
 import DocsContext from './DocsContext';
 import DocsCustomStyleMap from './DocsCustomStyleMap';
 import DocsDataAttributes from './DocsDataAttributes';
+import DocsDecoratorTypes from './DocsDecoratorTypes';
 import DocsEditorContentOverflowControl from './DocsEditorContentOverflowControl';
 import DocsEditorFocusManager from './DocsEditorFocusManager';
 import DocsEditorToolBar from './DocsEditorToolBar';
@@ -16,8 +17,10 @@ import ReactDOM from 'react-dom';
 import ResizeObserver from './ResizeObserver';
 import Timer from './Timer';
 import asElement from './asElement';
+import commentsManager from './commentsManager';
 import convertFromRaw from './convertFromRaw';
 import cx from 'classnames';
+import deleteCommentThread from './deleteCommentThread';
 import invariant from 'invariant';
 import isEditorStateEmpty from './isEditorStateEmpty';
 import noop from './noop';
@@ -80,6 +83,10 @@ class DocsEditor extends React.PureComponent {
     window.requestAnimationFrame(DocsCustomStyleMap.injectCSSIntoDocument);
   }
 
+  componentDidMount(): void {
+    commentsManager.observe(this._onObserveComment);
+  }
+
   componentWillReceiveProps(nextProps: Props): void {
     if (nextProps.docsContext !== this.props.docsContext) {
       // We're passing `this.props.docsContext` down to descending components
@@ -99,6 +106,7 @@ class DocsEditor extends React.PureComponent {
 
   componentWillUnmount(): void {
     this._unlisten();
+    commentsManager.unobserve(this._onObserveComment);
     this._blurTimer.dispose();
   }
 
@@ -260,6 +268,18 @@ class DocsEditor extends React.PureComponent {
     this._unlisten();
     this._element = ref;
     this._listen();
+  };
+
+  _onObserveComment = (info: {type: string, commentThreadId: ?string}): void => {
+    const {type, commentThreadId} = info;
+    if (!commentThreadId || type !== DocsEventTypes.COMMENT_REQUEST_DELETE) {
+      return;
+    }
+    const {editorState, onChange} = this.props;
+    const editorStateNext = deleteCommentThread(editorState, commentThreadId);
+    if (editorStateNext !== editorState && onChange) {
+      onChange(editorStateNext);
+    }
   };
 
   _listen(): void {

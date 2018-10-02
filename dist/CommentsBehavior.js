@@ -77,11 +77,11 @@ function getEntity(editorState) {
   return entity && entity.getType() === _DocsDecoratorTypes2.default.DOCS_COMMENT ? entity : null;
 }
 
-function addComment(editorState, commentId) {
+function addComment(editorState, commentThreadId) {
   var selection = editorState.getSelection();
   var contentState = editorState.getCurrentContent();
   var contentStateWithEntity = contentState.createEntity(_DocsDecoratorTypes2.default.DOCS_COMMENT, 'MUTABLE', {
-    commentId: commentId
+    commentThreadId: commentThreadId
   });
   var entityKey = contentStateWithEntity.getLastCreatedEntityKey();
   var newContentState = _draftJs.Modifier.applyEntity(contentStateWithEntity, selection, entityKey);
@@ -129,9 +129,9 @@ var CommentsBehavior = function (_AbstractBehavior) {
         return null;
       }
 
-      var commentId = docsContext.runtime && docsContext.runtime.createCommentID && docsContext.runtime.createCommentID();
+      var commentThreadId = docsContext.runtime && docsContext.runtime.createCommentThreadID && docsContext.runtime.createCommentThreadID();
 
-      commentId && onChange(addComment(editorState, commentId));
+      commentThreadId && onChange(addComment(editorState, commentThreadId));
     };
 
     return _this;

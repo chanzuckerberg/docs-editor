@@ -12,7 +12,7 @@ import DocsMath from './DocsMath';
 import DocsTable from './DocsTable';
 
 // import DocsCalculator from './DocsCalculator';
-// import DocsComment from './DocsComment';
+import DocsComment from './DocsComment';
 
 function registerCustomBlocks(specs: Array<Array<any>>): void {
   specs.forEach(spec => {
@@ -38,7 +38,7 @@ function init(): void {
   // Register Decorator
   registerDecorator([
     [DocsDecoratorTypes.DOCS_ANNOTATION, DocsAnnotation],
-    // [DocsDecoratorTypes.DOCS_COMMENT, DocsComment],
+    [DocsDecoratorTypes.DOCS_COMMENT, DocsComment],
     [DocsDecoratorTypes.DOCS_IMAGE, DocsImage],
     [DocsDecoratorTypes.DOCS_MATH, DocsMath],
     [DocsDecoratorTypes.LINK, DocsLink],
