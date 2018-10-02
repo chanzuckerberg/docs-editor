@@ -2,6 +2,7 @@
 
 import React from 'react';
 import cx from 'classnames';
+import DocsButton from '../src/DocsButton';
 
 import './DemoComment.css';
 
@@ -19,7 +20,10 @@ class DemoComment extends React.PureComponent {
     return (
       <div className={className}>
         <div className="demo-comment-button">
-          <button onMouseDown={this._onMouseDown}>x</button>
+          <DocsButton
+            label="X"
+            onClick={this._onClick}
+          />
         </div>
         {commentThreadId}
         <br />
@@ -28,8 +32,7 @@ class DemoComment extends React.PureComponent {
     );
   }
 
-  _onMouseDown = (e: SyntheticEvent): void => {
-    e.preventDefault();
+  _onClick = (): void => {
     this.props.onDismiss();
   };
 }
