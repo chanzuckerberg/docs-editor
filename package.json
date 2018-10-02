@@ -1,7 +1,7 @@
 {
   "name": "docs-editor",
   "version": "0.0.9",
-  "subversion": "3",
+  "subversion": "4",
   "description": "rich text editor for education purpose",
   "main": "dist/index.js",
   "scripts": {
@@ -72,6 +72,7 @@
     "react": "15.5.4",
     "react-bootstrap": "0.31.5",
     "react-dom": "15.5.4",
-    "resize-observer-polyfill": "1.5.0"
+    "resize-observer-polyfill": "1.5.0",
+    "uuid4": "1.1.4"
   }
 }

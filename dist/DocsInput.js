@@ -32,28 +32,28 @@ var _reactBootstrap = require('react-bootstrap');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var DocsButton = function (_React$PureComponent) {
-  (0, _inherits3.default)(DocsButton, _React$PureComponent);
+var DocsInput = function (_React$PureComponent) {
+  (0, _inherits3.default)(DocsInput, _React$PureComponent);
 
-  function DocsButton() {
+  function DocsInput() {
     var _ref;
 
     var _temp, _this, _ret;
 
-    (0, _classCallCheck3.default)(this, DocsButton);
+    (0, _classCallCheck3.default)(this, DocsInput);
 
     for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = DocsButton.__proto__ || (0, _getPrototypeOf2.default)(DocsButton)).call.apply(_ref, [this].concat(args))), _this), _this._mouseDownTarget = null, _this._onChange = function (e) {
+    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = DocsInput.__proto__ || (0, _getPrototypeOf2.default)(DocsInput)).call.apply(_ref, [this].concat(args))), _this), _this._mouseDownTarget = null, _this._onChange = function (e) {
       var onChange = _this.props.onChange;
 
       onChange && onChange(e);
     }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
   }
 
-  (0, _createClass3.default)(DocsButton, [{
+  (0, _createClass3.default)(DocsInput, [{
     key: 'render',
     value: function render() {
       var _props = this.props,
@@ -69,7 +69,7 @@ var DocsButton = function (_React$PureComponent) {
       });
     }
   }]);
-  return DocsButton;
+  return DocsInput;
 }(_react2.default.PureComponent);
 
-module.exports = DocsButton;
+module.exports = DocsInput;

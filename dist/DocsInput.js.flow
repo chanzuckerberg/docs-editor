@@ -10,7 +10,7 @@ type Props = {
   value?: any,
 };
 
-class DocsButton extends React.PureComponent {
+class DocsInput extends React.PureComponent {
   _mouseDownTarget = null;
 
   props: Props;
@@ -35,4 +35,4 @@ class DocsButton extends React.PureComponent {
 
 }
 
-module.exports = DocsButton;
+module.exports = DocsInput;

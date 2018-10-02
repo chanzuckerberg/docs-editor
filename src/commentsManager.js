@@ -1,5 +1,6 @@
 // @flow
 
+import DocsDataAttributes from './DocsDataAttributes';
 import DocsEventTypes from './DocsEventTypes';
 import asElement from './asElement';
 import captureDocumentEvents from './captureDocumentEvents';
@@ -108,7 +109,7 @@ class DocsCommentsManager {
     this._eventsCapture = captureDocumentEvents({
       'keyup': this._onKeyDown,
       'mousedown': this._onMouseDown,
-    });
+    }, true);
   }
 
   _unlisten(): void {
