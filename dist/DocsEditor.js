@@ -52,6 +52,10 @@ var _DocsDataAttributes = require('./DocsDataAttributes');
 
 var _DocsDataAttributes2 = _interopRequireDefault(_DocsDataAttributes);
 
+var _DocsDecoratorTypes = require('./DocsDecoratorTypes');
+
+var _DocsDecoratorTypes2 = _interopRequireDefault(_DocsDecoratorTypes);
+
 var _DocsEditorContentOverflowControl = require('./DocsEditorContentOverflowControl');
 
 var _DocsEditorContentOverflowControl2 = _interopRequireDefault(_DocsEditorContentOverflowControl);
@@ -92,6 +96,10 @@ var _asElement = require('./asElement');
 
 var _asElement2 = _interopRequireDefault(_asElement);
 
+var _commentsManager = require('./commentsManager');
+
+var _commentsManager2 = _interopRequireDefault(_commentsManager);
+
 var _convertFromRaw = require('./convertFromRaw');
 
 var _convertFromRaw2 = _interopRequireDefault(_convertFromRaw);
@@ -99,6 +107,10 @@ var _convertFromRaw2 = _interopRequireDefault(_convertFromRaw);
 var _classnames = require('classnames');
 
 var _classnames2 = _interopRequireDefault(_classnames);
+
+var _deleteCommentThread = require('./deleteCommentThread');
+
+var _deleteCommentThread2 = _interopRequireDefault(_deleteCommentThread);
 
 var _invariant = require('invariant');
 
@@ -203,6 +215,21 @@ var DocsEditor = function (_React$PureComponent) {
       _this._unlisten();
       _this._element = ref;
       _this._listen();
+    }, _this._onObserveComment = function (info) {
+      var type = info.type,
+          commentThreadId = info.commentThreadId;
+
+      if (!commentThreadId || type !== _DocsEventTypes2.default.COMMENT_REQUEST_DELETE) {
+        return;
+      }
+      var _this$props2 = _this.props,
+          editorState = _this$props2.editorState,
+          onChange = _this$props2.onChange;
+
+      var editorStateNext = (0, _deleteCommentThread2.default)(editorState, commentThreadId);
+      if (editorStateNext !== editorState && onChange) {
+        onChange(editorStateNext);
+      }
     }, _this._onContentResize = function (info) {
       _this.setState({
         contentHeight: info.contentRect.height
@@ -218,6 +245,11 @@ var DocsEditor = function (_React$PureComponent) {
     key: 'componentWillMount',
     value: function componentWillMount() {
       window.requestAnimationFrame(_DocsCustomStyleMap2.default.injectCSSIntoDocument);
+    }
+  }, {
+    key: 'componentDidMount',
+    value: function componentDidMount() {
+      _commentsManager2.default.observe(this._onObserveComment);
     }
   }, {
     key: 'componentWillReceiveProps',
@@ -241,6 +273,7 @@ var DocsEditor = function (_React$PureComponent) {
     key: 'componentWillUnmount',
     value: function componentWillUnmount() {
       this._unlisten();
+      _commentsManager2.default.unobserve(this._onObserveComment);
       this._blurTimer.dispose();
     }
   }, {

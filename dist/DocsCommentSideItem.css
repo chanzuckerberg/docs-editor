@@ -4,3 +4,7 @@
   top: 0;
   z-index: 1;
 }
+
+.docs-comment-side-item:hover {
+  z-index: 3 !important;
+}

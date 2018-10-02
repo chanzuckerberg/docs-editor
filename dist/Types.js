@@ -63,6 +63,7 @@ if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginF
     rows: require('prop-types').shape({
       length: require('prop-types').number.isRequired
     }),
+    scrollTop: require('prop-types').number.isRequired,
     setAttribute: require('prop-types').func.isRequired,
     style: require('prop-types').shape({}).isRequired,
     tBodies: require('prop-types').shape({
@@ -75,6 +76,7 @@ if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginF
     height: require('prop-types').number.isRequired,
     left: require('prop-types').number.isRequired,
     right: require('prop-types').number.isRequired,
+    top: require('prop-types').number.isRequired,
     width: require('prop-types').number.isRequired,
     x: require('prop-types').number.isRequired,
     y: require('prop-types').number.isRequired
@@ -154,6 +156,11 @@ if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginF
 });
 if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginFlowReactPropTypes_proptype_DocsCommentEntityData', {
   value: require('prop-types').shape({
-    commentId: require('prop-types').string.isRequired
+    commentThreadId: require('prop-types').string.isRequired
+  })
+});
+if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginFlowReactPropTypes_proptype_DocsCommentElement', {
+  value: require('prop-types').shape({
+    forceUpdate: require('prop-types').func.isRequired
   })
 });
