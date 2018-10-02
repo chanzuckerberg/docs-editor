@@ -8,16 +8,16 @@ import './DemoComment.css';
 class DemoComment extends React.PureComponent {
 
   props: {
-    commentId: string,
+    commentThreadId: string,
     isActive: boolean,
   };
 
   render(): React.Element<any> {
-    const {commentId, isActive} = this.props;
+    const {commentThreadId, isActive} = this.props;
     const className = cx('demo-comment', {'active': isActive});
     return (
       <div className={className}>
-        {commentId}
+        {commentThreadId}
         <br />
         {String(isActive)}
       </div>

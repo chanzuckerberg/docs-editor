@@ -6,12 +6,14 @@ import DocsEventTypes from './DocsEventTypes';
 import React from 'react';
 import Timer from './Timer';
 import captureDocumentEvents from './captureDocumentEvents';
+import commentsManager from './commentsManager';
 import createDOMCustomEvent from './createDOMCustomEvent';
 import cx from 'classnames';
 import getCurrentSelectionEntity from './getCurrentSelectionEntity';
 import getDOMSelectionNode from './getDOMSelectionNode';
 import uniqueID from './uniqueID';
 import withDocsContext from './withDocsContext';
+import {ATTRIBUTE_COMMENT_ACTIVE, ATTRIBUTE_COMMENT_ID} from './commentsManager';
 import {EditorState, Modifier, Entity} from 'draft-js';
 
 import type {DocsCommentEntityData} from './Types';
@@ -23,39 +25,51 @@ type Props = {
   entityData: DocsCommentEntityData,
 };
 
-export const ATTRIBUTE_COMMENT_ACTIVE = 'data-docs-comment-active';
-export const ATTRIBUTE_COMMENT_ID = 'data-docs-comment-id';
 export const CLASS_NAME = 'docs-comment';
+
+function getCommentThreadId(props: Props): string {
+  const {commentThreadId} = props.entityData;
+  return commentThreadId;
+}
 
 // This component for commented text.
 class DocsComment extends React.PureComponent {
 
-  _id = uniqueID();
-  _active = false;
   _eventsCapture = null;
-  _unmounted = false;
+  _id = uniqueID();
   _timer = new Timer();
+  _unmounted = false;
+
+  state = {
+    commentThreadId: getCommentThreadId(this.props),
+  };
 
   props: Props;
 
+  componentWillMount(): void {
+    commentsManager.register(this.state.commentThreadId, this);
+  }
+
   componentDidMount(): void {
+    this._checkActiveState();
     this._listen();
   }
 
   componentWillUnmount(): void {
+    commentsManager.unregister(this.state.commentThreadId, this);
     this._unmounted = true;
     this._timer.clear();
     this._unlisten();
   }
 
   render(): React.Element<any> {
-    const {children, entityData} = this.props;
-    const {commentId} = entityData;
-    const attrs = {[ATTRIBUTE_COMMENT_ID]: commentId};
+    const {children} = this.props;
+    const {commentThreadId} = this.state;
+    const attrs = {[ATTRIBUTE_COMMENT_ID]: commentThreadId};
     return (
       <span
         {...attrs}
-        name={commentId}
+        name={commentThreadId}
         className={CLASS_NAME}
         id={this._id}>
         {children}
@@ -63,14 +77,19 @@ class DocsComment extends React.PureComponent {
     );
   }
 
+  _getCommentThreadId(): string {
+    const {entityData} = this.props;
+    const {commentThreadId} = entityData;
+    return commentThreadId;
+  }
+
   _listen(): void {
     if (this._eventsCapture || this._unmounted) {
       return;
     }
     this._eventsCapture = captureDocumentEvents({
-      'keyup': this._checkActiveState,
-      'click': this._checkActiveState,
-      [DocsEventTypes.COMMENT_REQUEST_FOCUS]: this._onRequestFocus,
+      'keydown': this._checkActiveState,
+      'mousedown': this._checkActiveState,
     });
   }
 
@@ -82,7 +101,7 @@ class DocsComment extends React.PureComponent {
     this._eventsCapture = null;
   }
 
-  _checkActiveState = (e: Event): void => {
+  _checkActiveState = (): void => {
     this._timer.clear();
     this._timer.set(this._syncActiveState);
   }
@@ -94,55 +113,60 @@ class DocsComment extends React.PureComponent {
     }
     const selectionNode = getDOMSelectionNode();
     const active = selectionNode === el || el.contains(selectionNode);
-    this._setActive(active);
-  };
-
-  _onRequestFocus = (e: any): void => {
-    if (
-      e.detail &&
-      e.detail.commentId === this.props.entityData.commentId
-    ) {
-      this._setActive(true);
-    }
-  };
-
-  _setActive(active: boolean): void {
-    if (active === this._active) {
-      return;
-    }
-
-    const el = document.getElementById(this._id);
-    if (!el) {
-      return;
-    }
-
-    this._active = active;
+    const commentThreadId = String(el.getAttribute(ATTRIBUTE_COMMENT_ID));
     if (active) {
-      el.setAttribute(ATTRIBUTE_COMMENT_ACTIVE, "true");
+      commentsManager.activate(commentThreadId);
     } else {
-      el.removeAttribute(ATTRIBUTE_COMMENT_ACTIVE);
+      commentsManager.deactivate(commentThreadId);
     }
+  };
 
-    // Notify the document that the comment is focused, so that we could
-    // update the related comment panels.
-    const {commentId} = this.props.entityData;
-
-    const detail = {
-      target: el,
-      commentId,
-    };
-
-    const event = createDOMCustomEvent(
-      active ?
-        DocsEventTypes.COMMENT_FOCUS_IN :
-        DocsEventTypes.COMMENT_FOCUS_OUT,
-      true,
-      true,
-      detail,
-    );
-
-    el.dispatchEvent(event);
-  }
+  // _onRequestFocus = (e: any): void => {
+  //   if (
+  //     e.detail &&
+  //     e.detail.commentThreadId === this.props.entityData.commentThreadId
+  //   ) {
+  //     this._setActive(true);
+  //   }
+  // };
+  //
+  // _setActive(active: boolean): void {
+  //   if (active === this._active) {
+  //     return;
+  //   }
+  //
+  //   const el = document.getElementById(this._id);
+  //   if (!el) {
+  //     return;
+  //   }
+  //
+  //   this._active = active;
+  //   if (active) {
+  //     el.setAttribute(ATTRIBUTE_COMMENT_ACTIVE, "true");
+  //   } else {
+  //     el.removeAttribute(ATTRIBUTE_COMMENT_ACTIVE);
+  //   }
+  //
+  //   // Notify the document that the comment is focused, so that we could
+  //   // update the related comment panels.
+  //   const {commentThreadId} = this.props.entityData;
+  //
+  //   const detail = {
+  //     target: el,
+  //     commentThreadId,
+  //   };
+  //
+  //   const event = createDOMCustomEvent(
+  //     active ?
+  //       DocsEventTypes.COMMENT_FOCUS_IN :
+  //       DocsEventTypes.COMMENT_FOCUS_OUT,
+  //     true,
+  //     true,
+  //     detail,
+  //   );
+  //
+  //   el.dispatchEvent(event);
+  // }
 }
 
 export default withDocsContext(DocsComment);

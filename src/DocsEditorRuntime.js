@@ -22,7 +22,7 @@ class DocsEditorRuntime {
   canProxyImageSrc(src: string): boolean {
     return false;
   }
-  createCommentID(): string {
+  createCommentThreadID(): string {
     return '';
   }
   getProxyImageSrc(src: string): string {
@@ -35,7 +35,7 @@ class DocsEditorRuntime {
     return Promise.reject('Unsupported');
   }
   renderComment(
-    props: {commentId: string, isActive: boolean},
+    props: {commentThreadId: string, isActive: boolean},
   ): ?React.Element<any> {
     return null;
   }

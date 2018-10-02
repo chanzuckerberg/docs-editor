@@ -24,12 +24,12 @@ class DemoAppRuntime extends DocsEditorRuntime {
     });
   }
 
-  createCommentID(): string {
-    return `demo-app-comment-${uniqueID()}`;
+  createCommentThreadID(): string {
+    return `demo-app-comment-thread-${uniqueID()}`;
   }
 
   renderComment(
-    props: {commentId: string, isActive: boolean},
+    props: {commentThreadId: string, isActive: boolean},
   ): ?React.Element<any> {
     return <DemoComment {...props} />;
   }
