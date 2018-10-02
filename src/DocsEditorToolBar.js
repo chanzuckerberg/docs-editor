@@ -12,7 +12,7 @@ import {
   BOLD,
   // CALCULATOR,
   CODE,
-  // COMMENT,
+  COMMENT,
   EXPANDABLE,
   H1,
   H2,
@@ -111,7 +111,7 @@ class DocsEditorToolBar extends React.PureComponent {
                 UNDERLINE,
                 STRIKE,
                 CODE,
-                // COMMENT,
+                COMMENT,
               ].map(this._renderButton)
             }
           </ButtonGroup>
