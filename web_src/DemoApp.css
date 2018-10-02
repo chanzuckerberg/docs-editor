@@ -24,8 +24,23 @@ body, html {
 }
 
 #app > .main-column {
-  width: 900px;
+  max-width: 1500px;
+  min-width: 900px;
+  width: 80vw;
 }
+
+#app .DraftEditor-root {
+  background-color: #fff;
+  box-sizing: border-box;
+  padding: 20px;
+  width: 21cm;
+}
+
+#app .DraftEditor-root .DraftEditor-root {
+  background-color: inherit;
+  width: auto;
+}
+
 
 #app > .side-column {
   flex: 1;
@@ -65,6 +80,7 @@ body, html {
 }
 
 #app .docs-editor-frame-body-scroll {
+  background-color: #dedede;
   box-sizing: border-box;
   padding: 36pt;
 }

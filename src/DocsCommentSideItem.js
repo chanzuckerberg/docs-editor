@@ -8,37 +8,46 @@ import commentsManager from './commentsManager';
 import createDOMCustomEvent from './createDOMCustomEvent';
 import lookupElementByAttribute from './lookupElementByAttribute';
 import uniqueID from './uniqueID';
-import {ATTRIBUTE_COMMENT_ACTIVE, ATTRIBUTE_COMMENT_ID} from './commentsManager';
+import {ATTRIBUTE_COMMENT_ACTIVE, ATTRIBUTE_COMMENT_THREAD_ID} from './commentsManager';
 import {EditorState} from 'draft-js';
 
 import './DocsCommentSideItem.css';
 
-class DocsCommentSideItem extends React.Component {
+class DocsCommentSideItem extends React.PureComponent {
 
   props: {
     commentThreadId: string,
-    editorState: EditorState,
-    isActive: boolean,
     renderComment: (
       props: {commentThreadId: string, isActive: boolean},
     ) => ?React.Element<any>,
   };
 
+  state = {
+    active:
+      this.props.commentThreadId === commentsManager.getActiveCommentThreadId(),
+  };
+
   _id = uniqueID();
+  _rid = 0;
+
   _style = null;
 
   componentDidMount(): void {
-    commentsManager.register('*', this);
+    commentsManager.observe(this._onObserve);
+    this._syncPosition();
   }
 
   componentWillUnmount(): void {
-    commentsManager.unregister('*', this);
+    commentsManager.unobserve(this._onObserve)
   }
 
   render(): React.Element<any> {
-    const {isActive, commentThreadId, renderComment} = this.props;
+    const {commentThreadId, renderComment} = this.props;
+    const isActive = this.state.active;
+    const attrs = {[ATTRIBUTE_COMMENT_THREAD_ID]: commentThreadId};
     return (
       <div
+        {...attrs}
         id={this._id}
         className="docs-comment-side-item"
         style={this._style}>
@@ -47,22 +56,22 @@ class DocsCommentSideItem extends React.Component {
     );
   }
 
-  // _onClick = (): void => {
-  //   setTimeout(() => {
-  //     const {commentThreadId} = this.props;
-  //     commentsManager.activate(commentThreadId);
-  //   }, 800);
-  // };
-
-  componentDidMount(): void {
+  _onObserve = (): void => {
+    const {commentThreadId} = this.props;
+    const {active} = this.state;
+    const val = commentThreadId === commentsManager.getActiveCommentThreadId();
+    if (val !== active) {
+      this.setState({active: val});
+    }
     this._syncPosition();
-  }
-
-  componentDidUpdate(): void {
-    this._syncPosition();
-  }
+  };
 
   _syncPosition(): void {
+    window.cancelAnimationFrame(this._rid);
+    this._rid = window.requestAnimationFrame(this._syncPositionImmediate);
+  }
+
+  _syncPositionImmediate = (): void => {
     const {commentThreadId} = this.props;
     const el = document.getElementById(this._id);
     if (!el) {
@@ -87,44 +96,23 @@ class DocsCommentSideItem extends React.Component {
     const commentRect = firstCommentEl.getBoundingClientRect();
     const top = commentRect.top - scrollRect.top + scrollEl.scrollTop;
     const cssTransform = `translate3d(0, ${top}px, 0)`;
-    el.style.transform = cssTransform;
-    // el.style.transition = 'all 350ms';
-    this._style = {
+    const nextStyle = {
       ...this._style,
+      backfaceVisibility: 'hidden',
       transform: cssTransform,
-      transition: 'all 350ms',
     };
-  }
 
-  // _listen(): void {
-  //   if (this._eventsCapture) {
-  //     return;
-  //   }
-  //   this._eventsCapture = captureDocumentEvents({
-  //     [DocsEventTypes.COMMENT_FOCUS_IN]: this._onFocusIn,
-  //     [DocsEventTypes.COMMENT_FOCUS_OUT]: this._onFocusOut,
-  //   });
-  // }
-  //
-  // _unlisten(): void {
-  //   if (!this._eventsCapture) {
-  //     return;
-  //   }
-  //   this._eventsCapture && this._eventsCapture.dispose();
-  //   this._eventsCapture = null;
-  // }
-  //
-  // _onFocusIn = (e: Event): void => {
-  //   if (e.detail && e.detail.commentThreadId === this.props.commentThreadId) {
-  //     this.setState({isActive: true});
-  //   }
-  // };
-  //
-  // _onFocusOut = (e: Event): void => {
-  //   if (e.detail && e.detail.commentThreadId === this.props.commentThreadId) {
-  //     this.setState({isActive: false});
-  //   }
-  // };
+    Object.assign(el.style, nextStyle);
+
+    // The second-time transtion will have animation.
+    Object.assign(nextStyle, {
+      transitionProperty: 'trasnform',
+      transitionDuration: '250ms',
+      transitionTimingFunction: 'ease-in',
+    });
+
+    this._style = nextStyle;
+  };
 }
 
 export default DocsCommentSideItem;
