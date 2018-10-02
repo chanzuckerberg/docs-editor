@@ -35,7 +35,7 @@ class DocsEditorRuntime {
     return Promise.reject('Unsupported');
   }
   renderComment(
-    props: {commentThreadId: string, isActive: boolean},
+    props: {commentThreadId: string, isActive: boolean, onDismiss: Function},
   ): ?React.Element<any> {
     return null;
   }

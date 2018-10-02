@@ -20,6 +20,7 @@ import './DocsComment.css';
 type Props = {
   children?: any,
   entityData: DocsCommentEntityData,
+  onEntityDataChange: (data: ?DocsCommentEntityData) => void,
 };
 
 export const CLASS_NAME = 'docs-comment';
@@ -42,18 +43,25 @@ class DocsComment extends React.PureComponent {
   props: Props;
 
   componentWillMount(): void {
-    commentsManager.register(this.state.commentThreadId, this);
+    commentsManager.registerCommentElement(this.state.commentThreadId, this);
     commentsManager.observe(this._onObserve);
   }
 
   componentWillUnmount(): void {
-    commentsManager.unregister(this.state.commentThreadId, this);
+    commentsManager.unregisterCommentElement(this.state.commentThreadId, this);
     commentsManager.unobserve(this._onObserve);
   }
 
   render(): React.Element<any> {
     const {children} = this.props;
     const {active, commentThreadId} = this.state;
+    if (!commentThreadId) {
+      return (
+        <span>
+          {children}
+        </span>
+      );
+    }
     const attrs = active ?
     {
       [ATTRIBUTE_COMMENT_ACTIVE]: 'true',
@@ -73,11 +81,14 @@ class DocsComment extends React.PureComponent {
     );
   }
 
-  _onObserve = (): void => {
-    const {active, commentThreadId} = this.state;
-    const val = commentThreadId === commentsManager.getActiveCommentThreadId();
-    if (val !== active) {
-      this.setState({active: val});
+  _onObserve = (info: Object): void => {
+    const {type, commentThreadId} = info;
+    if (type === DocsEventTypes.COMMENT_CHANGE) {
+      const {active} = this.state;
+      const val = this.state.commentThreadId === commentThreadId;
+      if (val !== active) {
+        this.setState({active: val});
+      }
     }
   };
 }

@@ -59,15 +59,6 @@ class DocsCommentsSidePanel extends React.PureComponent {
     commentThreadIds: commentsManager.getCommentThreadIds(),
   };
 
-  componentDidMount(): void {
-    commentsManager.register('*', this);
-  }
-
-  componentWillUnmount(): void {
-    commentsManager.unregister('*', this);
-  }
-
-
   componentWillReceiveProps(nextProps: Props): void {
     const currContent = this.props.editorState.getCurrentContent();
     const nextContent = nextProps.editorState.getCurrentContent();

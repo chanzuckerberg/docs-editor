@@ -29,7 +29,7 @@ class DemoAppRuntime extends DocsEditorRuntime {
   }
 
   renderComment(
-    props: {commentThreadId: string, isActive: boolean},
+    props: {commentThreadId: string, isActive: boolean, onDismiss: Function},
   ): ?React.Element<any> {
     return <DemoComment {...props} />;
   }

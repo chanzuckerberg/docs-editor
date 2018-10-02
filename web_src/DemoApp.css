@@ -31,14 +31,19 @@ body, html {
 
 #app .DraftEditor-root {
   background-color: #fff;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
   box-sizing: border-box;
+  min-height: 29.7cm;
   padding: 20px;
   width: 21cm;
 }
 
 #app .DraftEditor-root .DraftEditor-root {
   background-color: inherit;
-  width: auto;
+  box-shadow: unset;
+  min-height: unset;
+  padding: unset;
+  width: unset;
 }
 
 

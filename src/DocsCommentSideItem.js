@@ -18,7 +18,7 @@ class DocsCommentSideItem extends React.PureComponent {
   props: {
     commentThreadId: string,
     renderComment: (
-      props: {commentThreadId: string, isActive: boolean},
+      props: {commentThreadId: string, isActive: boolean, onDismiss: Function},
     ) => ?React.Element<any>,
   };
 
@@ -38,7 +38,8 @@ class DocsCommentSideItem extends React.PureComponent {
   }
 
   componentWillUnmount(): void {
-    commentsManager.unobserve(this._onObserve)
+    commentsManager.unobserve(this._onObserve);
+    this._rid && window.cancelAnimationFrame(this._rid);
   }
 
   render(): React.Element<any> {
@@ -51,17 +52,23 @@ class DocsCommentSideItem extends React.PureComponent {
         id={this._id}
         className="docs-comment-side-item"
         style={this._style}>
-        {renderComment({commentThreadId, isActive})}
+        {renderComment({commentThreadId, isActive, onDismiss: this._onDismiss})}
       </div>
     );
   }
 
-  _onObserve = (): void => {
-    const {commentThreadId} = this.props;
-    const {active} = this.state;
-    const val = commentThreadId === commentsManager.getActiveCommentThreadId();
-    if (val !== active) {
-      this.setState({active: val});
+  _onDismiss = (): void => {
+    commentsManager.requestCommentThreadDeletion(this.props.commentThreadId);
+  };
+
+  _onObserve = (info: Object): void => {
+    const {type, commentThreadId} = info;
+    if (type === DocsEventTypes.COMMENT_CHANGE) {
+      const {active} = this.state;
+      const val = this.props.commentThreadId === commentThreadId;
+      if (val !== active) {
+        this.setState({active: val});
+      }
     }
     this._syncPosition();
   };
@@ -100,6 +107,7 @@ class DocsCommentSideItem extends React.PureComponent {
       ...this._style,
       backfaceVisibility: 'hidden',
       transform: cssTransform,
+      zIndex: this.state.active ? 2 : 1,
     };
 
     Object.assign(el.style, nextStyle);

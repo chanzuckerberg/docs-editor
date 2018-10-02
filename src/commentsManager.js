@@ -1,5 +1,6 @@
 // @flow
 
+import DocsEventTypes from './DocsEventTypes';
 import asElement from './asElement';
 import captureDocumentEvents from './captureDocumentEvents';
 import convertFromRaw from './convertFromRaw';
@@ -17,12 +18,14 @@ type Disposable = {
   dispose: () => void,
 };
 
+type ObserveCallback = (info: {type: string, commentThreadId: ?string}) => void;
+
 class DocsCommentsManager {
 
   _activeCommentThreadId: ?string;
   _entries: Map<string, Set<DocsCommentElement>>;
   _eventsCapture: ?Disposable;
-  _observeCallbacks: Set<() => void>;
+  _observeCallbacks: Set<ObserveCallback>;
   _editorState: EditorState;
 
   constructor() {
@@ -33,8 +36,11 @@ class DocsCommentsManager {
     this._editorState = convertFromRaw({})
   }
 
-  register(commentThreadId: string, component: Object): void {
+  registerCommentElement(commentThreadId: string, component: Object): void {
     const components = this._entries.get(commentThreadId) || new Set();
+    if (components.has(component)) {
+      return;
+    }
     invariant(!components.has(component), 'already registered');
     components.add(component);
     this._entries.set(commentThreadId, components);
@@ -43,12 +49,11 @@ class DocsCommentsManager {
     }
   }
 
-  unregister(commentThreadId: string, component: Object): void {
+  unregisterCommentElement(commentThreadId: string, component: Object): void {
     const components = this._entries.get(commentThreadId);
-    invariant(
-      components && components.has(component),
-      'not registered',
-    )
+    if (!components || !components.has(component)) {
+      return;
+    }
     components.delete(component);
     if (components.size) {
       this._entries.set(commentThreadId, components);
@@ -60,11 +65,18 @@ class DocsCommentsManager {
     }
   }
 
-  observe(callback: () => void) {
+  requestCommentThreadDeletion(commentThreadId: string): void {
+    Array.from(this._observeCallbacks).forEach(fn => fn({
+      type: DocsEventTypes.COMMENT_REQUEST_DELETE,
+      commentThreadId,
+    }));
+  }
+
+  observe(callback: (info: {type: string, commentThreadId: ?string}) => void) {
     this._observeCallbacks.add(callback);
   }
 
-  unobserve(callback: () => void) {
+  unobserve(callback: (info: {type: string, commentThreadId: ?string}) => void) {
     this._observeCallbacks.delete(callback);
   }
 
@@ -119,7 +131,9 @@ class DocsCommentsManager {
   };
 
   _onMouseDown = (e: SyntheticEvent): void => {
-    this._onAccessElement(asElement(e.target));
+    if (!e.defaultPrevented) {
+      this._onAccessElement(asElement(e.target));
+    }
   };
 
   _onAccessElement(el: ElementLike): void {
@@ -141,10 +155,13 @@ class DocsCommentsManager {
   }
 
   _onChange(): void {
-    Array.from(this._observeCallbacks).forEach(fn => fn());
+    Array.from(this._observeCallbacks).forEach(fn => fn({
+      type: DocsEventTypes.COMMENT_CHANGE,
+      commentThreadId: this._activeCommentThreadId,
+    }));
   }
 }
 
-const commentssManager = new DocsCommentsManager();
+const commentsManager = new DocsCommentsManager();
 
-export default commentssManager;
+export default commentsManager;
