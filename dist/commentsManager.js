@@ -25,6 +25,10 @@ var _createClass2 = require('babel-runtime/helpers/createClass');
 
 var _createClass3 = _interopRequireDefault(_createClass2);
 
+var _DocsDataAttributes = require('./DocsDataAttributes');
+
+var _DocsDataAttributes2 = _interopRequireDefault(_DocsDataAttributes);
+
 var _DocsEventTypes = require('./DocsEventTypes');
 
 var _DocsEventTypes2 = _interopRequireDefault(_DocsEventTypes);
@@ -178,7 +182,7 @@ var DocsCommentsManager = function () {
       this._eventsCapture = (0, _captureDocumentEvents2.default)({
         'keyup': this._onKeyDown,
         'mousedown': this._onMouseDown
-      });
+      }, true);
     }
   }, {
     key: '_unlisten',

@@ -4,7 +4,7 @@ import DemoComment from './DemoComment';
 import DemoHTMLFilePicker from './DemoHTMLFilePicker';
 import React from 'react';
 import showModalDialog from '../src/showModalDialog';
-import uniqueID from '../src/uniqueID';
+import uuid4 from 'uuid4';
 import {DocsEditorRuntime} from '../src/index.js';
 
 class DemoAppRuntime extends DocsEditorRuntime {
@@ -25,7 +25,7 @@ class DemoAppRuntime extends DocsEditorRuntime {
   }
 
   createCommentThreadID(): string {
-    return `demo-app-comment-thread-${uniqueID()}`;
+    return `doc/123/comment-thread/${uuid4()}`;
   }
 
   renderComment(
