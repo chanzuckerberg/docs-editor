@@ -27,6 +27,14 @@ class DocsCommentSideItem extends React.Component {
   _id = uniqueID();
   _style = null;
 
+  componentDidMount(): void {
+    commentsManager.register('*', this);
+  }
+
+  componentWillUnmount(): void {
+    commentsManager.unregister('*', this);
+  }
+
   render(): React.Element<any> {
     const {isActive, commentThreadId, renderComment} = this.props;
     return (
@@ -80,7 +88,12 @@ class DocsCommentSideItem extends React.Component {
     const top = commentRect.top - scrollRect.top + scrollEl.scrollTop;
     const cssTransform = `translate3d(0, ${top}px, 0)`;
     el.style.transform = cssTransform;
-    this._style = {transform: cssTransform};
+    // el.style.transition = 'all 350ms';
+    this._style = {
+      ...this._style,
+      transform: cssTransform,
+      transition: 'all 350ms',
+    };
   }
 
   // _listen(): void {
