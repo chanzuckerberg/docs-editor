@@ -95,7 +95,14 @@ var DocsCommentSideItem = function (_React$PureComponent) {
     return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = DocsCommentSideItem.__proto__ || (0, _getPrototypeOf2.default)(DocsCommentSideItem)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
       active: _this.props.commentThreadId === _commentsManager2.default.getActiveCommentThreadId()
     }, _this._id = (0, _uniqueID2.default)(), _this._rid = 0, _this._style = null, _this._onDismiss = function () {
-      _commentsManager2.default.requestCommentThreadDeletion(_this.props.commentThreadId);
+      var el = document.getElementById(_this._id);
+      if (el) {
+        // TODO: This seems hacky.
+        // A workaround to clear selection from editor.
+        el.setAttribute('tabindex', '0');
+        el.focus();
+        _commentsManager2.default.requestCommentThreadDeletion(_this.props.commentThreadId);
+      }
     }, _this._onObserve = function (info) {
       var type = info.type,
           commentThreadId = info.commentThreadId;

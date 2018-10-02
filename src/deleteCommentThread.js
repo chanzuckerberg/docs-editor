@@ -5,7 +5,7 @@ import {APPLY_ENTITY} from './DocsEditorChangeType';
 import {EditorState, Modifier, Entity, CharacterMetadata} from 'draft-js';
 
 // We need this because we don't have explicilt selection needed to clear
-// comments. 
+// comments.
 export default function deleteCommentThread(
   editorState: EditorState,
   commentThreadId: string,

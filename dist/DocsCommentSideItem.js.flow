@@ -58,7 +58,14 @@ class DocsCommentSideItem extends React.PureComponent {
   }
 
   _onDismiss = (): void => {
-    commentsManager.requestCommentThreadDeletion(this.props.commentThreadId);
+    const el = document.getElementById(this._id);
+    if (el) {
+      // TODO: This seems hacky.
+      // A workaround to clear selection from editor.
+      el.setAttribute('tabindex', '0');
+      el.focus();
+      commentsManager.requestCommentThreadDeletion(this.props.commentThreadId);
+    }
   };
 
   _onObserve = (info: Object): void => {

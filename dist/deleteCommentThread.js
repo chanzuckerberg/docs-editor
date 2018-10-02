@@ -10,7 +10,7 @@ var _DocsEditorChangeType = require('./DocsEditorChangeType');
 var _draftJs = require('draft-js');
 
 // We need this because we don't have explicilt selection needed to clear
-// comments. 
+// comments.
 
 // https://github.com/thibaudcolas/draftjs-filters/blob/ad9ebbd35c71319d7889da3334e23a37ee973f0f/src/lib/filters/entities.js#L72-L119
 
