@@ -6,7 +6,6 @@ import asElement from './asElement';
 import captureDocumentEvents from './captureDocumentEvents';
 import convertFromRaw from './convertFromRaw';
 import getDOMSelectionNode from './getDOMSelectionNode';
-import invariant from 'invariant';
 import lookupElementByAttribute from './lookupElementByAttribute';
 import {EditorState} from 'draft-js';
 
@@ -14,6 +13,7 @@ import type {DocsCommentElement, ElementLike} from './Types';
 
 export const ATTRIBUTE_COMMENT_ACTIVE = 'data-docs-comment-active';
 export const ATTRIBUTE_COMMENT_THREAD_ID = 'data-docs-comment-thread-id';
+export const ATTRIBUTE_COMMENT_USE_TRANSITION = 'data-docs-comment-use-transition';
 
 type Disposable = {
   dispose: () => void,
@@ -42,7 +42,6 @@ class DocsCommentsManager {
     if (components.has(component)) {
       return;
     }
-    invariant(!components.has(component), 'already registered');
     components.add(component);
     this._entries.set(commentThreadId, components);
     if (this._entries.size === 1) {
@@ -83,8 +82,12 @@ class DocsCommentsManager {
 
   setEditorState(editorState: EditorState): void {
     if (editorState !== this._editorState) {
+      const changed =
+        this._editorState.getCurrentContent() !==
+        editorState.getCurrentContent();
+
       this._editorState = editorState;
-      this._onChange();
+      changed && this._onChange();
     }
   }
 

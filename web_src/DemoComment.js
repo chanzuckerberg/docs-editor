@@ -6,15 +6,13 @@ import DocsButton from '../src/DocsButton';
 
 import './DemoComment.css';
 
+import type {RenderCommentProps} from '../src/Types';
+
 const comments = new Map();
 
 class DemoComment extends React.PureComponent {
 
-  props: {
-    commentThreadId: string,
-    isActive: boolean,
-    onDismiss: Function,
-  };
+  props: RenderCommentProps;
 
   render(): React.Element<any> {
     const {commentThreadId, isActive} = this.props;
@@ -45,7 +43,7 @@ class DemoComment extends React.PureComponent {
   }
 
   _onClick = (): void => {
-    this.props.onDismiss();
+    this.props.requestCommentThreadDeletion();
   };
 }
 

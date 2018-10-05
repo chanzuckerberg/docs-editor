@@ -1,10 +1,13 @@
 .docs-comment-side-item {
+  backface-visibility: hidden;
   position: absolute;
   right: 0;
   top: 0;
   z-index: 1;
 }
 
-.docs-comment-side-item:hover {
-  z-index: 3 !important;
+.docs-comment-side-item[data-docs-comment-use-transition]{
+  transition-duration: 350ms;
+  transition-property: transform;
+  transition-timing-function: ease-in;
 }

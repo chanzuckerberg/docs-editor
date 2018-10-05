@@ -3,9 +3,9 @@
   border: solid 1px #ccc;
   box-sizing: border-box;
   padding: 8px;
-  transition-duration: 100ms;
+  /* transition-duration: 100ms;
   transition-property: transform;
-  transition-timing-function: ease-in;
+  transition-timing-function: ease-in; */
   width: 200px;
 }
 
@@ -13,7 +13,7 @@
   background: #ffffff;
   border-color: #000;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
-  transform: translate(-10px, -10px);
+  /*transform: translate(-10px, -10px);*/
 }
 
 .demo-comment-button {

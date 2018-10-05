@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import type {ImageLike} from './Types';
+import type {ImageLike, RenderCommentProps} from './Types';
 
 // This defines abstract class with the APIs that depend on the specific app
 // that the editor is running within. This serves as a bridge to enable editor
@@ -35,7 +35,7 @@ class DocsEditorRuntime {
     return Promise.reject('Unsupported');
   }
   renderComment(
-    props: {commentThreadId: string, isActive: boolean, onDismiss: Function},
+    props: RenderCommentProps,
   ): ?React.Element<any> {
     return null;
   }

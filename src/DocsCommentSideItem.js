@@ -13,13 +13,14 @@ import {EditorState} from 'draft-js';
 
 import './DocsCommentSideItem.css';
 
+import type {RenderCommentCall} from './Types';
+
 class DocsCommentSideItem extends React.PureComponent {
 
   props: {
     commentThreadId: string,
-    renderComment: (
-      props: {commentThreadId: string, isActive: boolean, onDismiss: Function},
-    ) => ?React.Element<any>,
+    onRequestCommentThreadReflow: (commentThreadId: string) => void,
+    renderComment: RenderCommentCall,
   };
 
   state = {
@@ -28,36 +29,44 @@ class DocsCommentSideItem extends React.PureComponent {
   };
 
   _id = uniqueID();
-  _rid = 0;
 
   _style = null;
 
   componentDidMount(): void {
     commentsManager.observe(this._onObserve);
-    this._syncPosition();
+    this._requestCommentThreadReflow();
   }
 
   componentWillUnmount(): void {
     commentsManager.unobserve(this._onObserve);
-    this._rid && window.cancelAnimationFrame(this._rid);
   }
 
   render(): React.Element<any> {
     const {commentThreadId, renderComment} = this.props;
     const isActive = this.state.active;
     const attrs = {[ATTRIBUTE_COMMENT_THREAD_ID]: commentThreadId};
+    const childProps = {
+      commentThreadId,
+      isActive,
+      requestCommentThreadDeletion: this._requestCommentThreadDeletion,
+      requestCommentThreadReflow: this._requestCommentThreadReflow,
+    };
     return (
       <div
         {...attrs}
         id={this._id}
         className="docs-comment-side-item"
         style={this._style}>
-        {renderComment({commentThreadId, isActive, onDismiss: this._onDismiss})}
+        {renderComment(childProps)}
       </div>
     );
   }
 
-  _onDismiss = (): void => {
+  _requestCommentThreadReflow = (): void => {
+    this.props.onRequestCommentThreadReflow(this.props.commentThreadId);
+  };
+
+  _requestCommentThreadDeletion = (): void => {
     const el = document.getElementById(this._id);
     if (el) {
       // TODO: This seems hacky.
@@ -77,56 +86,7 @@ class DocsCommentSideItem extends React.PureComponent {
         this.setState({active: val});
       }
     }
-    this._syncPosition();
-  };
-
-  _syncPosition(): void {
-    window.cancelAnimationFrame(this._rid);
-    this._rid = window.requestAnimationFrame(this._syncPositionImmediate);
-  }
-
-  _syncPositionImmediate = (): void => {
-    const {commentThreadId} = this.props;
-    const el = document.getElementById(this._id);
-    if (!el) {
-      return;
-    }
-    const scrollEl = lookupElementByAttribute(
-      el,
-      'className',
-      'docs-editor-frame-body-scroll',
-    );
-
-    if (!scrollEl) {
-      return;
-    }
-
-    const commentEls = Array.from(document.getElementsByName(commentThreadId));
-    const firstCommentEl = commentEls[0];
-    if (!firstCommentEl) {
-      return;
-    }
-    const scrollRect = scrollEl.getBoundingClientRect();
-    const commentRect = firstCommentEl.getBoundingClientRect();
-    const top = commentRect.top - scrollRect.top + scrollEl.scrollTop;
-    const cssTransform = `translate3d(0, ${top}px, 0)`;
-    const nextStyle = {
-      ...this._style,
-      backfaceVisibility: 'hidden',
-      transform: cssTransform,
-      zIndex: this.state.active ? 2 : 1,
-    };
-
-    Object.assign(el.style, nextStyle);
-
-    // The second-time transtion will have animation.
-    Object.assign(nextStyle, {
-      transitionProperty: 'trasnform',
-      transitionDuration: '250ms',
-      transitionTimingFunction: 'ease-in',
-    });
-
-    this._style = nextStyle;
+    this._requestCommentThreadReflow();
   };
 }
 

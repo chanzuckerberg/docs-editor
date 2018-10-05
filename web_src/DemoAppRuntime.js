@@ -7,6 +7,8 @@ import showModalDialog from '../src/showModalDialog';
 import uuid4 from 'uuid4';
 import {DocsEditorRuntime} from '../src/index.js';
 
+import type {RenderCommentProps} from '../src/Types';
+
 class DemoAppRuntime extends DocsEditorRuntime {
   canLoadHTML(): boolean {
     return true;
@@ -28,9 +30,7 @@ class DemoAppRuntime extends DocsEditorRuntime {
     return `doc/123/comment-thread/${uuid4()}`;
   }
 
-  renderComment(
-    props: {commentThreadId: string, isActive: boolean, onDismiss: Function},
-  ): ?React.Element<any> {
+  renderComment(props: RenderCommentProps): ?React.Element<any> {
     return <DemoComment {...props} />;
   }
 }
