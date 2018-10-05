@@ -1,5 +1,6 @@
 // @flow
 
+import React from 'react';
 import {EditorState} from 'draft-js';
 
 type EventLike = {
@@ -88,7 +89,7 @@ export type DocsEditorProps = {
   editorState: EditorState,
   id?: ?string,
   onChange: (e: EditorState) => void,
-  placeholder?: ?string,
+  placeholder?: any,
 };
 
 export type DocsEditorLike = {
