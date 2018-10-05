@@ -44,7 +44,7 @@ type Props = {
   maxContentHeight?: ?number,
   onBlur?: () => void,
   onChange?: (e: EditorState) => void,
-  placeholder?: ?string,
+  placeholder?: ?(string | React.Element<any>),
   width?: ?(string | number),
 };
 
@@ -134,10 +134,17 @@ class DocsEditor extends React.PureComponent {
     invariant(docsContext, 'prop `docsContext` is required');
 
     const activeEditor = this._activeEditor;
-    const placeholderText =
-      (isEditorStateEmpty(editorState) && docsContext.canEdit && activeEditor) ?
-      (placeholder || 'Type something') :
-      '';
+    let placeholderContent = null;
+
+    if (isEditorStateEmpty(editorState)) {
+      if (docsContext.canEdit) {
+        if (activeEditor) {
+          placeholderContent = placeholder || 'Type something';
+        }
+      } else {
+        placeholderContent = placeholder || '';
+      }
+    }
 
     const editorId = id || this._id;
     const attrs = {
@@ -201,7 +208,7 @@ class DocsEditor extends React.PureComponent {
                 editorState={editorState}
                 id={editorId}
                 onChange={this._onChange}
-                placeholder={placeholderText}
+                placeholder={placeholderContent}
                 ref={this._onEditorRef}
               />
               {commentSidePanel}

@@ -80,6 +80,7 @@ class DemoApp extends React.PureComponent<any, any, any> {
             height="100%"
             width="100%"
             onChange={this._onChange}
+            placeholder={"type something"}
           />
         </div>
         <div className="side-column">
