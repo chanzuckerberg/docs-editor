@@ -300,7 +300,17 @@ var DocsEditor = function (_React$PureComponent) {
       (0, _invariant2.default)(docsContext, 'prop `docsContext` is required');
 
       var activeEditor = this._activeEditor;
-      var placeholderText = (0, _isEditorStateEmpty2.default)(editorState) && docsContext.canEdit && activeEditor ? placeholder || 'Type something' : '';
+      var placeholderContent = null;
+
+      if ((0, _isEditorStateEmpty2.default)(editorState)) {
+        if (docsContext.canEdit) {
+          if (activeEditor) {
+            placeholderContent = placeholder || 'Type something';
+          }
+        } else {
+          placeholderContent = placeholder || '';
+        }
+      }
 
       var editorId = id || this._id;
       var attrs = (0, _defineProperty3.default)({}, _DocsDataAttributes2.default.EDITOR_FOR, editorId);
@@ -360,7 +370,7 @@ var DocsEditor = function (_React$PureComponent) {
                 editorState: editorState,
                 id: editorId,
                 onChange: this._onChange,
-                placeholder: placeholderText,
+                placeholder: placeholderContent,
                 ref: this._onEditorRef
               }),
               commentSidePanel

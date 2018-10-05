@@ -1,6 +1,12 @@
 'use strict';
 
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
 var _draftJs = require('draft-js');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // e.g. {'color': 'red'}
 if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginFlowReactPropTypes_proptype_HTMLCollectionLike', {
@@ -96,7 +102,7 @@ if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginF
     editorState: require('prop-types').any.isRequired,
     id: require('prop-types').string,
     onChange: require('prop-types').func.isRequired,
-    placeholder: require('prop-types').string
+    placeholder: require('prop-types').any
   })
 });
 if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginFlowReactPropTypes_proptype_DocsEditorLike', {
@@ -107,7 +113,7 @@ if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginF
       editorState: require('prop-types').any.isRequired,
       id: require('prop-types').string,
       onChange: require('prop-types').func.isRequired,
-      placeholder: require('prop-types').string
+      placeholder: require('prop-types').any
     }).isRequired
   })
 });
