@@ -142,3 +142,14 @@ export type DocsCommentEntityData = {
 export type DocsCommentElement = {
   forceUpdate: () => void,
 };
+
+export type RenderCommentProps = {
+  commentThreadId: string,
+  isActive: boolean,
+  requestCommentThreadDeletion: Function,
+  requestCommentThreadReflow: Function,
+};
+
+export type RenderCommentCall = (
+  props: RenderCommentProps,
+) => ?React.Element<any>;

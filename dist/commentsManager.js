@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.ATTRIBUTE_COMMENT_THREAD_ID = exports.ATTRIBUTE_COMMENT_ACTIVE = undefined;
+exports.ATTRIBUTE_COMMENT_USE_TRANSITION = exports.ATTRIBUTE_COMMENT_THREAD_ID = exports.ATTRIBUTE_COMMENT_ACTIVE = undefined;
 
 var _from = require('babel-runtime/core-js/array/from');
 
@@ -49,10 +49,6 @@ var _getDOMSelectionNode = require('./getDOMSelectionNode');
 
 var _getDOMSelectionNode2 = _interopRequireDefault(_getDOMSelectionNode);
 
-var _invariant = require('invariant');
-
-var _invariant2 = _interopRequireDefault(_invariant);
-
 var _lookupElementByAttribute = require('./lookupElementByAttribute');
 
 var _lookupElementByAttribute2 = _interopRequireDefault(_lookupElementByAttribute);
@@ -67,6 +63,7 @@ var babelPluginFlowReactPropTypes_proptype_DocsCommentElement = require('./Types
 
 var ATTRIBUTE_COMMENT_ACTIVE = exports.ATTRIBUTE_COMMENT_ACTIVE = 'data-docs-comment-active';
 var ATTRIBUTE_COMMENT_THREAD_ID = exports.ATTRIBUTE_COMMENT_THREAD_ID = 'data-docs-comment-thread-id';
+var ATTRIBUTE_COMMENT_USE_TRANSITION = exports.ATTRIBUTE_COMMENT_USE_TRANSITION = 'data-docs-comment-use-transition';
 
 var DocsCommentsManager = function () {
   function DocsCommentsManager() {
@@ -105,7 +102,6 @@ var DocsCommentsManager = function () {
       if (components.has(component)) {
         return;
       }
-      (0, _invariant2.default)(!components.has(component), 'already registered');
       components.add(component);
       this._entries.set(commentThreadId, components);
       if (this._entries.size === 1) {
@@ -153,8 +149,10 @@ var DocsCommentsManager = function () {
     key: 'setEditorState',
     value: function setEditorState(editorState) {
       if (editorState !== this._editorState) {
+        var changed = this._editorState.getCurrentContent() !== editorState.getCurrentContent();
+
         this._editorState = editorState;
-        this._onChange();
+        changed && this._onChange();
       }
     }
   }, {

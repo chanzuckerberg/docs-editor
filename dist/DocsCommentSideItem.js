@@ -4,21 +4,13 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _defineProperty2 = require('babel-runtime/helpers/defineProperty');
-
-var _defineProperty3 = _interopRequireDefault(_defineProperty2);
-
-var _assign = require('babel-runtime/core-js/object/assign');
-
-var _assign2 = _interopRequireDefault(_assign);
-
 var _extends2 = require('babel-runtime/helpers/extends');
 
 var _extends3 = _interopRequireDefault(_extends2);
 
-var _from = require('babel-runtime/core-js/array/from');
+var _defineProperty2 = require('babel-runtime/helpers/defineProperty');
 
-var _from2 = _interopRequireDefault(_from);
+var _defineProperty3 = _interopRequireDefault(_defineProperty2);
 
 var _getPrototypeOf = require('babel-runtime/core-js/object/get-prototype-of');
 
@@ -78,6 +70,8 @@ require('./DocsCommentSideItem.css');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var babelPluginFlowReactPropTypes_proptype_RenderCommentCall = require('./Types').babelPluginFlowReactPropTypes_proptype_RenderCommentCall || require('prop-types').any;
+
 var DocsCommentSideItem = function (_React$PureComponent) {
   (0, _inherits3.default)(DocsCommentSideItem, _React$PureComponent);
 
@@ -94,7 +88,9 @@ var DocsCommentSideItem = function (_React$PureComponent) {
 
     return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = DocsCommentSideItem.__proto__ || (0, _getPrototypeOf2.default)(DocsCommentSideItem)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
       active: _this.props.commentThreadId === _commentsManager2.default.getActiveCommentThreadId()
-    }, _this._id = (0, _uniqueID2.default)(), _this._rid = 0, _this._style = null, _this._onDismiss = function () {
+    }, _this._id = (0, _uniqueID2.default)(), _this._style = null, _this._requestCommentThreadReflow = function () {
+      _this.props.onRequestCommentThreadReflow(_this.props.commentThreadId);
+    }, _this._requestCommentThreadDeletion = function () {
       var el = document.getElementById(_this._id);
       if (el) {
         // TODO: This seems hacky.
@@ -115,45 +111,7 @@ var DocsCommentSideItem = function (_React$PureComponent) {
           _this.setState({ active: val });
         }
       }
-      _this._syncPosition();
-    }, _this._syncPositionImmediate = function () {
-      var commentThreadId = _this.props.commentThreadId;
-
-      var el = document.getElementById(_this._id);
-      if (!el) {
-        return;
-      }
-      var scrollEl = (0, _lookupElementByAttribute2.default)(el, 'className', 'docs-editor-frame-body-scroll');
-
-      if (!scrollEl) {
-        return;
-      }
-
-      var commentEls = (0, _from2.default)(document.getElementsByName(commentThreadId));
-      var firstCommentEl = commentEls[0];
-      if (!firstCommentEl) {
-        return;
-      }
-      var scrollRect = scrollEl.getBoundingClientRect();
-      var commentRect = firstCommentEl.getBoundingClientRect();
-      var top = commentRect.top - scrollRect.top + scrollEl.scrollTop;
-      var cssTransform = 'translate3d(0, ' + top + 'px, 0)';
-      var nextStyle = (0, _extends3.default)({}, _this._style, {
-        backfaceVisibility: 'hidden',
-        transform: cssTransform,
-        zIndex: _this.state.active ? 2 : 1
-      });
-
-      (0, _assign2.default)(el.style, nextStyle);
-
-      // The second-time transtion will have animation.
-      (0, _assign2.default)(nextStyle, {
-        transitionProperty: 'trasnform',
-        transitionDuration: '250ms',
-        transitionTimingFunction: 'ease-in'
-      });
-
-      _this._style = nextStyle;
+      _this._requestCommentThreadReflow();
     }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
   }
 
@@ -161,13 +119,12 @@ var DocsCommentSideItem = function (_React$PureComponent) {
     key: 'componentDidMount',
     value: function componentDidMount() {
       _commentsManager2.default.observe(this._onObserve);
-      this._syncPosition();
+      this._requestCommentThreadReflow();
     }
   }, {
     key: 'componentWillUnmount',
     value: function componentWillUnmount() {
       _commentsManager2.default.unobserve(this._onObserve);
-      this._rid && window.cancelAnimationFrame(this._rid);
     }
   }, {
     key: 'render',
@@ -178,20 +135,20 @@ var DocsCommentSideItem = function (_React$PureComponent) {
 
       var isActive = this.state.active;
       var attrs = (0, _defineProperty3.default)({}, _commentsManager.ATTRIBUTE_COMMENT_THREAD_ID, commentThreadId);
+      var childProps = {
+        commentThreadId: commentThreadId,
+        isActive: isActive,
+        requestCommentThreadDeletion: this._requestCommentThreadDeletion,
+        requestCommentThreadReflow: this._requestCommentThreadReflow
+      };
       return _react2.default.createElement(
         'div',
         (0, _extends3.default)({}, attrs, {
           id: this._id,
           className: 'docs-comment-side-item',
           style: this._style }),
-        renderComment({ commentThreadId: commentThreadId, isActive: isActive, onDismiss: this._onDismiss })
+        renderComment(childProps)
       );
-    }
-  }, {
-    key: '_syncPosition',
-    value: function _syncPosition() {
-      window.cancelAnimationFrame(this._rid);
-      this._rid = window.requestAnimationFrame(this._syncPositionImmediate);
     }
   }]);
   return DocsCommentSideItem;

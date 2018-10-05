@@ -170,3 +170,11 @@ if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginF
     forceUpdate: require('prop-types').func.isRequired
   })
 });
+if (typeof exports !== 'undefined') Object.defineProperty(exports, 'babelPluginFlowReactPropTypes_proptype_RenderCommentProps', {
+  value: require('prop-types').shape({
+    commentThreadId: require('prop-types').string.isRequired,
+    isActive: require('prop-types').bool.isRequired,
+    requestCommentThreadDeletion: require('prop-types').func.isRequired,
+    requestCommentThreadReflow: require('prop-types').func.isRequired
+  })
+});

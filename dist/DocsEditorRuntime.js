@@ -27,6 +27,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 // communicate with the app server to do tasks such as uploading images,
 // load comments, ...etc.
 
+var babelPluginFlowReactPropTypes_proptype_RenderCommentProps = require('./Types').babelPluginFlowReactPropTypes_proptype_RenderCommentProps || require('prop-types').any;
+
 var babelPluginFlowReactPropTypes_proptype_ImageLike = require('./Types').babelPluginFlowReactPropTypes_proptype_ImageLike || require('prop-types').any;
 
 var DocsEditorRuntime = function () {
