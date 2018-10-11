@@ -112,7 +112,7 @@ function loadResources(id) {
     }));
   }
 
-  if (/localhost/.test(window.location.href)) {
+  if (/(localhost|hedger|dev)/.test(window.location.href)) {
     // TODO:
     // This is not production ready, must have an reliable way to detect this.
     resources.push(createElement('script', {
