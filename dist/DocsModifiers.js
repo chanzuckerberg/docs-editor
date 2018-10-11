@@ -319,8 +319,10 @@ function ensureAtomicBlocksAreSelectable(editorState) {
     selectionBefore: selection,
     selectionAfter: selection
   });
-  var decorator = _DocsDecorator2.default.get();
-  return _draftJs.EditorState.createWithContent(newContentState, decorator);
+
+  return _draftJs.EditorState.push(editorState, newContentState, _DocsEditorChangeType.CHANGE_BLOCK_DATA);
+  // const decorator = DocsDecorator.get();
+  //return EditorState.createWithContent(newContentState, decorator);
 }
 
 function pasteHTML(editorState, html) {
