@@ -11,7 +11,7 @@ import DocsLink from './DocsLink';
 import DocsMath from './DocsMath';
 import DocsTable from './DocsTable';
 
-// import DocsCalculator from './DocsCalculator';
+import DocsCalculator from './DocsCalculator';
 import DocsComment from './DocsComment';
 
 function registerCustomBlocks(specs: Array<Array<any>>): void {
@@ -30,7 +30,7 @@ function registerDecorator(specs: Array<Array<any>>): void {
 
 function init(): void {
   registerCustomBlocks([
-    // [DocsBlockTypes.DOCS_CALCULATOR, DocsCalculator],
+    [DocsBlockTypes.DOCS_CALCULATOR, DocsCalculator],
     [DocsBlockTypes.DOCS_EXPANDABLE, DocsExpandable],
     [DocsBlockTypes.DOCS_TABLE, DocsTable],
   ]);
