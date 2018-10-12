@@ -240,7 +240,7 @@ function getRootElement(id) {
   // Populates the default ARIA attributes here.
   // http://accessibility.athena-ict.com/aria/examples/dialog.shtml
   element.setAttribute('role', 'dialog');
-  element.setAttribute('aria-hidden', 'true');
+  element.setAttribute('aria-modal', 'true');
   if (!element.parentElement) {
     root.appendChild(element);
   }
