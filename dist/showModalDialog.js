@@ -289,10 +289,8 @@ function resetModalsAccessibility() {
   while (ii <= lastIndex) {
     var el = els[ii];
     if (ii < lastIndex) {
-      el.removeAttribute('aria-modal');
       el.setAttribute('aria-hidden', 'true');
     } else {
-      el.setAttribute('aria-modal', 'true');
       el.removeAttribute('aria-hidden');
     }
     ii++;
