@@ -1,20 +1,20 @@
 // @flow
 
+import type {DocsTableEntityData, DocumentLike, ElementLike, HTMLCollectionLike} from './Types';
+
+import type {CSSRules} from './getCSSRules';
 import Color from 'color';
 import DocsCustomStyleMap from './DocsCustomStyleMap';
+import {EditorState} from 'draft-js';
+import type {SafeHTML} from './getSafeHTML';
 import asElement from './asElement';
 import asNumber from './asNumber';
 import convertToRaw from './convertToRaw';
 import createEmptyEditorState from './createEmptyEditorState';
+import {getEntityDataID} from './DocsTableModifiers';
 import getSafeHTML from './getSafeHTML';
 import invariant from 'invariant';
-import {EditorState} from 'draft-js';
-import {getEntityDataID} from './DocsTableModifiers';
 import {toggleHeaderBackground} from './DocsTableModifiers';
-
-import type {DocsTableEntityData, ElementLike, DocumentLike, HTMLCollectionLike} from './Types';
-import type {SafeHTML} from './getSafeHTML';
-import type {CSSRules} from './getCSSRules';
 
 type convertFromHTML = (
   html: string,
@@ -190,13 +190,13 @@ function getColsCount(rows: ?HTMLCollectionLike): number {
   if (!cells || !cells.length) {
     return 0;
   }
-  return Array.from(cells).reduce((sum, cell) => {
+  return Math.max(0, Array.from(cells).reduce((sum, cell) => {
     sum++;
     if (cell && cell.colSpan && cell.colSpan > 1) {
       sum += cell.colSpan - 1;
     }
     return sum;
-  }, 0);
+  }, 0));
 }
 
 

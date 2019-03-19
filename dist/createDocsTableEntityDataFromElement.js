@@ -16,6 +16,8 @@ var _DocsCustomStyleMap = require('./DocsCustomStyleMap');
 
 var _DocsCustomStyleMap2 = _interopRequireDefault(_DocsCustomStyleMap);
 
+var _draftJs = require('draft-js');
+
 var _asElement = require('./asElement');
 
 var _asElement2 = _interopRequireDefault(_asElement);
@@ -32,6 +34,8 @@ var _createEmptyEditorState = require('./createEmptyEditorState');
 
 var _createEmptyEditorState2 = _interopRequireDefault(_createEmptyEditorState);
 
+var _DocsTableModifiers = require('./DocsTableModifiers');
+
 var _getSafeHTML = require('./getSafeHTML');
 
 var _getSafeHTML2 = _interopRequireDefault(_getSafeHTML);
@@ -40,23 +44,19 @@ var _invariant = require('invariant');
 
 var _invariant2 = _interopRequireDefault(_invariant);
 
-var _draftJs = require('draft-js');
-
-var _DocsTableModifiers = require('./DocsTableModifiers');
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var babelPluginFlowReactPropTypes_proptype_HTMLCollectionLike = require('./Types').babelPluginFlowReactPropTypes_proptype_HTMLCollectionLike || require('prop-types').any;
 
-var babelPluginFlowReactPropTypes_proptype_DocumentLike = require('./Types').babelPluginFlowReactPropTypes_proptype_DocumentLike || require('prop-types').any;
-
 var babelPluginFlowReactPropTypes_proptype_ElementLike = require('./Types').babelPluginFlowReactPropTypes_proptype_ElementLike || require('prop-types').any;
+
+var babelPluginFlowReactPropTypes_proptype_DocumentLike = require('./Types').babelPluginFlowReactPropTypes_proptype_DocumentLike || require('prop-types').any;
 
 var babelPluginFlowReactPropTypes_proptype_DocsTableEntityData = require('./Types').babelPluginFlowReactPropTypes_proptype_DocsTableEntityData || require('prop-types').any;
 
-var babelPluginFlowReactPropTypes_proptype_SafeHTML = require('./getSafeHTML').babelPluginFlowReactPropTypes_proptype_SafeHTML || require('prop-types').any;
-
 var babelPluginFlowReactPropTypes_proptype_CSSRules = require('./getCSSRules').babelPluginFlowReactPropTypes_proptype_CSSRules || require('prop-types').any;
+
+var babelPluginFlowReactPropTypes_proptype_SafeHTML = require('./getSafeHTML').babelPluginFlowReactPropTypes_proptype_SafeHTML || require('prop-types').any;
 
 function setDocsTableEntityDataFromCell(safeHTML, row, cell, convertFromHTML, entityData) {
   var newEntityData = entityData;
@@ -199,13 +199,13 @@ function getColsCount(rows) {
   if (!cells || !cells.length) {
     return 0;
   }
-  return (0, _from2.default)(cells).reduce(function (sum, cell) {
+  return Math.max(0, (0, _from2.default)(cells).reduce(function (sum, cell) {
     sum++;
     if (cell && cell.colSpan && cell.colSpan > 1) {
       sum += cell.colSpan - 1;
     }
-    return sum >= 0 ? sum : 0;
-  }, 0);
+    return sum;
+  }, 0));
 }
 
 function createDocsTableEntityDataFromElement(safeHTML, table, convertFromHTML) {
