@@ -204,7 +204,7 @@ function getColsCount(rows) {
     if (cell && cell.colSpan && cell.colSpan > 1) {
       sum += cell.colSpan - 1;
     }
-    return sum;
+    return sum >= 0 ? sum : 0;
   }, 0);
 }
 
