@@ -28,6 +28,10 @@ var _inherits2 = require('babel-runtime/helpers/inherits');
 
 var _inherits3 = _interopRequireDefault(_inherits2);
 
+require('./DocsTable.css');
+
+var _draftJs = require('draft-js');
+
 var _DocsDataAttributes = require('./DocsDataAttributes');
 
 var _DocsDataAttributes2 = _interopRequireDefault(_DocsDataAttributes);
@@ -67,10 +71,6 @@ var _uniqueID2 = _interopRequireDefault(_uniqueID);
 var _withDocsContext = require('./withDocsContext');
 
 var _withDocsContext2 = _interopRequireDefault(_withDocsContext);
-
-var _draftJs = require('draft-js');
-
-require('./DocsTable.css');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -207,14 +207,29 @@ var DocsTable = function (_React$PureComponent) {
       });
       var attrs = (0, _defineProperty3.default)({}, _DocsDataAttributes2.default.EDITOR_FOR, editorID);
       var tableAttrs = (_tableAttrs = {}, (0, _defineProperty3.default)(_tableAttrs, _DocsDataAttributes2.default.ELEMENT, true), (0, _defineProperty3.default)(_tableAttrs, _DocsDataAttributes2.default.TABLE, true), _tableAttrs);
-      var resizePlaceholderCells = new Array(colsCount).fill(0).map(function (_, ii) {
-        var width = colWidths ? Math.round(colWidths[ii] * 10000) / 100 + '%' : undefined;
-        return _react2.default.createElement('td', {
-          className: 'docs-table-resize-placeholder-cell',
-          key: 'resize_' + ii,
-          width: width
+      var resizeControl = null;
+      if (colsCount > 1) {
+        var resizePlaceholderCells = new Array(colsCount).fill(0).map(function (_, ii) {
+          var width = colWidths ? Math.round(colWidths[ii] * 10000) / 100 + '%' : undefined;
+          return _react2.default.createElement('td', {
+            className: 'docs-table-resize-placeholder-cell',
+            key: 'resize_' + ii,
+            width: width
+          });
         });
-      });
+        resizeControl = _react2.default.createElement(
+          'tbody',
+          {
+            'aria-hidden': 'true',
+            className: 'docs-table-resize-placeholder-body' },
+          _react2.default.createElement(
+            'tr',
+            { className: 'docs-table-resize-placeholder-row' },
+            resizePlaceholderCells
+          )
+        );
+      }
+
       return _react2.default.createElement(
         'div',
         (0, _extends3.default)({}, attrs, {
@@ -235,17 +250,7 @@ var DocsTable = function (_React$PureComponent) {
             className: 'docs-table',
             id: tableID,
             ref: this._onTableRef }),
-          _react2.default.createElement(
-            'tbody',
-            {
-              'aria-hidden': 'true',
-              className: 'docs-table-resize-placeholder-body' },
-            _react2.default.createElement(
-              'tr',
-              { className: 'docs-table-resize-placeholder-row' },
-              resizePlaceholderCells
-            )
-          ),
+          resizeControl,
           _react2.default.createElement(
             'tbody',
             { className: 'docs-table-body' },
