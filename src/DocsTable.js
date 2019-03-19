@@ -1,6 +1,11 @@
 // @flow
 
+import './DocsTable.css';
+
+import {ContentBlock, EditorState, Entity} from 'draft-js';
+
 import DocsDataAttributes from './DocsDataAttributes';
+import type {DocsEditorLike} from './Types';
 import DocsEventTypes from './DocsEventTypes';
 import DocsTableModifiers from './DocsTableModifiers';
 import DocsTableRow from './DocsTableRow';
@@ -10,11 +15,6 @@ import ReactDOM from 'react-dom';
 import cx from 'classnames';
 import uniqueID from './uniqueID';
 import withDocsContext from './withDocsContext';
-import {ContentBlock, EditorState, Entity} from 'draft-js';
-
-import './DocsTable.css';
-
-import type {DocsEditorLike} from './Types';
 
 type Props = {
   block: ContentBlock,
@@ -91,18 +91,30 @@ class DocsTable extends React.PureComponent {
       [DocsDataAttributes.ELEMENT]: true,
       [DocsDataAttributes.TABLE]: true,
     };
-    const resizePlaceholderCells = new Array(colsCount).fill(0).map((_, ii) => {
-      const width = colWidths ?
-        (Math.round(colWidths[ii] * 10000) / 100) + '%' :
-        undefined;
-      return (
-        <td
-          className="docs-table-resize-placeholder-cell"
-          key={`resize_${ii}`}
-          width={width}
-        />
-      );
-    });
+    let resizeControl = null;
+    if (colsCount > 1) {
+      const resizePlaceholderCells =  new Array(colsCount).fill(0).map((_, ii) => {
+        const width = colWidths ?
+          (Math.round(colWidths[ii] * 10000) / 100) + '%' :
+          undefined;
+        return (
+          <td
+            className="docs-table-resize-placeholder-cell"
+            key={`resize_${ii}`}
+            width={width}
+          />
+        );
+      });
+      resizeControl =
+        <tbody
+          aria-hidden="true"
+          className="docs-table-resize-placeholder-body">
+          <tr className="docs-table-resize-placeholder-row">
+            {resizePlaceholderCells}
+          </tr>
+        </tbody>;
+    }
+
     return (
       <div
         {...attrs}
@@ -122,13 +134,7 @@ class DocsTable extends React.PureComponent {
           className="docs-table"
           id={tableID}
           ref={this._onTableRef}>
-          <tbody
-            aria-hidden="true"
-            className="docs-table-resize-placeholder-body">
-            <tr className="docs-table-resize-placeholder-row">
-              {resizePlaceholderCells}
-            </tr>
-          </tbody>
+          {resizeControl}
           <tbody className="docs-table-body">
             {rows}
           </tbody>
