@@ -1,5 +1,7 @@
-# docs-editor
-Rich Text Editor for education purpose.
+
+# docs-editor (archived)
+- Rich Text Editor for education purpose.
+- This project is no longer maintained.
 
 ## DEMO
 http://cdn.summitlearning.org/assets/index_latest.html
