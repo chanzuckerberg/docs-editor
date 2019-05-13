@@ -56,13 +56,13 @@ var _Timer = require('./Timer');
 
 var _Timer2 = _interopRequireDefault(_Timer);
 
-var _underscore = require('underscore');
-
-var _underscore2 = _interopRequireDefault(_underscore);
-
 var _classnames = require('classnames');
 
 var _classnames2 = _interopRequireDefault(_classnames);
+
+var _noop = require('./noop');
+
+var _noop2 = _interopRequireDefault(_noop);
 
 var _splitTextIntoTextBlocks = require('./splitTextIntoTextBlocks');
 
@@ -267,7 +267,7 @@ var DocsBaseEditor = function (_React$PureComponent) {
 
     var descriptor = {
       get: _this3._getID,
-      set: _underscore2.default.noop,
+      set: _noop2.default,
       enumerable: true,
       configurable: false
     };

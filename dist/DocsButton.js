@@ -32,13 +32,13 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
-var _underscore = require('underscore');
-
-var _underscore2 = _interopRequireDefault(_underscore);
-
 var _classnames = require('classnames');
 
 var _classnames2 = _interopRequireDefault(_classnames);
+
+var _noop = require('./noop');
+
+var _noop2 = _interopRequireDefault(_noop);
 
 var _reactBootstrap = require('react-bootstrap');
 
@@ -111,8 +111,8 @@ var DocsButton = function (_React$PureComponent) {
           className: className,
           'data-docs-tool': 'true',
           disabled: disabled,
-          onMouseDown: disabled ? _underscore2.default.noop : this._onMouseDown,
-          onMouseUp: disabled ? _underscore2.default.noop : this._onMouseUp,
+          onMouseDown: disabled ? _noop2.default : this._onMouseDown,
+          onMouseUp: disabled ? _noop2.default : this._onMouseUp,
           title: label },
         _react2.default.createElement(
           'span',

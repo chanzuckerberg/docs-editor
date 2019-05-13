@@ -26,7 +26,10 @@ function injectElement(
   element: Element,
   onLoad: Function
 ): void {
+  let retryCount = 0;
+  let retryDelay = 0;
   const oldEl = element.id ? document.getElementById(element.id) : null;
+ 
   if (oldEl) {
     cleanElementHandlers(oldEl);
     oldEl.parentElement && oldEl.parentElement.removeChild(oldEl);
@@ -41,7 +44,11 @@ function injectElement(
     // re-try.
     const retry = injectElement.bind(null, element.cloneNode(true), onLoad);
     warn('Failed to load resource for <' + element.id + '>, will try again');
-    setTimeout(retry, 1000);
+    retryDelay += 1000;
+    retryCount += 1;
+    if (retryCount < 10) {
+      setTimeout(retry, retryDelay);
+    }
   };
   const head = nullthrows(document.head || document.body);
   head.appendChild(element);
@@ -73,8 +80,7 @@ function loadResources(id: string): Promise<any> {
     createElement('link', {
       id: id + '-katex-style',
       crossorigin: 'anonymous',
-      href: 'https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css',
-      integrity: 'sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH',
+      href: 'https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.min.css',
       rel: 'stylesheet',
     }),
   ];

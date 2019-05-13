@@ -2,8 +2,8 @@
 
 import DocsIcon from './DocsIcon';
 import React from 'react';
-import _ from 'underscore';
 import cx from 'classnames';
+import noop from './noop';
 import {Button} from 'react-bootstrap';
 
 import './DocsButton.css';
@@ -43,8 +43,8 @@ class DocsButton extends React.PureComponent {
         className={className}
         data-docs-tool="true"
         disabled={disabled}
-        onMouseDown={disabled ? _.noop : this._onMouseDown}
-        onMouseUp={disabled ? _.noop : this._onMouseUp}
+        onMouseDown={disabled ? noop : this._onMouseDown}
+        onMouseUp={disabled ? noop : this._onMouseUp}
         title={label}>
         <span id={id}>
           {child}

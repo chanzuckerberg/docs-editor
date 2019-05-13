@@ -53,7 +53,10 @@ function cleanElementHandlers(element) {
 }
 
 function injectElement(element, onLoad) {
+  var retryCount = 0;
+  var retryDelay = 0;
   var oldEl = element.id ? document.getElementById(element.id) : null;
+
   if (oldEl) {
     cleanElementHandlers(oldEl);
     oldEl.parentElement && oldEl.parentElement.removeChild(oldEl);
@@ -68,7 +71,11 @@ function injectElement(element, onLoad) {
     // re-try.
     var retry = injectElement.bind(null, element.cloneNode(true), onLoad);
     (0, _warn2.default)('Failed to load resource for <' + element.id + '>, will try again');
-    setTimeout(retry, 1000);
+    retryDelay += 1000;
+    retryCount += 1;
+    if (retryCount < 10) {
+      setTimeout(retry, retryDelay);
+    }
   };
   var head = (0, _nullthrows2.default)(document.head || document.body);
   head.appendChild(element);
@@ -99,8 +106,7 @@ function loadResources(id) {
   var resources = [createElement('link', {
     id: id + '-katex-style',
     crossorigin: 'anonymous',
-    href: 'https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css',
-    integrity: 'sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH',
+    href: 'https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.min.css',
     rel: 'stylesheet'
   })];
   if (!isUsingMaterialIcon()) {
