@@ -6,8 +6,8 @@ import DocsEditorBlockRenderer from './DocsEditorBlockRenderer';
 import DocsEditorFocusManager from './DocsEditorFocusManager';
 import React from 'react';
 import Timer from './Timer';
-import _ from 'underscore';
 import cx from 'classnames';
+import noop from './noop';
 import splitTextIntoTextBlocks from './splitTextIntoTextBlocks';
 import tryBlur from './tryBlur';
 import tryFocus from './tryFocus';
@@ -71,7 +71,7 @@ class DocsBaseEditor extends React.PureComponent {
 
     const descriptor: any = {
       get: this._getID,
-      set: _.noop,
+      set: noop,
       enumerable: true,
       configurable: false,
     };
