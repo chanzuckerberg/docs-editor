@@ -49,7 +49,7 @@ var babelPluginFlowReactPropTypes_proptype_DocsMathEntityData = require('./Types
 
 // This file is manually built and uploaded to S3.
 // See https://github.com/FB-PLP/react-math-input-app
-var GUPPY_CDN_URL = '//cdn.summitlearning.org/assets/app_react_math_input_app_0_0_3_8.html';
+var GUPPY_CDN_URL = '//cdn.summitlearning.org/assets/app_react_math_input_app_0_0_3_9.html';
 
 var DocsMathEditor = function (_React$PureComponent) {
   (0, _inherits3.default)(DocsMathEditor, _React$PureComponent);
