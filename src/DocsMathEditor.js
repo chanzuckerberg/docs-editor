@@ -37,7 +37,7 @@ type MessageDetail = {
 // This file is manually built and uploaded to S3.
 // See https://github.com/FB-PLP/react-math-input-app
 const GUPPY_CDN_URL =
-  '//cdn.summitlearning.org/assets/app_react_math_input_app_0_0_3_8.html';
+  '//cdn.summitlearning.org/assets/app_react_math_input_app_0_0_3_9.html';
 
 class DocsMathEditor extends React.PureComponent {
   _id = uniqueID();
