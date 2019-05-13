@@ -99,8 +99,7 @@ function loadResources(id) {
   var resources = [createElement('link', {
     id: id + '-katex-style',
     crossorigin: 'anonymous',
-    href: 'https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/katex.min.css',
-    integrity: 'sha384-9tPv11A+glH/on/wEu99NVwDPwkMQESOocs/ZGXPoIiLE8MU/qkqUcZ3zzL+6DuH',
+    href: 'https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/katex.min.css',
     rel: 'stylesheet'
   })];
   if (!isUsingMaterialIcon()) {
