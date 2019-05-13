@@ -68,7 +68,7 @@
     "fbjs": "0.8.16",
     "immutable": "3.8.1",
     "invariant": "2.2.4",
-    "katex": "0.10.0-beta",
+    "katex": "0.10.1",
     "nullthrows": "1.0.1",
     "react": "15.5.4",
     "react-bootstrap": "0.31.5",

@@ -43,7 +43,7 @@ def build_html_app(html_path, namespace):
   html_text = read_text(html_path)
   # We don't wanna host the fonts. Use CDN instead.
   # See https://github.com/Khan/KaTeX
-  html_text= re.sub(r'fonts\/KaTeX_', 'https://cdn.jsdelivr.net/npm/katex@0.10.0-beta/dist/fonts/KaTeX_', html_text)
+  html_text= re.sub(r'fonts\/KaTeX_', 'https://cdn.jsdelivr.net/npm/katex@0.10.1/dist/fonts/KaTeX_', html_text)
   html_path = 'bin/' + output_html_file_name
   write_text(html_path, html_text)
   write_text('bin/' + file_name + '_latest.html', html_text)
