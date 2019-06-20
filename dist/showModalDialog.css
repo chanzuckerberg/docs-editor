@@ -1,6 +1,10 @@
 .global-modal-dialog-root {
-  background: rgba(0, 0, 0, 0.2);
+  align-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
   bottom: -100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   left:0;
   position: fixed;
   right: 0;
@@ -14,13 +18,12 @@
 
 .global-modal-dialog.popover {
   animation: popover_fadein 250ms;
-  left: 50%;
+  left: 0;
   max-height: 95vh;;
   max-width: 95vw;
   min-width: 450px;
-  position: absolute;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  position: relative;
+  top: 0;
   z-index: 1051;
 }
 
