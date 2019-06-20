@@ -19,6 +19,7 @@
 .global-modal-dialog.popover {
   animation: popover_fadein 250ms;
   left: 0;
+  margin: auto;
   max-height: 95vh;;
   max-width: 95vw;
   min-width: 450px;
