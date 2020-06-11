@@ -66,23 +66,15 @@ class Modal extends React.PureComponent {
   props: Props;
 
   render(): React.Element<any> {
-    const {
-      id,
-      viewProps,
-      onConfirm,
-      onCancel,
-      View,
-    } = this.props;
+    const {id, viewProps, onConfirm, onCancel, View} = this.props;
     return (
       <Popover
         className="global-modal-dialog"
         id={id}
-        placement="top">
-        <View
-          {...viewProps}
-          onCancel={onCancel}
-          onConfirm={onConfirm}
-        />
+        onKeyDown={this._onKeyDown}
+        placement="top"
+      >
+        <View {...viewProps} onCancel={onCancel} onConfirm={onConfirm} />
       </Popover>
     );
   }
@@ -170,6 +162,32 @@ class Modal extends React.PureComponent {
     }
   };
 
+  // follows https://uxdesign.cc/how-to-trap-focus-inside-modal-to-make-it-ada-compliant-6a50f9a70700
+  _onKeyDown = (e: any) => {
+    const modalRoot = document.getElementById(this.props.id);
+    const {target} = e;
+
+    if (!modalRoot || e.key !== 'Tab') {
+      return;
+    }
+
+    const focusableElements = modalRoot.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    const firstFocusableElement = focusableElements[0];
+    const lastFocusableElement = focusableElements[focusableElements.length - 1];
+
+    // shift + tab pressed on first element, wrap back to last
+    if (e.shiftKey && target === firstFocusableElement) {
+      lastFocusableElement.focus();
+      e.preventDefault();
+    } else if (target === lastFocusableElement) {
+      // tab pressed on last element, wrap back to first
+      firstFocusableElement.focus();
+      e.preventDefault();
+    }
+  };
+
   _autoDismiss = (): void => {
     !this._unmounted && this.props.onCancel();
   };
@@ -198,7 +216,7 @@ function getRootElement(id: string): HTMLElement {
 function renderModal(props: Props): void {
   const {id} = props;
   const rootNode = getRootElement(id);
-  const component = <Modal {...props} id={id + '-modal'}/>;
+  const component = <Modal {...props} id={id + '-modal'} />;
   ReactDOM.render(component, rootNode);
   resetModalsAccessibility();
 }
