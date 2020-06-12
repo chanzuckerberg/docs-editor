@@ -172,13 +172,10 @@ class Modal extends React.PureComponent {
     // Focusable selectors list from https://stackoverflow.com/a/30753870
     const selector = `button:not([disabled]), [href], iframe, input:not([disabled]), select:not([disabled]),
       textarea:not([disabled]), [tabindex]:not([tabindex="-1"]), [contentEditable=true]`;
+    // Filter out hidden elements
     const focusableElements = Array.from(
       modalRoot.querySelectorAll(selector)
-    ).filter(element => {
-      // hidden elements are not focusable
-      const style = window.getComputedStyle(element);
-      return style.display !== 'none' && style.visibility !== 'hidden';
-    });
+    ).filter(element => !!element.offsetHeight);
     if (!focusableElements.length) {
       return;
     }
