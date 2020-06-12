@@ -162,23 +162,35 @@ class Modal extends React.PureComponent {
     }
   };
 
-  // follows https://uxdesign.cc/how-to-trap-focus-inside-modal-to-make-it-ada-compliant-6a50f9a70700
-  _onKeyDown = (e: any) => {
+  // Follows https://uxdesign.cc/how-to-trap-focus-inside-modal-to-make-it-ada-compliant-6a50f9a70700
+  _onKeyDown = (e: SyntheticKeyboardEvent<>): void => {
     const modalRoot = document.getElementById(this.props.id);
-    const {target} = e;
-
     if (!modalRoot || e.key !== 'Tab') {
       return;
     }
 
-    const focusableElements = modalRoot.querySelectorAll(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-    );
+    // Focusable selectors list from https://stackoverflow.com/a/30753870
+    const selector = `button:not([disabled]), [href], iframe, input:not([disabled]), select:not([disabled]),
+      textarea:not([disabled]), [tabindex]:not([tabindex="-1"]), [contentEditable=true]`;
+    const focusableElements = Array.from(
+      modalRoot.querySelectorAll(selector)
+    ).filter(element => {
+      // hidden elements are not focusable
+      const style = window.getComputedStyle(element);
+      return style.display !== 'none' && style.visibility !== 'hidden';
+    });
+    if (!focusableElements.length) {
+      return;
+    }
+
     const firstFocusableElement = focusableElements[0];
     const lastFocusableElement = focusableElements[focusableElements.length - 1];
+    const {target} = e;
 
-    // shift + tab pressed on first element, wrap back to last
-    if (e.shiftKey && target === firstFocusableElement) {
+    if (firstFocusableElement === lastFocusableElement) {
+      e.preventDefault();
+    } else if (e.shiftKey && target === firstFocusableElement) {
+      // shift + tab pressed on first element, wrap back to last
       lastFocusableElement.focus();
       e.preventDefault();
     } else if (target === lastFocusableElement) {
