@@ -179,6 +179,38 @@ var Modal = function (_React$PureComponent) {
         clickedOutside && _this._autoDismiss();
         _this._resetClick();
       }
+    }, _this._onKeyDown = function (e) {
+      var modalRoot = document.getElementById(_this.props.id);
+      if (!modalRoot || e.key !== 'Tab') {
+        return;
+      }
+
+      // Focusable selectors list from https://stackoverflow.com/a/30753870
+      var selector = 'button:not([disabled]), [href], iframe, input:not([disabled]), select:not([disabled]),\n      textarea:not([disabled]), [tabindex]:not([tabindex="-1"]), [contentEditable=true]';
+      // Filter out hidden elements
+      var focusableElements = (0, _from2.default)(modalRoot.querySelectorAll(selector)).filter(function (element) {
+        return !!element.offsetHeight;
+      });
+      if (!focusableElements.length) {
+        return;
+      }
+
+      var firstFocusableElement = focusableElements[0];
+      var lastFocusableElement = focusableElements[focusableElements.length - 1];
+      var target = e.target;
+
+
+      if (firstFocusableElement === lastFocusableElement) {
+        e.preventDefault();
+      } else if (e.shiftKey && target === firstFocusableElement) {
+        // shift + tab pressed on first element, wrap back to last
+        lastFocusableElement.focus();
+        e.preventDefault();
+      } else if (target === lastFocusableElement) {
+        // tab pressed on last element, wrap back to first
+        firstFocusableElement.focus();
+        e.preventDefault();
+      }
     }, _this._autoDismiss = function () {
       !_this._unmounted && _this.props.onCancel();
     }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
@@ -199,11 +231,10 @@ var Modal = function (_React$PureComponent) {
         {
           className: 'global-modal-dialog',
           id: id,
-          placement: 'top' },
-        _react2.default.createElement(View, (0, _extends3.default)({}, viewProps, {
-          onCancel: onCancel,
-          onConfirm: onConfirm
-        }))
+          onKeyDown: this._onKeyDown,
+          placement: 'top'
+        },
+        _react2.default.createElement(View, (0, _extends3.default)({}, viewProps, { onCancel: onCancel, onConfirm: onConfirm }))
       );
     }
   }, {
@@ -222,6 +253,9 @@ var Modal = function (_React$PureComponent) {
       this._eventsCapture && this._eventsCapture.dispose();
       restoreBodyScrollPosition();
     }
+
+    // Follows https://uxdesign.cc/how-to-trap-focus-inside-modal-to-make-it-ada-compliant-6a50f9a70700
+
   }, {
     key: '_resetClick',
     value: function _resetClick() {

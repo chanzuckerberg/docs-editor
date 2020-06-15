@@ -66,23 +66,15 @@ class Modal extends React.PureComponent {
   props: Props;
 
   render(): React.Element<any> {
-    const {
-      id,
-      viewProps,
-      onConfirm,
-      onCancel,
-      View,
-    } = this.props;
+    const {id, viewProps, onConfirm, onCancel, View} = this.props;
     return (
       <Popover
         className="global-modal-dialog"
         id={id}
-        placement="top">
-        <View
-          {...viewProps}
-          onCancel={onCancel}
-          onConfirm={onConfirm}
-        />
+        onKeyDown={this._onKeyDown}
+        placement="top"
+      >
+        <View {...viewProps} onCancel={onCancel} onConfirm={onConfirm} />
       </Popover>
     );
   }
@@ -170,6 +162,41 @@ class Modal extends React.PureComponent {
     }
   };
 
+  // Follows https://uxdesign.cc/how-to-trap-focus-inside-modal-to-make-it-ada-compliant-6a50f9a70700
+  _onKeyDown = (e: SyntheticKeyboardEvent<>): void => {
+    const modalRoot = document.getElementById(this.props.id);
+    if (!modalRoot || e.key !== 'Tab') {
+      return;
+    }
+
+    // Focusable selectors list from https://stackoverflow.com/a/30753870
+    const selector = `button:not([disabled]), [href], iframe, input:not([disabled]), select:not([disabled]),
+      textarea:not([disabled]), [tabindex]:not([tabindex="-1"]), [contentEditable=true]`;
+    // Filter out hidden elements
+    const focusableElements = Array.from(
+      modalRoot.querySelectorAll(selector)
+    ).filter(element => !!element.offsetHeight);
+    if (!focusableElements.length) {
+      return;
+    }
+
+    const firstFocusableElement = focusableElements[0];
+    const lastFocusableElement = focusableElements[focusableElements.length - 1];
+    const {target} = e;
+
+    if (firstFocusableElement === lastFocusableElement) {
+      e.preventDefault();
+    } else if (e.shiftKey && target === firstFocusableElement) {
+      // shift + tab pressed on first element, wrap back to last
+      lastFocusableElement.focus();
+      e.preventDefault();
+    } else if (target === lastFocusableElement) {
+      // tab pressed on last element, wrap back to first
+      firstFocusableElement.focus();
+      e.preventDefault();
+    }
+  };
+
   _autoDismiss = (): void => {
     !this._unmounted && this.props.onCancel();
   };
@@ -198,7 +225,7 @@ function getRootElement(id: string): HTMLElement {
 function renderModal(props: Props): void {
   const {id} = props;
   const rootNode = getRootElement(id);
-  const component = <Modal {...props} id={id + '-modal'}/>;
+  const component = <Modal {...props} id={id + '-modal'} />;
   ReactDOM.render(component, rootNode);
   resetModalsAccessibility();
 }
