@@ -115,7 +115,17 @@ var Modal = function (_React$PureComponent) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = Modal.__proto__ || (0, _getPrototypeOf2.default)(Modal)).call.apply(_ref, [this].concat(args))), _this), _this._clickStartTarget = null, _this._clickStartTime = 0, _this._eventsCapture = null, _this._unmounted = false, _this._onEventCapture = function (e) {
+    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = Modal.__proto__ || (0, _getPrototypeOf2.default)(Modal)).call.apply(_ref, [this].concat(args))), _this), _this._clickStartTarget = null, _this._clickStartTime = 0, _this._eventsCapture = null, _this._unmounted = false, _this._findFocusableElements = function () {
+      var modalRoot = document.getElementById(_this.props.id);
+      if (!modalRoot) {
+        return [];
+      }
+      // Focusable selectors list from https://stackoverflow.com/a/30753870
+      var selector = 'button:not([disabled]), [href], iframe, input:not([disabled]), select:not([disabled]),\n      textarea:not([disabled]), [tabindex]:not([tabindex="-1"]), [contentEditable=true]';
+      return (0, _from2.default)(modalRoot.querySelectorAll(selector)).filter(function (element) {
+        return !!element.offsetHeight;
+      });
+    }, _this._onEventCapture = function (e) {
       var _this$props = _this.props,
           id = _this$props.id,
           autoDimiss = _this$props.autoDimiss;
@@ -180,17 +190,10 @@ var Modal = function (_React$PureComponent) {
         _this._resetClick();
       }
     }, _this._onKeyDown = function (e) {
-      var modalRoot = document.getElementById(_this.props.id);
-      if (!modalRoot || e.key !== 'Tab') {
+      if (e.key !== 'Tab') {
         return;
       }
-
-      // Focusable selectors list from https://stackoverflow.com/a/30753870
-      var selector = 'button:not([disabled]), [href], iframe, input:not([disabled]), select:not([disabled]),\n      textarea:not([disabled]), [tabindex]:not([tabindex="-1"]), [contentEditable=true]';
-      // Filter out hidden elements
-      var focusableElements = (0, _from2.default)(modalRoot.querySelectorAll(selector)).filter(function (element) {
-        return !!element.offsetHeight;
-      });
+      var focusableElements = _this._findFocusableElements();
       if (!focusableElements.length) {
         return;
       }
@@ -202,10 +205,12 @@ var Modal = function (_React$PureComponent) {
 
       if (firstFocusableElement === lastFocusableElement) {
         e.preventDefault();
-      } else if (e.shiftKey && target === firstFocusableElement) {
-        // shift + tab pressed on first element, wrap back to last
-        lastFocusableElement.focus();
-        e.preventDefault();
+      } else if (e.shiftKey) {
+        if (target === firstFocusableElement) {
+          // shift + tab pressed on first element, wrap back to last
+          lastFocusableElement.focus();
+          e.preventDefault();
+        }
       } else if (target === lastFocusableElement) {
         // tab pressed on last element, wrap back to first
         firstFocusableElement.focus();
@@ -245,6 +250,11 @@ var Modal = function (_React$PureComponent) {
         mouseup: this._onEventCapture
       });
       preserveBodyScrollPosition();
+      // move keyboard focus into modal automatically
+      var focusableElements = this._findFocusableElements();
+      if (focusableElements.length) {
+        focusableElements[0].focus();
+      }
     }
   }, {
     key: 'componentWillUnmount',
