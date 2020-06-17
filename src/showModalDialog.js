@@ -85,6 +85,11 @@ class Modal extends React.PureComponent {
       mouseup: this._onEventCapture,
     });
     preserveBodyScrollPosition();
+    // move keyboard focus into modal automatically
+    const focusableElements = this._findFocusableElements();
+    if (focusableElements.length) {
+      focusableElements[0].focus();
+    }
   }
 
   componentWillUnmount(): void {
@@ -92,6 +97,19 @@ class Modal extends React.PureComponent {
     this._eventsCapture && this._eventsCapture.dispose();
     restoreBodyScrollPosition();
   }
+
+  _findFocusableElements = (): Array<HTMLElement> => {
+    const modalRoot = document.getElementById(this.props.id);
+    if (!modalRoot) {
+      return [];
+    }
+    // Focusable selectors list from https://stackoverflow.com/a/30753870
+    const selector = `button:not([disabled]), [href], iframe, input:not([disabled]), select:not([disabled]),
+      textarea:not([disabled]), [tabindex]:not([tabindex="-1"]), [contentEditable=true]`;
+    return Array.from(modalRoot.querySelectorAll(selector)).filter(
+      element => !!element.offsetHeight
+    );
+  };
 
   _onEventCapture = (e: any) => {
     const {id, autoDimiss} = this.props;
@@ -164,18 +182,10 @@ class Modal extends React.PureComponent {
 
   // Follows https://uxdesign.cc/how-to-trap-focus-inside-modal-to-make-it-ada-compliant-6a50f9a70700
   _onKeyDown = (e: SyntheticKeyboardEvent<>): void => {
-    const modalRoot = document.getElementById(this.props.id);
-    if (!modalRoot || e.key !== 'Tab') {
+    if (e.key !== 'Tab') {
       return;
     }
-
-    // Focusable selectors list from https://stackoverflow.com/a/30753870
-    const selector = `button:not([disabled]), [href], iframe, input:not([disabled]), select:not([disabled]),
-      textarea:not([disabled]), [tabindex]:not([tabindex="-1"]), [contentEditable=true]`;
-    // Filter out hidden elements
-    const focusableElements = Array.from(
-      modalRoot.querySelectorAll(selector)
-    ).filter(element => !!element.offsetHeight);
+    const focusableElements = this._findFocusableElements();
     if (!focusableElements.length) {
       return;
     }
@@ -186,10 +196,12 @@ class Modal extends React.PureComponent {
 
     if (firstFocusableElement === lastFocusableElement) {
       e.preventDefault();
-    } else if (e.shiftKey && target === firstFocusableElement) {
-      // shift + tab pressed on first element, wrap back to last
-      lastFocusableElement.focus();
-      e.preventDefault();
+    } else if (e.shiftKey) {
+      if (target === firstFocusableElement) {
+        // shift + tab pressed on first element, wrap back to last
+        lastFocusableElement.focus();
+        e.preventDefault();
+      }
     } else if (target === lastFocusableElement) {
       // tab pressed on last element, wrap back to first
       firstFocusableElement.focus();
