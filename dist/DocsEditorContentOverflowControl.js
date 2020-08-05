@@ -24,6 +24,8 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _reactBootstrap = require('react-bootstrap');
+
 require('./DocsEditorContentOverflowControl.css');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -43,7 +45,6 @@ var DocsEditorContentOverflowControl = function (_React$PureComponent) {
     }
 
     return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = DocsEditorContentOverflowControl.__proto__ || (0, _getPrototypeOf2.default)(DocsEditorContentOverflowControl)).call.apply(_ref, [this].concat(args))), _this), _this._onClick = function (e) {
-      e.preventDefault();
       var _this$props = _this.props,
           contentOverflowHidden = _this$props.contentOverflowHidden,
           onToggle = _this$props.onToggle;
@@ -60,14 +61,19 @@ var DocsEditorContentOverflowControl = function (_React$PureComponent) {
       var icon = contentOverflowHidden ? '\xBB' : '\xAB';
       var text = contentOverflowHidden ? 'Read more' : 'Read less';
       return _react2.default.createElement(
-        'a',
+        _reactBootstrap.Button,
         {
+          'aria-expanded': !contentOverflowHidden,
+          bsStyle: 'link',
           className: 'docs-editor-content-overflow-control',
-          href: '#',
-          onClick: this._onClick },
+          onClick: this._onClick,
+          onMouseDown: function onMouseDown(e) {
+            return e.preventDefault();
+          }
+        },
         _react2.default.createElement(
           'span',
-          { className: 'icon' },
+          { 'aria-hidden': 'true', className: 'icon' },
           icon
         ),
         text

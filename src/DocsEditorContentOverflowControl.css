@@ -1,8 +1,5 @@
-.docs-editor-content-overflow-control:link,
-.docs-editor-content-overflow-control:visited,
-.docs-editor-content-overflow-control:hover,
-.docs-editor-content-overflow-control:active {
-  text-decoration: none;
+.docs-editor-content-overflow-control {
+  font-weight: normal;
 }
 
 .docs-editor-content-overflow-control > .icon {
