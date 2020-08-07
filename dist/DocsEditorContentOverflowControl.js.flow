@@ -1,6 +1,8 @@
 // @flow
 
 import React from 'react';
+import {Button} from 'react-bootstrap';
+
 import './DocsEditorContentOverflowControl.css'
 
 class DocsEditorContentOverflowControl extends React.PureComponent {
@@ -14,18 +16,26 @@ class DocsEditorContentOverflowControl extends React.PureComponent {
     const icon = contentOverflowHidden ? '\u00BB' : '\u00AB';
     const text = contentOverflowHidden ? 'Read more' : 'Read less';
     return (
-      <a
+      <Button
+        aria-expanded={!contentOverflowHidden}
+        bsStyle="link"
         className="docs-editor-content-overflow-control"
-        href="#"
-        onClick={this._onClick}>
-        <span className="icon">{icon}</span>
+        onClick={this._onClick}
+        /*
+          Handles a design issue where the button remains focused after clicking it,
+          so rectangular keyboard focus still shows. Using a suggestion from
+          https://stackoverflow.com/a/37580028 to show focus for keyboard users
+          while hiding focus for mouse users.
+        */
+        onMouseDown={e => e.preventDefault()}
+      >
+        <span aria-hidden="true" className="icon">{icon}</span>
         {text}
-      </a>
+      </Button>
     );
   }
 
   _onClick = (e: SyntheticEvent): void => {
-    e.preventDefault();
     const {contentOverflowHidden, onToggle} = this.props;
     onToggle(!contentOverflowHidden);
   };
