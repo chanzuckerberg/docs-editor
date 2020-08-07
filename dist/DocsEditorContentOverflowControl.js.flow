@@ -21,6 +21,12 @@ class DocsEditorContentOverflowControl extends React.PureComponent {
         bsStyle="link"
         className="docs-editor-content-overflow-control"
         onClick={this._onClick}
+        /*
+          Handles a design issue where the button remains focused after clicking it,
+          so rectangular keyboard focus still shows. Using a suggestion from
+          https://stackoverflow.com/a/37580028 to show focus for keyboard users
+          while hiding focus for mouse users.
+        */
         onMouseDown={e => e.preventDefault()}
       >
         <span aria-hidden="true" className="icon">{icon}</span>
