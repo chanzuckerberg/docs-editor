@@ -13,6 +13,8 @@ type StyleMapType = {
   };
 };
 
+const CSS_VAR_PATTERN =  /var\([^\)]+\)/;
+
 // Styles that can be safely added as inline-style (e.g. style="color: red")
 // to element directly.
 const InlineStyles:  StyleMapType = {};
@@ -268,6 +270,10 @@ function forColor(
 ): ?string {
 
   if (TRANSPARENT_COLORS.has(colorStr)) {
+    return null;
+  }
+
+  if (colorStr && CSS_VAR_PATTERN.test(colorStr)) {
     return null;
   }
 
