@@ -42,6 +42,8 @@ var _numberRange2 = _interopRequireDefault(_numberRange);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var CSS_VAR_PATTERN = /var\([^\)]+\)/;
+
 // Styles that can be safely added as inline-style (e.g. style="color: red")
 // to element directly.
 var InlineStyles = {};
@@ -226,6 +228,10 @@ function injectCSSIntoDocument(styleMap) {
 function forColor(styleMap, colorStr) {
 
   if (TRANSPARENT_COLORS.has(colorStr)) {
+    return null;
+  }
+
+  if (colorStr && CSS_VAR_PATTERN.test(colorStr)) {
     return null;
   }
 

@@ -22,7 +22,7 @@ import './DemoApp.css';
 
 const DEFAULT_CONTEXT = new DocsContext({});
 const DEFAULT_EDITOR_STATE = convertFromRaw({});
-const LOCAL_STORAGE_KEY = 'education-doc-editor-examples';
+const LOCAL_STORAGE_KEY = 'docs-editor-examples';
 
 function noop(): void {
 
