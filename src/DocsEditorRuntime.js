@@ -19,6 +19,9 @@ class DocsEditorRuntime {
   canComment(): boolean {
     return false;
   }
+  canProxyImageObjectURL(src: string): boolean {
+    return false;
+  }
   canProxyImageSrc(src: string): boolean {
     return false;
   }
@@ -27,6 +30,9 @@ class DocsEditorRuntime {
   }
   getProxyImageSrc(src: string): string {
     return src;
+  }
+  getProxyImageObjectURL(): ?string {
+    return null;
   }
   uploadImage (obj: Blob): Promise<ImageLike> {
     return Promise.reject('Unsupported');

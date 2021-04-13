@@ -34,6 +34,7 @@ class DocsSafeImage extends React.PureComponent {
   state = {
     error: false,
     pending: true,
+    objectURL: null,
   };
 
   _ref = null;
@@ -52,21 +53,28 @@ class DocsSafeImage extends React.PureComponent {
 
   render(): React.Element<any> {
     const {alt, className, id, width, height, onClick} = this.props;
-    const {error, pending} = this.state;
+    const {error, pending, objectURL} = this.state;
     const {runtime} = this.context.docsContext;
 
     let {src} = this.props;
+    let empty = false;
 
-    if (src && runtime && runtime.canProxyImageSrc(src)) {
+    if (objectURL) {
+      src = objectURL;
+    } else if (src && runtime && runtime.canProxyImageObjectURL(src)) {
+      this._getProxyImageObjectURL(runtime, src);
+      src = null;
+    } else if (src && runtime && runtime.canProxyImageSrc(src)) {
       src = runtime.getProxyImageSrc(src);
+    } else if (!src) {
+      empty = true;
     }
+
     src = String(src || '');
 
     const altText = error ?
       `unable to load image from ${src}`:
       alt;
-
-    const empty = !src;
 
     const cxName = cx(className, {
       'docs-safe-image': true,
@@ -138,7 +146,7 @@ class DocsSafeImage extends React.PureComponent {
   };
 
   _onError = (src: string): void => {
-    if (!this._unmounted && src === this._renderedSrc) {
+    if (!this._unmounted && src && src === this._renderedSrc) {
       this.setState(
         {error: true, pending: false},
         this._didError,
@@ -172,6 +180,15 @@ class DocsSafeImage extends React.PureComponent {
       onError(new Error(msg));
     }
   };
+
+  _getProxyImageObjectURL = async (runtime, src): Promise<void> => {
+    try {
+      const objectURL = await runtime.getProxyImageObjectURL(src);
+      this.setState({objectURL});  
+    } catch(ex) {
+      this.setState({error: true, pending: false});
+    }
+  }
 }
 
 module.exports = withDocsContext(DocsSafeImage);
