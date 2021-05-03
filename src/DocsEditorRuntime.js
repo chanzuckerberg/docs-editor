@@ -19,7 +19,7 @@ class DocsEditorRuntime {
   canComment(): boolean {
     return false;
   }
-  canProxyImageObjectURL(src: string): boolean {
+  canProxyImageBlob(src: string): boolean {
     return false;
   }
   canProxyImageSrc(src: string): boolean {
@@ -28,11 +28,11 @@ class DocsEditorRuntime {
   createCommentThreadID(): string {
     return '';
   }
+  getProxyImageBlob(): ?Blob {
+    return null;
+  }
   getProxyImageSrc(src: string): string {
     return src;
-  }
-  getProxyImageObjectURL(): ?string {
-    return null;
   }
   uploadImage (obj: Blob): Promise<ImageLike> {
     return Promise.reject('Unsupported');

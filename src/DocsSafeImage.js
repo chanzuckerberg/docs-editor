@@ -48,6 +48,10 @@ class DocsSafeImage extends React.PureComponent {
   }
 
   componentWillUnmount(): void {
+    const {objectURL} = this.state;
+    if (objectURL) {
+      URL.revokeObjectURL(objectURL);
+    }
     this._unmounted = true;
   }
 
@@ -61,7 +65,7 @@ class DocsSafeImage extends React.PureComponent {
 
     if (objectURL) {
       src = objectURL;
-    } else if (src && runtime && runtime.canProxyImageObjectURL(src)) {
+    } else if (src && runtime && runtime.canProxyImageBlob(src)) {
       this._getProxyImageObjectURL(runtime, src);
       src = null;
     } else if (src && runtime && runtime.canProxyImageSrc(src)) {
@@ -183,7 +187,8 @@ class DocsSafeImage extends React.PureComponent {
 
   _getProxyImageObjectURL = async (runtime, src): Promise<void> => {
     try {
-      const objectURL = await runtime.getProxyImageObjectURL(src);
+      const imageBlob = await runtime.getProxyImageBlob(src);
+      const objectURL = URL.createObjectURL(imageBlob);
       this.setState({objectURL});  
     } catch(ex) {
       this.setState({error: true, pending: false});
