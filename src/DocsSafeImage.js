@@ -33,8 +33,8 @@ class DocsSafeImage extends React.PureComponent {
 
   state = {
     error: false,
-    pending: true,
     objectURL: null,
+    pending: true,
   };
 
   _ref = null;
@@ -43,7 +43,11 @@ class DocsSafeImage extends React.PureComponent {
 
   componentWillReceiveProps(nextProps: Props): void {
     if (nextProps.src !== this.props.src) {
-      this.setState({error: false, pending: true});
+      const {objectURL} = this.state;
+      if (objectURL) {
+        URL.revokeObjectURL(objectURL);
+      }
+      this.setState({error: false, objectURL: null, pending: true});
     }
   }
 
@@ -63,15 +67,17 @@ class DocsSafeImage extends React.PureComponent {
     let {src} = this.props;
     let empty = false;
 
-    if (objectURL) {
-      src = objectURL;
-    } else if (src && runtime && runtime.canProxyImageBlob(src)) {
-      this._getProxyImageObjectURL(runtime, src);
-      src = null;
-    } else if (src && runtime && runtime.canProxyImageSrc(src)) {
-      src = runtime.getProxyImageSrc(src);
-    } else if (!src) {
-      empty = true;
+    if (!error) {
+      if (objectURL) {
+        src = objectURL;
+      } else if (src && runtime && runtime.canProxyImageBlob(src)) {
+        this._getProxyImageObjectURL(runtime, src);
+        src = null;
+      } else if (src && runtime && runtime.canProxyImageSrc(src)) {
+        src = runtime.getProxyImageSrc(src);
+      } else if (!src) {
+        empty = true;
+      }
     }
 
     src = String(src || '');
@@ -141,7 +147,7 @@ class DocsSafeImage extends React.PureComponent {
   }
 
   _onLoad = (src: string): void => {
-    if (!this._unmounted && src === this._renderedSrc) {
+    if (!this._unmounted && src && src === this._renderedSrc) {
       this.setState(
         {error: false, pending: false},
         this._didLoad,
@@ -188,10 +194,14 @@ class DocsSafeImage extends React.PureComponent {
   _getProxyImageObjectURL = async (runtime, src): Promise<void> => {
     try {
       const imageBlob = await runtime.getProxyImageBlob(src);
-      const objectURL = URL.createObjectURL(imageBlob);
-      this.setState({objectURL});  
+      if (!this._unmounted && src === this.props.src) {
+        const objectURL = URL.createObjectURL(imageBlob);
+        this.setState({objectURL});
+      }
     } catch(ex) {
-      this.setState({error: true, pending: false});
+      if (!this._unmounted && src === this.props.src) {
+        this.setState({error: true, pending: false});
+      }
     }
   }
 }
