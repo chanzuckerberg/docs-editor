@@ -41,6 +41,14 @@ class DocsSafeImage extends React.PureComponent {
   _renderedSrc = null;
   _unmounted = false;
 
+  componentDidMount(): void {
+    this._maybeLoadObjectUrl();
+  }
+
+  componentDidUpdate(): void {
+    this._maybeLoadObjectUrl();
+  }
+
   componentWillReceiveProps(nextProps: Props): void {
     if (nextProps.src !== this.props.src) {
       const {objectURL} = this.state;
@@ -71,7 +79,6 @@ class DocsSafeImage extends React.PureComponent {
       if (objectURL) {
         src = objectURL;
       } else if (src && runtime && runtime.canProxyImageBlob(src)) {
-        this._getProxyImageObjectURL(runtime, src);
         src = null;
       } else if (src && runtime && runtime.canProxyImageSrc(src)) {
         src = runtime.getProxyImageSrc(src);
@@ -190,6 +197,16 @@ class DocsSafeImage extends React.PureComponent {
       onError(new Error(msg));
     }
   };
+
+  _maybeLoadObjectUrl(): void {
+    const {src} = this.props;
+    const {objectURL} = this.state;
+    const {runtime} = this.context.docsContext;
+
+    if (!objectURL && src && runtime && runtime.canProxyImageBlob(src)) {
+      this._getProxyImageObjectURL(runtime, src);
+    }
+  }
 
   _getProxyImageObjectURL = async (runtime, src): Promise<void> => {
     try {
