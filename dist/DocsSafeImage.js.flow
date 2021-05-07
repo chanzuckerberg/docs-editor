@@ -33,6 +33,7 @@ class DocsSafeImage extends React.PureComponent {
 
   state = {
     error: false,
+    objectURL: null,
     pending: true,
   };
 
@@ -40,33 +41,57 @@ class DocsSafeImage extends React.PureComponent {
   _renderedSrc = null;
   _unmounted = false;
 
+  componentDidMount(): void {
+    this._maybeLoadObjectUrl();
+  }
+
+  componentDidUpdate(): void {
+    this._maybeLoadObjectUrl();
+  }
+
   componentWillReceiveProps(nextProps: Props): void {
     if (nextProps.src !== this.props.src) {
-      this.setState({error: false, pending: true});
+      const {objectURL} = this.state;
+      if (objectURL) {
+        URL.revokeObjectURL(objectURL);
+      }
+      this.setState({error: false, objectURL: null, pending: true});
     }
   }
 
   componentWillUnmount(): void {
+    const {objectURL} = this.state;
+    if (objectURL) {
+      URL.revokeObjectURL(objectURL);
+    }
     this._unmounted = true;
   }
 
   render(): React.Element<any> {
     const {alt, className, id, width, height, onClick} = this.props;
-    const {error, pending} = this.state;
+    const {error, pending, objectURL} = this.state;
     const {runtime} = this.context.docsContext;
 
     let {src} = this.props;
+    let empty = false;
 
-    if (src && runtime && runtime.canProxyImageSrc(src)) {
-      src = runtime.getProxyImageSrc(src);
+    if (!error) {
+      if (objectURL) {
+        src = objectURL;
+      } else if (src && runtime && runtime.canProxyImageBlob(src)) {
+        src = null;
+      } else if (src && runtime && runtime.canProxyImageSrc(src)) {
+        src = runtime.getProxyImageSrc(src);
+      } else if (!src) {
+        empty = true;
+      }
     }
+
     src = String(src || '');
 
     const altText = error ?
       `unable to load image from ${src}`:
       alt;
-
-    const empty = !src;
 
     const cxName = cx(className, {
       'docs-safe-image': true,
@@ -129,7 +154,7 @@ class DocsSafeImage extends React.PureComponent {
   }
 
   _onLoad = (src: string): void => {
-    if (!this._unmounted && src === this._renderedSrc) {
+    if (!this._unmounted && src && src === this._renderedSrc) {
       this.setState(
         {error: false, pending: false},
         this._didLoad,
@@ -138,7 +163,7 @@ class DocsSafeImage extends React.PureComponent {
   };
 
   _onError = (src: string): void => {
-    if (!this._unmounted && src === this._renderedSrc) {
+    if (!this._unmounted && src && src === this._renderedSrc) {
       this.setState(
         {error: true, pending: false},
         this._didError,
@@ -172,6 +197,30 @@ class DocsSafeImage extends React.PureComponent {
       onError(new Error(msg));
     }
   };
+
+  _maybeLoadObjectUrl(): void {
+    const {src} = this.props;
+    const {objectURL} = this.state;
+    const {runtime} = this.context.docsContext;
+
+    if (!objectURL && src && runtime && runtime.canProxyImageBlob(src)) {
+      this._getProxyImageObjectURL(runtime, src);
+    }
+  }
+
+  _getProxyImageObjectURL = async (runtime, src): Promise<void> => {
+    try {
+      const imageBlob = await runtime.getProxyImageBlob(src);
+      if (!this._unmounted && src === this.props.src) {
+        const objectURL = URL.createObjectURL(imageBlob);
+        this.setState({objectURL});
+      }
+    } catch(ex) {
+      if (!this._unmounted && src === this.props.src) {
+        this.setState({error: true, pending: false});
+      }
+    }
+  }
 }
 
 module.exports = withDocsContext(DocsSafeImage);

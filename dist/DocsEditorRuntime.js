@@ -52,6 +52,11 @@ var DocsEditorRuntime = function () {
       return false;
     }
   }, {
+    key: 'canProxyImageBlob',
+    value: function canProxyImageBlob(src) {
+      return false;
+    }
+  }, {
     key: 'canProxyImageSrc',
     value: function canProxyImageSrc(src) {
       return false;
@@ -60,6 +65,11 @@ var DocsEditorRuntime = function () {
     key: 'createCommentThreadID',
     value: function createCommentThreadID() {
       return '';
+    }
+  }, {
+    key: 'getProxyImageBlob',
+    value: function getProxyImageBlob() {
+      return null;
     }
   }, {
     key: 'getProxyImageSrc',
