@@ -19,11 +19,17 @@ class DocsEditorRuntime {
   canComment(): boolean {
     return false;
   }
+  canProxyImageBlob(src: string): boolean {
+    return false;
+  }
   canProxyImageSrc(src: string): boolean {
     return false;
   }
   createCommentThreadID(): string {
     return '';
+  }
+  getProxyImageBlob(): ?Blob {
+    return null;
   }
   getProxyImageSrc(src: string): string {
     return src;
