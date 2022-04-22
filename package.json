@@ -76,7 +76,7 @@
     "invariant": "^2.2.4",
     "katex": "^0.10.1",
     "nullthrows": "^1.0.1",
-    "react-bootstrap": "^0.31.5",
+    "react-bootstrap": ">=0.31.5 <1",
     "resize-observer-polyfill": "^1.5.0"
   }
 }
